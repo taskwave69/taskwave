@@ -8,7 +8,7 @@ import Tasks from "./pages/Tasks";
 import Wallet from "./pages/wallet";
 import TaskDetails from "./pages/TaskDetails";
 import Admin from "./pages/Admin";
-import History from "./pages/History";
+import History from "./pages/history";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
