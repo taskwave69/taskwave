@@ -5,7 +5,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
-import Wallet from "./pages/Wallet";
+import Wallet from "./pages/wallet";
 import TaskDetails from "./pages/TaskDetails";
 import Admin from "./pages/Admin";
 import History from "./pages/History";
