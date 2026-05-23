@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 
 import {
   collection,
-  getDocs
+  getDocs,
+  doc,
+  updateDoc
 } from "firebase/firestore";
 
-import { Link } from "react-router-dom";
-
-import { db } from "../firebase";
+import {
+  auth,
+  db
+} from "../firebase";
 
 import Sidebar from "../components/Sidebar";
 
@@ -17,75 +20,226 @@ function Tasks() {
 
   useEffect(() => {
 
-    const fetchTasks = async () => {
-
-      const querySnapshot =
-        await getDocs(collection(db, "tasks"));
-
-      const taskList = [];
-
-      querySnapshot.forEach((doc) => {
-
-        taskList.push({
-          id: doc.id,
-          ...doc.data()
-        });
-
-      });
-
-      setTasks(taskList);
-
-    };
-
     fetchTasks();
 
   }, []);
 
+  // FETCH TASKS
+  const fetchTasks = async () => {
+
+    const snapshot = await getDocs(
+      collection(db, "tasks")
+    );
+
+    const data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    const currentUser =
+      auth.currentUser?.email;
+
+    // AUTO EXPIRE AFTER 15 MIN
+    for (const task of data) {
+
+      if (
+        task.status === "claimed" &&
+        task.claimedAt
+      ) {
+
+        const now = Date.now();
+
+        const diff =
+          now - task.claimedAt;
+
+        if (
+          diff >
+          15 * 60 * 1000
+        ) {
+
+          await updateDoc(
+            doc(db, "tasks", task.id),
+            {
+              status: "available",
+              claimedBy: "",
+              claimedAt: null
+            }
+          );
+
+          task.status = "available";
+
+          task.claimedBy = "";
+
+        }
+      }
+    }
+
+    // SHOW ONLY AVAILABLE OR OWN CLAIM
+    const filtered = data.filter(
+      (task) =>
+        task.status === "available" ||
+        task.claimedBy === currentUser
+    );
+
+    setTasks(filtered);
+
+  };
+
+  // CLAIM TASK
+  const claimTask = async (taskId) => {
+
+    const userEmail =
+      auth.currentUser?.email;
+
+    await updateDoc(
+      doc(db, "tasks", taskId),
+      {
+        status: "claimed",
+        claimedBy: userEmail,
+        claimedAt: Date.now()
+      }
+    );
+
+    alert("Task Claimed!");
+
+    fetchTasks();
+
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white flex">
+
+    <div
+      style={{
+        display: "flex",
+        background: "#050816",
+        minHeight: "100vh",
+        color: "white"
+      }}
+    >
 
       <Sidebar />
 
-      <div className="flex-1 p-10">
+      <div
+        style={{
+          flex: 1,
+          padding: "30px"
+        }}
+      >
 
-        <h1 className="text-5xl font-bold">
+        <h1
+          style={{
+            fontSize: "35px",
+            marginBottom: "30px"
+          }}
+        >
           Tasks
         </h1>
 
-        <p className="text-zinc-400 mt-3">
-          Complete tasks and earn rewards.
-        </p>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(300px,1fr))",
+            gap: "25px"
+          }}
+        >
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+          {tasks.map((task) => {
 
-          {tasks.map((task) => (
+            const ownClaim =
+              task.claimedBy ===
+              auth.currentUser?.email;
 
-            <div
-              key={task.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6"
-            >
+            return (
 
-              <h2 className="text-2xl font-bold">
-                {task.title}
-              </h2>
+              <div
+                key={task.id}
+                style={{
+                  background: "#111827",
+                  borderRadius: "20px",
+                  padding: "20px"
+                }}
+              >
 
-              <p className="text-cyan-400 text-xl mt-3">
-                Reward: ${task.reward}
-              </p>
+                {task.image && (
 
-              <Link to={`/tasks/${task.id}`}>
+                  <img
+                    src={task.image}
+                    alt=""
+                    style={{
+                      width: "100%",
+                      borderRadius: "15px",
+                      marginBottom: "15px"
+                    }}
+                  />
 
-                <button
-                  className="mt-6 bg-cyan-400 hover:bg-cyan-300 text-black px-6 py-3 rounded-xl font-bold transition"
+                )}
+
+                <h2>{task.title}</h2>
+
+                <p
+                  style={{
+                    color: "#9ca3af",
+                    marginTop: "10px"
+                  }}
                 >
-                  Claim Task
-                </button>
+                  {task.description}
+                </p>
 
-              </Link>
+                <h3
+                  style={{
+                    marginTop: "15px",
+                    color: "#00d4ff"
+                  }}
+                >
+                  ${task.reward}
+                </h3>
 
-            </div>
+                {task.status === "available" && (
 
-          ))}
+                  <button
+                    onClick={() =>
+                      claimTask(task.id)
+                    }
+                    style={buttonStyle}
+                  >
+                    Claim Task
+                  </button>
+
+                )}
+
+                {ownClaim && (
+
+                  <div
+                    style={{
+                      marginTop: "20px",
+                      color: "#00d4ff"
+                    }}
+                  >
+                    Claimed By You
+                  </div>
+
+                )}
+
+                {task.rejectionReason && (
+
+                  <div
+                    style={{
+                      marginTop: "15px",
+                      color: "red"
+                    }}
+                  >
+                    Rejected:
+                    {" "}
+                    {task.rejectionReason}
+                  </div>
+
+                )}
+
+              </div>
+
+            );
+          })}
 
         </div>
 
@@ -94,5 +248,26 @@ function Tasks() {
     </div>
   );
 }
+
+const buttonStyle = {
+
+  marginTop: "20px",
+
+  width: "100%",
+
+  padding: "14px",
+
+  border: "none",
+
+  borderRadius: "12px",
+
+  background: "#00d4ff",
+
+  color: "black",
+
+  fontWeight: "bold",
+
+  cursor: "pointer"
+};
 
 export default Tasks;

@@ -3,208 +3,223 @@ import { useEffect, useState } from "react";
 import {
   collection,
   getDocs,
-  addDoc
+  doc,
+  updateDoc
 } from "firebase/firestore";
 
 import {
-  auth,
   db
 } from "../firebase";
 
 function Admin() {
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [tasks, setTasks] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [reasons, setReasons] = useState({});
 
-  const [title, setTitle] = useState("");
-
-  const [description, setDescription] = useState("");
-
-  const [reward, setReward] = useState("");
-
-  // CHECK ADMIN
   useEffect(() => {
 
-    checkAdmin();
+    fetchTasks();
 
   }, []);
 
-  const checkAdmin = async () => {
+  const fetchTasks = async () => {
 
-    try {
+    const snapshot = await getDocs(
+      collection(db, "tasks")
+    );
 
-      const snapshot = await getDocs(
-        collection(db, "admins")
-      );
+    const data = snapshot.docs.map(
+      (doc) => ({
+        id: doc.id,
+        ...doc.data()
+      })
+    );
 
-      const admins = snapshot.docs.map(
-        (doc) => doc.data().email
-      );
+    setTasks(data);
 
-      if (
-        admins.includes(auth.currentUser?.email)
-      ) {
-        setIsAdmin(true);
+  };
+
+  // APPROVE
+  const approveTask = async (taskId) => {
+
+    await updateDoc(
+      doc(db, "tasks", taskId),
+      {
+        status: "approved"
       }
+    );
 
-      setLoading(false);
+    alert("Approved!");
 
-    } catch (error) {
+    fetchTasks();
 
-      console.log(error);
-
-      setLoading(false);
-    }
   };
 
-  // ADD TASK
-  const addTask = async () => {
+  // REJECT
+  const rejectTask = async (taskId) => {
 
-    if (!title || !description || !reward) {
-      alert("Fill all fields");
-      return;
-    }
+    await updateDoc(
+      doc(db, "tasks", taskId),
+      {
+        status: "available",
 
-    try {
+        claimedBy: "",
 
-      await addDoc(
-        collection(db, "tasks"),
-        {
-          title,
-          description,
-          reward,
-          createdAt: Date.now()
-        }
-      );
+        claimedAt: null,
 
-      alert("Task Added!");
+        rejectionReason:
+          reasons[taskId] || "Rejected"
+      }
+    );
 
-      setTitle("");
-      setDescription("");
-      setReward("");
+    alert("Rejected!");
 
-    } catch (error) {
+    fetchTasks();
 
-      console.log(error);
-
-      alert("Error");
-    }
   };
 
-  // LOADING
-  if (loading) {
-    return (
-      <h1 style={{ color: "white" }}>
-        Loading...
-      </h1>
-    );
-  }
-
-  // BLOCK NON ADMINS
-  if (!isAdmin) {
-
-    return (
-      <div
-        style={{
-          color: "white",
-          background: "black",
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fontSize: "30px"
-        }}
-      >
-        Access Denied
-      </div>
-    );
-  }
-
-  // ADMIN PANEL
   return (
 
     <div
       style={{
-        background: "black",
+        background: "#050816",
         minHeight: "100vh",
         color: "white",
         padding: "30px"
       }}
     >
 
-      <h1>Admin Panel</h1>
-
-      <input
-        type="text"
-        placeholder="Task Title"
-        value={title}
-        onChange={(e) =>
-          setTitle(e.target.value)
-        }
-        style={inputStyle}
-      />
-
-      <textarea
-        placeholder="Task Description"
-        value={description}
-        onChange={(e) =>
-          setDescription(e.target.value)
-        }
-        style={inputStyle}
-      />
-
-      <input
-        type="number"
-        placeholder="Reward"
-        value={reward}
-        onChange={(e) =>
-          setReward(e.target.value)
-        }
-        style={inputStyle}
-      />
-
-      <button
-        onClick={addTask}
-        style={buttonStyle}
+      <h1
+        style={{
+          fontSize: "35px",
+          marginBottom: "30px"
+        }}
       >
-        Add Task
-      </button>
+        Admin Panel
+      </h1>
+
+      <div
+        style={{
+          display: "grid",
+          gap: "25px"
+        }}
+      >
+
+        {tasks
+          .filter(
+            (task) =>
+              task.status === "claimed"
+          )
+          .map((task) => (
+
+            <div
+              key={task.id}
+              style={{
+                background: "#111827",
+                padding: "20px",
+                borderRadius: "20px"
+              }}
+            >
+
+              <h2>{task.title}</h2>
+
+              <p
+                style={{
+                  marginTop: "10px",
+                  color: "#9ca3af"
+                }}
+              >
+                {task.description}
+              </p>
+
+              <p
+                style={{
+                  marginTop: "15px"
+                }}
+              >
+                Claimed By:
+                {" "}
+                {task.claimedBy}
+              </p>
+
+              <textarea
+                placeholder="Reject reason"
+                value={
+                  reasons[task.id] || ""
+                }
+                onChange={(e) =>
+                  setReasons({
+                    ...reasons,
+                    [task.id]:
+                      e.target.value
+                  })
+                }
+                style={{
+                  width: "100%",
+                  marginTop: "20px",
+                  padding: "15px",
+                  borderRadius: "12px",
+                  border: "none"
+                }}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "15px",
+                  marginTop: "20px"
+                }}
+              >
+
+                <button
+                  onClick={() =>
+                    approveTask(task.id)
+                  }
+                  style={{
+                    ...btn,
+                    background: "#00d4ff",
+                    color: "black"
+                  }}
+                >
+                  Approve
+                </button>
+
+                <button
+                  onClick={() =>
+                    rejectTask(task.id)
+                  }
+                  style={{
+                    ...btn,
+                    background: "red"
+                  }}
+                >
+                  Reject
+                </button>
+
+              </div>
+
+            </div>
+
+          ))}
+
+      </div>
 
     </div>
   );
 }
 
-const inputStyle = {
+const btn = {
 
-  width: "100%",
-
-  padding: "15px",
-
-  marginTop: "20px",
-
-  borderRadius: "10px",
+  padding: "14px 25px",
 
   border: "none",
 
-  fontSize: "18px"
-};
+  borderRadius: "12px",
 
-const buttonStyle = {
+  color: "white",
 
-  marginTop: "20px",
-
-  padding: "15px 25px",
-
-  border: "none",
-
-  borderRadius: "10px",
-
-  background: "#00d4ff",
-
-  color: "black",
-
-  fontSize: "18px",
+  fontWeight: "bold",
 
   cursor: "pointer"
 };
