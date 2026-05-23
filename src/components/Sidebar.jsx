@@ -1,53 +1,109 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { FiMenu, FiX } from "react-icons/fi";
 
 function Sidebar() {
-  return (
-    <div
-      style={{
-        width: "220px",
-        minHeight: "100vh",
-        background: "#111827",
-        color: "white",
-        padding: "20px",
-      }}
-    >
-      <h2 style={{ marginBottom: "30px" }}>TaskWave</h2>
 
-      <div
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+    
+      {/* MOBILE MENU BUTTON */}
+      <button
+        onClick={() => setOpen(true)}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
+          position: "fixed",
+          top: "20px",
+          left: "20px",
+          zIndex: 1000,
+          background: "#00d4ff",
+          border: "none",
+          color: "black",
+          padding: "10px",
+          borderRadius: "10px",
+          fontSize: "22px",
+          cursor: "pointer"
         }}
       >
-        <Link to="/dashboard" style={linkStyle}>
-          Dashboard
-        </Link>
+        <FiMenu />
+      </button>
 
-        <Link to="/tasks" style={linkStyle}>
-          Tasks
-        </Link>
+      {/* SIDEBAR */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: open ? "0" : "-260px",
+          width: "240px",
+          height: "100vh",
+          background: "#081028",
+          color: "white",
+          padding: "30px 20px",
+          transition: "0.3s",
+          zIndex: 999
+        }}
+      >
 
-        <Link to="/wallet" style={linkStyle}>
-          Wallet
-        </Link>
+        {/* CLOSE BUTTON */}
+        <button
+          onClick={() => setOpen(false)}
+          style={{
+            background: "none",
+            border: "none",
+            color: "white",
+            fontSize: "28px",
+            cursor: "pointer",
+            marginBottom: "30px"
+          }}
+        >
+          <FiX />
+        </button>
 
-        <Link to="/history" style={linkStyle}>
-          History
-        </Link>
+        <h2 style={{ marginBottom: "40px" }}>
+          TaskWave
+        </h2>
 
-        <Link to="/admin" style={linkStyle}>
-          Admin
-        </Link>
+        <nav
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "25px"
+          }}
+        >
+
+          <Link to="/dashboard" style={linkStyle}>
+            Dashboard
+          </Link>
+
+          <Link to="/tasks" style={linkStyle}>
+            Tasks
+          </Link>
+
+          <Link to="/wallet" style={linkStyle}>
+            Wallet
+          </Link>
+
+          <Link to="/history" style={linkStyle}>
+            History
+          </Link>
+
+          <Link to="/admin" style={linkStyle}>
+            Admin
+          </Link>
+
+        </nav>
+
       </div>
-    </div>
+
+    </>
   );
 }
 
 const linkStyle = {
   color: "white",
   textDecoration: "none",
-  fontSize: "18px",
+  fontSize: "22px"
 };
 
 export default Sidebar;
