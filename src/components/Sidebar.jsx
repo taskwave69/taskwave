@@ -35,7 +35,7 @@ function Sidebar() {
 
   return (
 
-    <div className="w-64 min-h-screen bg-zinc-950 border-r border-zinc-800 p-6 hidden md:flex flex-col">
+    <div className="w-64 min-h-screen bg-zinc-950 border-r border-zinc-800 p-6 flex-col">
 
       <h1 className="text-4xl font-bold text-cyan-400 mb-12">
         TaskWave
