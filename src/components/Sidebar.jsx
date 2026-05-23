@@ -1,15 +1,60 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
+
+import {
+  collection,
+  getDocs
+} from "firebase/firestore";
+
+import {
+  auth,
+  db
+} from "../firebase";
+
 import { FiMenu, FiX } from "react-icons/fi";
 
 function Sidebar() {
 
   const [open, setOpen] = useState(false);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+
+    checkAdmin();
+
+  }, []);
+
+  const checkAdmin = async () => {
+
+    try {
+
+      const snapshot = await getDocs(
+        collection(db, "admins")
+      );
+
+      const admins = snapshot.docs.map(
+        (doc) => doc.data().email
+      );
+
+      if (
+        admins.includes(auth.currentUser?.email)
+      ) {
+        setIsAdmin(true);
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
   return (
     <>
-    
-      {/* MOBILE MENU BUTTON */}
+
+      {/* MENU BUTTON */}
       <button
         onClick={() => setOpen(true)}
         style={{
@@ -88,9 +133,17 @@ function Sidebar() {
             History
           </Link>
 
-          <Link to="/admin" style={linkStyle}>
-            Admin
-          </Link>
+          {/* SHOW ONLY FOR ADMINS */}
+          {isAdmin && (
+
+            <Link
+              to="/admin"
+              style={linkStyle}
+            >
+              Admin
+            </Link>
+
+          )}
 
         </nav>
 
@@ -101,8 +154,11 @@ function Sidebar() {
 }
 
 const linkStyle = {
+
   color: "white",
+
   textDecoration: "none",
+
   fontSize: "22px"
 };
 
