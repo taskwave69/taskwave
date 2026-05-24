@@ -1,5 +1,3 @@
-// src/pages/Home.jsx
-
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -10,8 +8,7 @@ function Home() {
           "radial-gradient(circle at top,#111827,#050816)",
         minHeight: "100vh",
         color: "white",
-        overflow: "hidden",
-        fontFamily: "Inter, Arial",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       {/* NAVBAR */}
@@ -20,21 +17,20 @@ function Home() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "20px",
+          padding: "18px 20px",
           position: "sticky",
           top: 0,
           zIndex: 100,
-          background: "rgba(5,8,22,0.75)",
+          background: "rgba(5,8,22,0.7)",
           backdropFilter: "blur(12px)",
           borderBottom:
-            "1px solid rgba(255,255,255,0.08)",
+            "1px solid rgba(255,255,255,0.06)",
         }}
       >
         <h1
           style={{
-            fontSize: "34px",
+            fontSize: "28px",
             fontWeight: "900",
-            letterSpacing: "1px",
           }}
         >
           <span style={{ color: "white" }}>
@@ -49,17 +45,17 @@ function Home() {
         <Link to="/login">
           <button
             style={{
+              border: "none",
               background:
                 "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-              border: "none",
               color: "white",
-              padding: "13px 24px",
-              borderRadius: "16px",
+              padding: "12px 18px",
+              borderRadius: "14px",
               fontWeight: "bold",
-              fontSize: "15px",
-              boxShadow:
-                "0px 0px 25px rgba(139,92,246,0.45)",
+              fontSize: "14px",
               cursor: "pointer",
+              boxShadow:
+                "0 0 25px rgba(139,92,246,0.35)",
             }}
           >
             Sign In
@@ -70,7 +66,7 @@ function Home() {
       {/* HERO */}
       <section
         style={{
-          padding: "35px 20px 90px",
+          padding: "30px 18px 80px",
         }}
       >
         {/* BADGE */}
@@ -78,32 +74,27 @@ function Home() {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "10px",
+            gap: "8px",
             background:
-              "rgba(139,92,246,0.15)",
-            border:
-              "1px solid rgba(139,92,246,0.25)",
-            padding: "10px 18px",
+              "rgba(139,92,246,0.14)",
+            padding: "10px 16px",
             borderRadius: "999px",
             color: "#c4b5fd",
+            fontSize: "13px",
             fontWeight: "bold",
-            marginBottom: "30px",
-            fontSize: "14px",
-            boxShadow:
-              "0px 0px 20px rgba(139,92,246,0.15)",
+            marginBottom: "28px",
           }}
         >
-          ● Live Earning Platform
+          ● Live earning platform
         </div>
 
         {/* HEADING */}
         <h1
           style={{
-            fontSize: "60px",
-            lineHeight: "62px",
+            fontSize: "42px",
+            lineHeight: "48px",
             fontWeight: "900",
-            marginBottom: "25px",
-            letterSpacing: "-2px",
+            marginBottom: "24px",
           }}
         >
           Turn your
@@ -114,8 +105,6 @@ function Home() {
           <span
             style={{
               color: "#8b5cf6",
-              textShadow:
-                "0px 0px 30px rgba(139,92,246,0.7)",
             }}
           >
             earnings.
@@ -126,9 +115,9 @@ function Home() {
         <p
           style={{
             color: "#9ca3af",
-            fontSize: "20px",
-            lineHeight: "35px",
-            marginBottom: "45px",
+            fontSize: "16px",
+            lineHeight: "29px",
+            marginBottom: "35px",
           }}
         >
           Complete social media tasks,
@@ -136,94 +125,46 @@ function Home() {
           instantly via Binance or UPI.
         </p>
 
-        {/* MAIN CARD */}
+        {/* CARD */}
         <div
           style={{
             background:
-              "linear-gradient(180deg,#111827,#0f172a)",
-            borderRadius: "35px",
-            padding: "30px",
+              "rgba(255,255,255,0.03)",
             border:
-              "1px solid rgba(139,92,246,0.18)",
+              "1px solid rgba(255,255,255,0.06)",
+            borderRadius: "30px",
+            padding: "24px",
+            backdropFilter: "blur(14px)",
             boxShadow:
-              "0px 0px 60px rgba(139,92,246,0.2)",
-            marginBottom: "35px",
-            position: "relative",
-            overflow: "hidden",
+              "0 0 40px rgba(139,92,246,0.12)",
+            marginBottom: "30px",
           }}
         >
-          {/* PURPLE GLOW */}
-          <div
+          <p
             style={{
-              position: "absolute",
-              width: "220px",
-              height: "220px",
-              background:
-                "rgba(139,92,246,0.15)",
-              borderRadius: "50%",
-              top: "-60px",
-              right: "-60px",
-              filter: "blur(40px)",
-            }}
-          />
-
-          {/* EARNINGS */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent:
-                "space-between",
-              alignItems: "center",
-              position: "relative",
-              zIndex: 2,
+              color: "#9ca3af",
+              marginBottom: "10px",
+              fontSize: "14px",
             }}
           >
-            <div>
-              <p
-                style={{
-                  color: "#9ca3af",
-                  fontSize: "15px",
-                }}
-              >
-                Today's Earnings
-              </p>
+            Today's Earnings
+          </p>
 
-              <h1
-                style={{
-                  fontSize: "58px",
-                  marginTop: "10px",
-                  fontWeight: "900",
-                }}
-              >
-                $24.80
-              </h1>
-            </div>
-
-            <div
-              style={{
-                background:
-                  "rgba(34,197,94,0.15)",
-                color: "#22c55e",
-                padding: "10px 16px",
-                borderRadius: "999px",
-                fontWeight: "bold",
-                fontSize: "14px",
-                border:
-                  "1px solid rgba(34,197,94,0.2)",
-              }}
-            >
-              +12%
-            </div>
-          </div>
+          <h1
+            style={{
+              fontSize: "52px",
+              fontWeight: "900",
+              marginBottom: "28px",
+            }}
+          >
+            $24.80
+          </h1>
 
           {/* TASKS */}
           <div
             style={{
               display: "grid",
-              gap: "15px",
-              marginTop: "35px",
-              position: "relative",
-              zIndex: 2,
+              gap: "14px",
             }}
           >
             <div style={taskCard}>
@@ -233,11 +174,11 @@ function Home() {
                 </h3>
 
                 <p style={taskDesc}>
-                  Social Media Task
+                  Social Task
                 </p>
               </div>
 
-              <strong style={priceText}>
+              <strong style={price}>
                 +$2
               </strong>
             </div>
@@ -253,7 +194,7 @@ function Home() {
                 </p>
               </div>
 
-              <strong style={priceText}>
+              <strong style={price}>
                 +$1.5
               </strong>
             </div>
@@ -269,21 +210,19 @@ function Home() {
                 </p>
               </div>
 
-              <strong style={priceText}>
+              <strong style={price}>
                 +$1
               </strong>
             </div>
           </div>
 
-          {/* PAYOUT METHODS */}
+          {/* PAYOUTS */}
           <div
             style={{
-              marginTop: "30px",
               display: "flex",
-              gap: "15px",
+              gap: "12px",
+              marginTop: "24px",
               flexWrap: "wrap",
-              position: "relative",
-              zIndex: 2,
             }}
           >
             <div style={payCard}>
@@ -300,24 +239,24 @@ function Home() {
         <div
           style={{
             display: "grid",
-            gap: "18px",
+            gap: "16px",
           }}
         >
           <Link to="/signup">
             <button
               style={{
                 width: "100%",
-                padding: "20px",
                 border: "none",
-                borderRadius: "20px",
+                padding: "18px",
+                borderRadius: "18px",
                 background:
                   "linear-gradient(135deg,#8b5cf6,#7c3aed)",
                 color: "white",
+                fontSize: "18px",
                 fontWeight: "bold",
-                fontSize: "20px",
-                boxShadow:
-                  "0px 0px 35px rgba(139,92,246,0.45)",
                 cursor: "pointer",
+                boxShadow:
+                  "0 0 35px rgba(139,92,246,0.35)",
               }}
             >
               Start Earning →
@@ -327,15 +266,14 @@ function Home() {
           <button
             style={{
               width: "100%",
-              padding: "20px",
-              borderRadius: "20px",
+              padding: "18px",
+              borderRadius: "18px",
               border:
                 "1px solid rgba(255,255,255,0.08)",
               background:
                 "rgba(255,255,255,0.02)",
-              backdropFilter: "blur(10px)",
               color: "white",
-              fontSize: "18px",
+              fontSize: "16px",
               cursor: "pointer",
             }}
           >
@@ -346,27 +284,24 @@ function Home() {
         {/* FOOTER */}
         <footer
           style={{
-            marginTop: "90px",
+            marginTop: "80px",
             borderTop:
-              "1px solid rgba(255,255,255,0.08)",
-            padding: "60px 0px 30px",
+              "1px solid rgba(255,255,255,0.06)",
+            paddingTop: "45px",
           }}
         >
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "1fr 1fr",
-              gap: "40px",
+              gap: "35px",
             }}
           >
             {/* BRAND */}
             <div>
-              <h1
+              <h2
                 style={{
-                  fontSize: "34px",
-                  fontWeight: "900",
-                  marginBottom: "18px",
+                  fontSize: "28px",
+                  marginBottom: "14px",
                 }}
               >
                 <span style={{ color: "white" }}>
@@ -376,78 +311,37 @@ function Home() {
                 <span style={{ color: "#8b5cf6" }}>
                   Wave
                 </span>
-              </h1>
+              </h2>
 
               <p
                 style={{
                   color: "#9ca3af",
-                  lineHeight: "32px",
-                  fontSize: "15px",
+                  lineHeight: "28px",
+                  fontSize: "14px",
                 }}
               >
-                Complete social media
-                tasks and withdraw
-                instantly using Binance
-                or UPI.
+                Complete social tasks and
+                withdraw instantly using
+                Binance or UPI.
               </p>
-            </div>
-
-            {/* PLATFORM */}
-            <div>
-              <h2
-                style={{
-                  marginBottom: "18px",
-                  fontSize: "20px",
-                }}
-              >
-                Platform
-              </h2>
-
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                }}
-              >
-                <a href="#"
-                  style={footerLink}>
-                  Browse Tasks
-                </a>
-
-                <a href="#"
-                  style={footerLink}>
-                  How It Works
-                </a>
-
-                <a href="#"
-                  style={footerLink}>
-                  Refer & Earn
-                </a>
-
-                <a href="#"
-                  style={footerLink}>
-                  Support
-                </a>
-              </div>
             </div>
 
             {/* LEGAL */}
             <div>
-              <h2
+              <h3
                 style={{
                   marginBottom: "18px",
-                  fontSize: "20px",
+                  fontSize: "18px",
                 }}
               >
                 Legal
-              </h2>
+              </h3>
 
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  gap: "16px",
+                  gap: "14px",
                 }}
               >
                 <a
@@ -482,31 +376,23 @@ function Home() {
 
             {/* COMMUNITY */}
             <div>
-              <h2
+              <h3
                 style={{
                   marginBottom: "18px",
-                  fontSize: "20px",
+                  fontSize: "18px",
                 }}
               >
                 Community
-              </h2>
+              </h3>
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                }}
+              <a
+                href="https://discord.gg/CGtfreSMP"
+                target="_blank"
+                rel="noreferrer"
+                style={footerLink}
               >
-                <a
-                  href="https://discord.gg/CGtfreSMP"
-                  target="_blank"
-                  rel="noreferrer"
-                  style={footerLink}
-                >
-                  Discord Server
-                </a>
-              </div>
+                Discord Server
+              </a>
             </div>
           </div>
 
@@ -514,12 +400,12 @@ function Home() {
           <div
             style={{
               borderTop:
-                "1px solid rgba(255,255,255,0.08)",
-              marginTop: "45px",
-              paddingTop: "25px",
+                "1px solid rgba(255,255,255,0.06)",
+              marginTop: "40px",
+              paddingTop: "24px",
               textAlign: "center",
               color: "#6b7280",
-              fontSize: "14px",
+              fontSize: "13px",
             }}
           >
             © 2026 TaskWave.
@@ -535,45 +421,46 @@ const taskCard = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  padding: "16px",
+  borderRadius: "18px",
   background:
     "rgba(255,255,255,0.03)",
-  padding: "18px",
-  borderRadius: "20px",
   border:
     "1px solid rgba(255,255,255,0.04)",
 };
 
 const taskTitle = {
   margin: 0,
-  fontSize: "17px",
+  fontSize: "15px",
 };
 
 const taskDesc = {
   marginTop: "5px",
   color: "#9ca3af",
-  fontSize: "13px",
+  fontSize: "12px",
 };
 
-const priceText = {
+const price = {
   color: "#8b5cf6",
-  fontSize: "20px",
+  fontSize: "18px",
 };
 
 const payCard = {
   background:
-    "rgba(139,92,246,0.12)",
+    "rgba(139,92,246,0.14)",
   border:
-    "1px solid rgba(139,92,246,0.18)",
-  padding: "12px 18px",
+    "1px solid rgba(139,92,246,0.2)",
+  padding: "10px 16px",
   borderRadius: "14px",
   fontWeight: "bold",
   color: "#c4b5fd",
+  fontSize: "14px",
 };
 
 const footerLink = {
   color: "#9ca3af",
   textDecoration: "none",
-  fontSize: "15px",
+  fontSize: "14px",
 };
 
 export default Home;
