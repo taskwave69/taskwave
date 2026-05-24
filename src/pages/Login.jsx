@@ -1,11 +1,19 @@
 // src/pages/Login.jsx
 
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate
+} from "react-router-dom";
 
 import {
   signInWithPopup,
   GoogleAuthProvider,
+  signInWithEmailAndPassword
 } from "firebase/auth";
+
+import {
+  useState
+} from "react";
 
 import { auth } from "../firebase";
 
@@ -13,28 +21,59 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleGoogleLogin = async () => {
+  const [email, setEmail] =
+    useState("");
 
-    try {
+  const [password, setPassword] =
+    useState("");
 
-      const provider =
-        new GoogleAuthProvider();
+  // GOOGLE LOGIN
+  const handleGoogleLogin =
+    async () => {
 
-      await signInWithPopup(
-        auth,
-        provider
-      );
+      try {
 
-      navigate("/dashboard");
+        const provider =
+          new GoogleAuthProvider();
 
-    } catch (error) {
+        await signInWithPopup(
+          auth,
+          provider
+        );
 
-      console.log(error);
+        navigate("/dashboard");
 
-      alert("Login Failed");
+      } catch (error) {
 
-    }
-  };
+        console.log(error);
+
+        alert("Google Login Failed");
+
+      }
+    };
+
+  // EMAIL LOGIN
+  const handleEmailLogin =
+    async () => {
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        navigate("/dashboard");
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert("Invalid Email or Password");
+
+      }
+    };
 
   return (
 
@@ -53,7 +92,7 @@ function Login() {
       }}
     >
 
-      {/* PURPLE GLOW */}
+      {/* GLOW */}
       <div
         style={{
           position: "absolute",
@@ -64,21 +103,6 @@ function Login() {
           borderRadius: "50%",
           top: "-100px",
           right: "-100px",
-          filter: "blur(80px)",
-        }}
-      />
-
-      {/* SECOND GLOW */}
-      <div
-        style={{
-          position: "absolute",
-          width: "250px",
-          height: "250px",
-          background:
-            "rgba(139,92,246,0.12)",
-          borderRadius: "50%",
-          bottom: "-80px",
-          left: "-80px",
           filter: "blur(80px)",
         }}
       />
@@ -109,7 +133,6 @@ function Login() {
             fontSize: "44px",
             fontWeight: "900",
             marginBottom: "14px",
-            letterSpacing: "-1px",
           }}
         >
           <span style={{ color: "white" }}>
@@ -121,44 +144,80 @@ function Login() {
           </span>
         </h1>
 
-        {/* SUBTEXT */}
         <p
           style={{
             textAlign: "center",
             color: "#9ca3af",
             fontSize: "15px",
             lineHeight: "28px",
-            marginBottom: "40px",
+            marginBottom: "35px",
           }}
         >
-          Continue your earning journey
-          and access premium social tasks.
+          Login to continue earning
+          through premium social tasks.
         </p>
 
-        {/* GOOGLE LOGIN BUTTON */}
+        {/* EMAIL */}
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+          style={inputStyle}
+        />
+
+        {/* PASSWORD */}
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) =>
+            setPassword(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
+
+        {/* LOGIN BUTTON */}
         <button
-          onClick={handleGoogleLogin}
+          onClick={handleEmailLogin}
+          style={mainButton}
+        >
+          Login
+        </button>
+
+        {/* DIVIDER */}
+        <div
           style={{
-            width: "100%",
-            padding: "18px",
-            borderRadius: "20px",
-            border: "none",
-            background:
-              "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-            color: "white",
-            fontSize: "16px",
-            fontWeight: "bold",
-            cursor: "pointer",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            gap: "12px",
-            boxShadow:
-              "0 0 35px rgba(139,92,246,0.35)",
+            margin: "28px 0",
+            gap: "10px",
           }}
         >
+          <div style={line} />
 
-          {/* GOOGLE ICON */}
+          <span
+            style={{
+              color: "#6b7280",
+              fontSize: "12px",
+            }}
+          >
+            OR CONTINUE WITH
+          </span>
+
+          <div style={line} />
+        </div>
+
+        {/* GOOGLE */}
+        <button
+          onClick={handleGoogleLogin}
+          style={googleButton}
+        >
+
           <img
             src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
             alt="google"
@@ -175,50 +234,13 @@ function Login() {
 
         </button>
 
-        {/* DIVIDER */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            margin: "32px 0",
-            gap: "10px",
-          }}
-        >
-          <div
-            style={{
-              flex: 1,
-              height: "1px",
-              background:
-                "rgba(255,255,255,0.08)",
-            }}
-          />
-
-          <span
-            style={{
-              color: "#6b7280",
-              fontSize: "12px",
-              letterSpacing: "1px",
-            }}
-          >
-            SECURE LOGIN
-          </span>
-
-          <div
-            style={{
-              flex: 1,
-              height: "1px",
-              background:
-                "rgba(255,255,255,0.08)",
-            }}
-          />
-        </div>
-
         {/* FEATURES */}
         <div
           style={{
             display: "grid",
             gap: "14px",
-            marginBottom: "32px",
+            marginTop: "30px",
+            marginBottom: "30px",
           }}
         >
 
@@ -264,6 +286,61 @@ function Login() {
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "18px",
+  borderRadius: "18px",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+  background:
+    "rgba(255,255,255,0.03)",
+  color: "white",
+  fontSize: "15px",
+  marginBottom: "16px",
+  outline: "none",
+  boxSizing: "border-box",
+};
+
+const mainButton = {
+  width: "100%",
+  padding: "18px",
+  borderRadius: "20px",
+  border: "none",
+  background:
+    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+  color: "white",
+  fontSize: "16px",
+  fontWeight: "bold",
+  cursor: "pointer",
+  boxShadow:
+    "0 0 35px rgba(139,92,246,0.35)",
+};
+
+const googleButton = {
+  width: "100%",
+  padding: "18px",
+  borderRadius: "20px",
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+  background:
+    "rgba(255,255,255,0.03)",
+  color: "white",
+  fontSize: "15px",
+  fontWeight: "bold",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "12px",
+};
+
+const line = {
+  flex: 1,
+  height: "1px",
+  background:
+    "rgba(255,255,255,0.08)",
+};
 
 const featureCard = {
   background:
