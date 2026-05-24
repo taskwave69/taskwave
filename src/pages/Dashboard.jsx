@@ -22,8 +22,8 @@ function Dashboard() {
       {/* MAIN */}
       <div
         style={{
-          paddingTop: "95px",
-          paddingLeft: "20px",
+          paddingTop: "22px",
+          paddingLeft: "85px",
           paddingRight: "20px",
           paddingBottom: "40px",
           maxWidth: "700px",
@@ -38,21 +38,48 @@ function Dashboard() {
           }}
         >
 
-          {/* SMALL TITLE */}
-          <p
+          {/* TOP BAR */}
+          <div
             style={{
-              color: "#8b5cf6",
-              fontSize: "14px",
-              fontWeight: "600",
-              letterSpacing: "1px",
-              marginBottom: "10px",
-              textTransform: "uppercase",
+              display: "flex",
+              alignItems: "center",
+              gap: "18px",
+              marginBottom: "18px",
+              minHeight: "52px",
             }}
           >
-            TaskWave
-          </p>
 
-          {/* BIG TITLE */}
+            {/* TASKWAVE */}
+            <h1
+              style={{
+                fontSize: "34px",
+                fontWeight: "900",
+                letterSpacing: "-1px",
+                lineHeight: "1",
+              }}
+            >
+
+              <span
+                style={{
+                  color: "white",
+                }}
+              >
+                Task
+              </span>
+
+              <span
+                style={{
+                  color: "#8b5cf6",
+                }}
+              >
+                Wave
+              </span>
+
+            </h1>
+
+          </div>
+
+          {/* DASHBOARD TITLE */}
           <h1
             style={{
               fontSize: "42px",
@@ -70,6 +97,7 @@ function Dashboard() {
               color: "#9ca3af",
               fontSize: "15px",
               lineHeight: "28px",
+              maxWidth: "500px",
             }}
           >
             Manage tasks, earnings and
