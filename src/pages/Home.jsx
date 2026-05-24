@@ -6,7 +6,8 @@ function Home() {
   return (
     <div
       style={{
-        background: "#050816",
+        background:
+          "radial-gradient(circle at top,#111827,#050816)",
         minHeight: "100vh",
         color: "white",
         overflow: "hidden",
@@ -19,331 +20,370 @@ function Home() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "25px 8%",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          padding: "20px",
           position: "sticky",
           top: 0,
-          backdropFilter: "blur(12px)",
-          background: "rgba(5,8,22,0.7)",
           zIndex: 100,
+          background: "rgba(5,8,22,0.75)",
+          backdropFilter: "blur(12px)",
+          borderBottom:
+            "1px solid rgba(255,255,255,0.08)",
         }}
       >
         <h1
           style={{
-            fontSize: "32px",
-            fontWeight: "bold",
+            fontSize: "34px",
+            fontWeight: "900",
+            letterSpacing: "1px",
           }}
         >
-          <span style={{ color: "white" }}>Task</span>
-          <span style={{ color: "#8b5cf6" }}>Wave</span>
+          <span style={{ color: "white" }}>
+            Task
+          </span>
+
+          <span style={{ color: "#8b5cf6" }}>
+            Wave
+          </span>
         </h1>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "25px",
-            alignItems: "center",
-          }}
-        >
-          <Link to="/" style={navLink}>
-            Home
-          </Link>
-
-          <Link to="/tasks" style={navLink}>
-            Tasks
-          </Link>
-
-          <Link to="/dashboard" style={navLink}>
-            Dashboard
-          </Link>
-
-          <Link to="/login">
-            <button
-              style={{
-                background:
-                  "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-                border: "none",
-                color: "white",
-                padding: "14px 28px",
-                borderRadius: "14px",
-                fontWeight: "bold",
-                cursor: "pointer",
-                fontSize: "16px",
-                boxShadow:
-                  "0px 0px 25px rgba(139,92,246,0.5)",
-              }}
-            >
-              Sign In
-            </button>
-          </Link>
-        </div>
+        <Link to="/login">
+          <button
+            style={{
+              background:
+                "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+              border: "none",
+              color: "white",
+              padding: "13px 24px",
+              borderRadius: "16px",
+              fontWeight: "bold",
+              fontSize: "15px",
+              boxShadow:
+                "0px 0px 25px rgba(139,92,246,0.45)",
+              cursor: "pointer",
+            }}
+          >
+            Sign In
+          </button>
+        </Link>
       </nav>
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <section
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "80px 8%",
-          gap: "60px",
+          padding: "35px 20px 90px",
         }}
       >
-        {/* LEFT */}
+        {/* BADGE */}
         <div
           style={{
-            flex: 1,
-            minWidth: "320px",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            background:
+              "rgba(139,92,246,0.15)",
+            border:
+              "1px solid rgba(139,92,246,0.25)",
+            padding: "10px 18px",
+            borderRadius: "999px",
+            color: "#c4b5fd",
+            fontWeight: "bold",
+            marginBottom: "30px",
+            fontSize: "14px",
+            boxShadow:
+              "0px 0px 20px rgba(139,92,246,0.15)",
           }}
         >
+          ● Earn Instantly Worldwide
+        </div>
+
+        {/* HEADING */}
+        <h1
+          style={{
+            fontSize: "60px",
+            lineHeight: "62px",
+            fontWeight: "900",
+            marginBottom: "25px",
+            letterSpacing: "-2px",
+          }}
+        >
+          Turn your
+          <br />
+          online activity
+          <br />
+          into{" "}
+          <span
+            style={{
+              color: "#8b5cf6",
+              textShadow:
+                "0px 0px 30px rgba(139,92,246,0.7)",
+            }}
+          >
+            earnings.
+          </span>
+        </h1>
+
+        {/* SUBTEXT */}
+        <p
+          style={{
+            color: "#9ca3af",
+            fontSize: "20px",
+            lineHeight: "35px",
+            marginBottom: "45px",
+          }}
+        >
+          Complete social tasks, grow communities
+          and earn rewards directly to your
+          Binance or UPI wallet.
+        </p>
+
+        {/* MAIN CARD */}
+        <div
+          style={{
+            background:
+              "linear-gradient(180deg,#111827,#0f172a)",
+            borderRadius: "35px",
+            padding: "30px",
+            border:
+              "1px solid rgba(139,92,246,0.18)",
+            boxShadow:
+              "0px 0px 60px rgba(139,92,246,0.2)",
+            marginBottom: "35px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* GLOW */}
           <div
             style={{
-              background: "rgba(139,92,246,0.15)",
-              border: "1px solid rgba(139,92,246,0.3)",
-              display: "inline-flex",
-              padding: "10px 20px",
-              borderRadius: "999px",
-              marginBottom: "30px",
-              color: "#c4b5fd",
-              fontWeight: "bold",
+              position: "absolute",
+              width: "220px",
+              height: "220px",
+              background:
+                "rgba(139,92,246,0.15)",
+              borderRadius: "50%",
+              top: "-60px",
+              right: "-60px",
+              filter: "blur(40px)",
             }}
-          >
-            ● 1,270+ Active Earners
-          </div>
+          />
 
-          <h1
-            style={{
-              fontSize: "78px",
-              lineHeight: "90px",
-              fontWeight: "900",
-              marginBottom: "25px",
-            }}
-          >
-            Turn your <br />
-            social activity into{" "}
-            <span
-              style={{
-                color: "#8b5cf6",
-              }}
-            >
-              income.
-            </span>
-          </h1>
-
-          <p
-            style={{
-              color: "#9ca3af",
-              fontSize: "22px",
-              lineHeight: "38px",
-              maxWidth: "650px",
-            }}
-          >
-            Complete social media tasks and earn rewards
-            instantly. Withdraw using crypto, PayPal,
-            Binance or UPI.
-          </p>
-
+          {/* BALANCE */}
           <div
             style={{
               display: "flex",
-              gap: "20px",
-              marginTop: "45px",
-              flexWrap: "wrap",
-            }}
-          >
-            <Link to="/signup">
-              <button style={primaryBtn}>
-                Start Earning →
-              </button>
-            </Link>
-
-            <button style={secondaryBtn}>
-              See How It Works
-            </button>
-          </div>
-        </div>
-
-        {/* RIGHT SIDE */}
-        <div
-          style={{
-            flex: 1,
-            minWidth: "320px",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "420px",
-              background:
-                "linear-gradient(180deg,#111827,#0f172a)",
-              borderRadius: "35px",
-              padding: "35px",
-              border:
-                "1px solid rgba(139,92,246,0.25)",
-              boxShadow:
-                "0px 0px 60px rgba(139,92,246,0.3)",
+              justifyContent:
+                "space-between",
+              alignItems: "center",
               position: "relative",
+              zIndex: 2,
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: "25px",
-              }}
-            >
-              <div>
-                <p
-                  style={{
-                    color: "#9ca3af",
-                  }}
-                >
-                  Balance
-                </p>
-
-                <h1
-                  style={{
-                    fontSize: "55px",
-                    marginTop: "10px",
-                  }}
-                >
-                  $24.80
-                </h1>
-              </div>
-
-              <div
+            <div>
+              <p
                 style={{
-                  background:
-                    "rgba(34,197,94,0.15)",
-                  color: "#22c55e",
-                  height: "fit-content",
-                  padding: "10px 18px",
-                  borderRadius: "999px",
-                  fontWeight: "bold",
+                  color: "#9ca3af",
+                  fontSize: "15px",
                 }}
               >
-                +12%
-              </div>
-            </div>
-
-            {/* GRAPH */}
-            <div
-              style={{
-                height: "180px",
-                borderRadius: "20px",
-                background:
-                  "linear-gradient(180deg,#1e1b4b,#111827)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#8b5cf6",
-                fontSize: "22px",
-                marginBottom: "25px",
-              }}
-            >
-              Earnings Graph
-            </div>
-
-            {/* PAYOUT */}
-            <div
-              style={{
-                background: "#0f172a",
-                padding: "20px",
-                borderRadius: "20px",
-              }}
-            >
-              <p style={{ color: "#9ca3af" }}>
-                Recent Payout
+                Total Earnings
               </p>
 
-              <h2
+              <h1
                 style={{
+                  fontSize: "58px",
                   marginTop: "10px",
+                  fontWeight: "900",
                 }}
               >
-                PayPal — $15.00
-              </h2>
+                $24.80
+              </h1>
+            </div>
+
+            <div
+              style={{
+                background:
+                  "rgba(34,197,94,0.15)",
+                color: "#22c55e",
+                padding: "10px 16px",
+                borderRadius: "999px",
+                fontWeight: "bold",
+                fontSize: "14px",
+                border:
+                  "1px solid rgba(34,197,94,0.2)",
+              }}
+            >
+              +12%
+            </div>
+          </div>
+
+          {/* TASK CARDS */}
+          <div
+            style={{
+              display: "grid",
+              gap: "15px",
+              marginTop: "35px",
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
+            <div style={taskCard}>
+              <div>
+                <h3 style={taskTitle}>
+                  Instagram Follow
+                </h3>
+
+                <p style={taskDesc}>
+                  Social Media Task
+                </p>
+              </div>
+
+              <strong style={priceText}>
+                +$2
+              </strong>
+            </div>
+
+            <div style={taskCard}>
+              <div>
+                <h3 style={taskTitle}>
+                  Reddit Comment
+                </h3>
+
+                <p style={taskDesc}>
+                  Engagement Task
+                </p>
+              </div>
+
+              <strong style={priceText}>
+                +$1.5
+              </strong>
+            </div>
+
+            <div style={taskCard}>
+              <div>
+                <h3 style={taskTitle}>
+                  Twitter Repost
+                </h3>
+
+                <p style={taskDesc}>
+                  Promotion Task
+                </p>
+              </div>
+
+              <strong style={priceText}>
+                +$1
+              </strong>
+            </div>
+          </div>
+
+          {/* PAYOUT METHODS */}
+          <div
+            style={{
+              marginTop: "30px",
+              display: "flex",
+              gap: "15px",
+              flexWrap: "wrap",
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
+            <div style={payCard}>
+              Binance
+            </div>
+
+            <div style={payCard}>
+              UPI
             </div>
           </div>
         </div>
-      </section>
 
-      {/* STATS */}
-      <section
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit,minmax(250px,1fr))",
-          gap: "25px",
-          padding: "0 8% 100px",
-        }}
-      >
-        <div style={statsCard}>
-          <h1 style={statsNumber}>$283,679</h1>
-          <p style={statsText}>Paid Out</p>
-        </div>
+        {/* BUTTONS */}
+        <div
+          style={{
+            display: "grid",
+            gap: "18px",
+          }}
+        >
+          <Link to="/signup">
+            <button
+              style={{
+                width: "100%",
+                padding: "20px",
+                border: "none",
+                borderRadius: "20px",
+                background:
+                  "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "20px",
+                boxShadow:
+                  "0px 0px 35px rgba(139,92,246,0.45)",
+                cursor: "pointer",
+              }}
+            >
+              Start Earning →
+            </button>
+          </Link>
 
-        <div style={statsCard}>
-          <h1 style={statsNumber}>1,270+</h1>
-          <p style={statsText}>Users</p>
-        </div>
-
-        <div style={statsCard}>
-          <h1 style={statsNumber}>$5</h1>
-          <p style={statsText}>Minimum Cashout</p>
+          <button
+            style={{
+              width: "100%",
+              padding: "20px",
+              borderRadius: "20px",
+              border:
+                "1px solid rgba(255,255,255,0.08)",
+              background:
+                "rgba(255,255,255,0.02)",
+              backdropFilter: "blur(10px)",
+              color: "white",
+              fontSize: "18px",
+              cursor: "pointer",
+            }}
+          >
+            Explore Tasks
+          </button>
         </div>
       </section>
     </div>
   );
 }
 
-const navLink = {
-  color: "white",
-  textDecoration: "none",
+const taskCard = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  background:
+    "rgba(255,255,255,0.03)",
+  padding: "18px",
+  borderRadius: "20px",
+  border:
+    "1px solid rgba(255,255,255,0.04)",
+};
+
+const taskTitle = {
+  margin: 0,
   fontSize: "17px",
 };
 
-const primaryBtn = {
-  background:
-    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-  border: "none",
-  color: "white",
-  padding: "18px 35px",
-  borderRadius: "16px",
-  fontWeight: "bold",
-  cursor: "pointer",
-  fontSize: "18px",
-  boxShadow:
-    "0px 0px 30px rgba(139,92,246,0.5)",
-};
-
-const secondaryBtn = {
-  background: "transparent",
-  border: "1px solid rgba(255,255,255,0.15)",
-  color: "white",
-  padding: "18px 35px",
-  borderRadius: "16px",
-  cursor: "pointer",
-  fontSize: "18px",
-};
-
-const statsCard = {
-  background: "#111827",
-  padding: "35px",
-  borderRadius: "25px",
-  border: "1px solid rgba(139,92,246,0.2)",
-};
-
-const statsNumber = {
-  fontSize: "45px",
-  marginBottom: "15px",
-};
-
-const statsText = {
+const taskDesc = {
+  marginTop: "5px",
   color: "#9ca3af",
-  fontSize: "18px",
+  fontSize: "13px",
+};
+
+const priceText = {
+  color: "#8b5cf6",
+  fontSize: "20px",
+};
+
+const payCard = {
+  background:
+    "rgba(139,92,246,0.12)",
+  border:
+    "1px solid rgba(139,92,246,0.18)",
+  padding: "12px 18px",
+  borderRadius: "14px",
+  fontWeight: "bold",
+  color: "#c4b5fd",
 };
 
 export default Home;
