@@ -73,7 +73,7 @@ function Home() {
           padding: "35px 20px 90px",
         }}
       >
-        {/* BADGE */}
+        {/* LIVE BADGE */}
         <div
           style={{
             display: "inline-flex",
@@ -93,7 +93,7 @@ function Home() {
               "0px 0px 20px rgba(139,92,246,0.15)",
           }}
         >
-          ● Earn Instantly Worldwide
+          ● Live Earning Platform
         </div>
 
         {/* HEADING */}
@@ -122,7 +122,7 @@ function Home() {
           </span>
         </h1>
 
-        {/* SUBTEXT */}
+        {/* DESCRIPTION */}
         <p
           style={{
             color: "#9ca3af",
@@ -131,12 +131,12 @@ function Home() {
             marginBottom: "45px",
           }}
         >
-          Complete social tasks, grow communities
-          and earn rewards directly to your
-          Binance or UPI wallet.
+          Complete social media tasks,
+          grow communities and withdraw
+          instantly via Binance or UPI.
         </p>
 
-        {/* MAIN CARD */}
+        {/* MAIN EARNING CARD */}
         <div
           style={{
             background:
@@ -152,7 +152,7 @@ function Home() {
             overflow: "hidden",
           }}
         >
-          {/* GLOW */}
+          {/* PURPLE GLOW */}
           <div
             style={{
               position: "absolute",
@@ -185,7 +185,7 @@ function Home() {
                   fontSize: "15px",
                 }}
               >
-                Total Earnings
+                Today's Earnings
               </p>
 
               <h1
@@ -216,7 +216,7 @@ function Home() {
             </div>
           </div>
 
-          {/* TASK CARDS */}
+          {/* TASK BOXES */}
           <div
             style={{
               display: "grid",
@@ -342,6 +342,202 @@ function Home() {
             Explore Tasks
           </button>
         </div>
+
+        {/* FOOTER */}
+        <footer
+          style={{
+            marginTop: "90px",
+            borderTop:
+              "1px solid rgba(255,255,255,0.08)",
+            padding: "60px 0px 30px",
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "1fr 1fr",
+              gap: "40px",
+            }}
+          >
+            {/* BRAND */}
+            <div>
+              <h1
+                style={{
+                  fontSize: "34px",
+                  fontWeight: "900",
+                  marginBottom: "18px",
+                }}
+              >
+                <span style={{ color: "white" }}>
+                  Task
+                </span>
+
+                <span style={{ color: "#8b5cf6" }}>
+                  Wave
+                </span>
+              </h1>
+
+              <p
+                style={{
+                  color: "#9ca3af",
+                  lineHeight: "32px",
+                  fontSize: "17px",
+                }}
+              >
+                Complete social media
+                tasks and withdraw via
+                Binance or UPI.
+              </p>
+            </div>
+
+            {/* PLATFORM */}
+            <div>
+              <h2
+                style={{
+                  marginBottom: "18px",
+                  fontSize: "22px",
+                }}
+              >
+                Platform
+              </h2>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                <a href="#"
+                  style={footerLink}>
+                  Browse Tasks
+                </a>
+
+                <a href="#"
+                  style={footerLink}>
+                  How It Works
+                </a>
+
+                <a href="#"
+                  style={footerLink}>
+                  Refer & Earn
+                </a>
+
+                <a href="#"
+                  style={footerLink}>
+                  Support
+                </a>
+              </div>
+            </div>
+
+            {/* LEGAL */}
+            <div>
+              <h2
+                style={{
+                  marginBottom: "18px",
+                  fontSize: "22px",
+                }}
+              >
+                Legal
+              </h2>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                <a
+                  href="/terms"
+                  style={footerLink}
+                >
+                  Terms of Service
+                </a>
+
+                <a
+                  href="/privacy"
+                  style={footerLink}
+                >
+                  Privacy Policy
+                </a>
+
+                <a
+                  href="/cookies"
+                  style={footerLink}
+                >
+                  Cookie Policy
+                </a>
+
+                <a
+                  href="/disclaimer"
+                  style={footerLink}
+                >
+                  Disclaimer
+                </a>
+              </div>
+            </div>
+
+            {/* COMMUNITY */}
+            <div>
+              <h2
+                style={{
+                  marginBottom: "18px",
+                  fontSize: "22px",
+                }}
+              >
+                Community
+              </h2>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+              >
+                <a
+                  href="https://discord.gg/"
+                  target="_blank"
+                  style={footerLink}
+                >
+                  Discord
+                </a>
+
+                <a
+                  href="#"
+                  style={footerLink}
+                >
+                  Telegram
+                </a>
+
+                <a
+                  href="#"
+                  style={footerLink}
+                >
+                  Instagram
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* COPYRIGHT */}
+          <div
+            style={{
+              borderTop:
+                "1px solid rgba(255,255,255,0.08)",
+              marginTop: "45px",
+              paddingTop: "25px",
+              textAlign: "center",
+              color: "#6b7280",
+              fontSize: "15px",
+            }}
+          >
+            © 2026 TaskWave.
+            All rights reserved.
+          </div>
+        </footer>
       </section>
     </div>
   );
@@ -384,6 +580,12 @@ const payCard = {
   borderRadius: "14px",
   fontWeight: "bold",
   color: "#c4b5fd",
+};
+
+const footerLink = {
+  color: "#9ca3af",
+  textDecoration: "none",
+  fontSize: "17px",
 };
 
 export default Home;
