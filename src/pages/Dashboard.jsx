@@ -31,13 +31,28 @@ function Dashboard() {
         }}
       >
 
-        {/* TOP SPACE */}
+        {/* HEADER */}
         <div
           style={{
             marginBottom: "35px",
           }}
         >
 
+          {/* SMALL TITLE */}
+          <p
+            style={{
+              color: "#8b5cf6",
+              fontSize: "14px",
+              fontWeight: "600",
+              letterSpacing: "1px",
+              marginBottom: "10px",
+              textTransform: "uppercase",
+            }}
+          >
+            TaskWave
+          </p>
+
+          {/* BIG TITLE */}
           <h1
             style={{
               fontSize: "42px",
@@ -49,6 +64,7 @@ function Dashboard() {
             Dashboard
           </h1>
 
+          {/* DESCRIPTION */}
           <p
             style={{
               color: "#9ca3af",
