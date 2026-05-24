@@ -1,152 +1,300 @@
-import { useEffect, useState } from "react";
-
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  updateDoc
-} from "firebase/firestore";
-
-import { auth, db } from "../firebase";
+// src/pages/Dashboard.jsx
 
 import Sidebar from "../components/Sidebar";
 
 function Dashboard() {
 
-  const [userData, setUserData] = useState(null);
-
-  useEffect(() => {
-
-    const fetchData = async () => {
-
-      const user = auth.currentUser;
-
-      if (!user) return;
-
-      const userRef = doc(db, "users", user.uid);
-
-      const userSnap = await getDoc(userRef);
-
-      if (!userSnap.exists()) return;
-
-      const data = userSnap.data();
-
-      // Check approved submissions
-      const submissionSnapshot =
-        await getDocs(collection(db, "submissions"));
-
-      let withdrawableAdd = 0;
-
-      for (const submissionDoc of submissionSnapshot.docs) {
-
-        const submission = submissionDoc.data();
-
-        if (
-          submission.userId === user.uid &&
-          submission.status === "approved" &&
-          submission.approvedAt
-        ) {
-
-          const approvedTime =
-            submission.approvedAt.toDate().getTime();
-
-          const now = Date.now();
-
-          const hoursPassed =
-            (now - approvedTime) / (1000 * 60 * 60);
-
-          if (hoursPassed >= 24) {
-
-            withdrawableAdd += submission.reward;
-
-            // Mark as released
-            await updateDoc(
-              doc(db, "submissions", submissionDoc.id),
-              {
-                status: "released"
-              }
-            );
-          }
-        }
-      }
-
-      if (withdrawableAdd > 0) {
-
-        await updateDoc(userRef, {
-
-          pending:
-            data.pending - withdrawableAdd,
-
-          withdrawable:
-            data.withdrawable + withdrawableAdd
-
-        });
-
-        data.pending -= withdrawableAdd;
-
-        data.withdrawable += withdrawableAdd;
-
-      }
-
-      setUserData(data);
-
-    };
-
-    fetchData();
-
-  }, []);
-
   return (
-    <div className="min-h-screen bg-black text-white flex">
 
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "linear-gradient(180deg,#050816,#0f172a)",
+        color: "white",
+        fontFamily: "Inter, sans-serif",
+      }}
+    >
+
+      {/* SIDEBAR */}
       <Sidebar />
 
-      <div className="flex-1 p-10">
+      {/* MAIN */}
+      <div
+        style={{
+          paddingTop: "95px",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          paddingBottom: "40px",
+          maxWidth: "700px",
+          margin: "0 auto",
+        }}
+      >
 
-        <h1 className="text-5xl font-bold">
-          Dashboard
-        </h1>
+        {/* TOP SPACE */}
+        <div
+          style={{
+            marginBottom: "35px",
+          }}
+        >
 
-        <p className="text-zinc-400 mt-3">
-          Welcome back to TaskWave.
-        </p>
+          <h1
+            style={{
+              fontSize: "42px",
+              fontWeight: "800",
+              letterSpacing: "-1px",
+              marginBottom: "12px",
+            }}
+          >
+            Dashboard
+          </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+          <p
+            style={{
+              color: "#9ca3af",
+              fontSize: "15px",
+              lineHeight: "28px",
+            }}
+          >
+            Manage tasks, earnings and
+            withdrawals through your
+            premium TaskWave account.
+          </p>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+        </div>
 
-            <p className="text-zinc-400">
-              Pending
+        {/* STATUS CARD */}
+        <div
+          style={{
+            background:
+              "rgba(139,92,246,0.10)",
+
+            border:
+              "1px solid rgba(139,92,246,0.18)",
+
+            padding: "18px",
+
+            borderRadius: "18px",
+
+            display: "flex",
+
+            justifyContent:
+              "space-between",
+
+            alignItems: "center",
+
+            marginBottom: "28px",
+
+            backdropFilter:
+              "blur(14px)",
+          }}
+        >
+
+          <div>
+
+            <p
+              style={{
+                color: "#c4b5fd",
+                fontSize: "14px",
+                fontWeight: "600",
+                marginBottom: "6px",
+              }}
+            >
+              Ready to Accept Tasks
             </p>
 
-            <h2 className="text-4xl font-bold text-cyan-400 mt-4">
-              ${userData?.pending || 0}
-            </h2>
+            <p
+              style={{
+                color: "#9ca3af",
+                fontSize: "13px",
+              }}
+            >
+              New premium tasks available
+            </p>
 
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+          <div
+            style={{
+              width: "14px",
+              height: "14px",
+              borderRadius: "50%",
+              background: "#8b5cf6",
+              boxShadow:
+                "0 0 20px #8b5cf6",
+            }}
+          />
 
-            <p className="text-zinc-400">
-              Withdrawable
+        </div>
+
+        {/* BALANCE CARD */}
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+            borderRadius: "28px",
+
+            padding: "28px",
+
+            marginBottom: "26px",
+
+            boxShadow:
+              "0 0 45px rgba(139,92,246,0.22)",
+          }}
+        >
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent:
+                "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+
+            <p
+              style={{
+                opacity: 0.8,
+                fontSize: "14px",
+              }}
+            >
+              Current Balance
             </p>
 
-            <h2 className="text-4xl font-bold text-green-400 mt-4">
-              ${userData?.withdrawable || 0}
-            </h2>
+            <div
+              style={{
+                background:
+                  "rgba(255,255,255,0.14)",
+                padding:
+                  "8px 14px",
+                borderRadius:
+                  "999px",
+                fontSize: "12px",
+              }}
+            >
+              Today
+            </div>
 
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+          <h1
+            style={{
+              fontSize: "52px",
+              fontWeight: "900",
+              marginBottom: "14px",
+              letterSpacing: "-2px",
+            }}
+          >
+            $0.00
+          </h1>
 
-            <p className="text-zinc-400">
-              Total Earnings
-            </p>
+          <p
+            style={{
+              fontSize: "14px",
+              opacity: 0.9,
+              lineHeight: "26px",
+            }}
+          >
+            Withdraw earnings instantly
+            through Binance and UPI.
+          </p>
 
-            <h2 className="text-4xl font-bold text-yellow-400 mt-4">
-              ${userData?.totalEarnings || 0}
-            </h2>
+        </div>
+
+        {/* SMALL CARDS */}
+        <div
+          style={{
+            display: "grid",
+            gap: "18px",
+          }}
+        >
+
+          {/* TASK CARD */}
+          <div
+            style={cardStyle}
+          >
+
+            <div>
+
+              <p
+                style={smallTitle}
+              >
+                Available Tasks
+              </p>
+
+              <h2
+                style={bigText}
+              >
+                0 Tasks
+              </h2>
+
+            </div>
+
+            <div
+              style={iconStyle}
+            >
+              ⚡
+            </div>
+
+          </div>
+
+          {/* WITHDRAW CARD */}
+          <div
+            style={cardStyle}
+          >
+
+            <div>
+
+              <p
+                style={smallTitle}
+              >
+                Withdrawable
+              </p>
+
+              <h2
+                style={bigText}
+              >
+                $0.00
+              </h2>
+
+            </div>
+
+            <div
+              style={iconStyle}
+            >
+              💸
+            </div>
+
+          </div>
+
+          {/* HISTORY CARD */}
+          <div
+            style={cardStyle}
+          >
+
+            <div>
+
+              <p
+                style={smallTitle}
+              >
+                Completed Tasks
+              </p>
+
+              <h2
+                style={bigText}
+              >
+                0 Done
+              </h2>
+
+            </div>
+
+            <div
+              style={iconStyle}
+            >
+              ✓
+            </div>
 
           </div>
 
@@ -157,5 +305,53 @@ function Dashboard() {
     </div>
   );
 }
+
+const cardStyle = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  padding: "22px",
+
+  borderRadius: "24px",
+
+  display: "flex",
+
+  justifyContent:
+    "space-between",
+
+  alignItems: "center",
+
+  backdropFilter:
+    "blur(14px)",
+};
+
+const smallTitle = {
+  color: "#9ca3af",
+  fontSize: "13px",
+  marginBottom: "10px",
+};
+
+const bigText = {
+  fontSize: "28px",
+  fontWeight: "800",
+};
+
+const iconStyle = {
+  width: "54px",
+  height: "54px",
+  borderRadius: "18px",
+  background:
+    "rgba(139,92,246,0.12)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: "22px",
+  border:
+    "1px solid rgba(139,92,246,0.14)",
+};
 
 export default Dashboard;
