@@ -22,37 +22,36 @@ function Dashboard() {
       {/* MAIN */}
       <div
         style={{
-          paddingTop: "22px",
-          paddingLeft: "85px",
-          paddingRight: "20px",
+          paddingTop: "24px",
+          paddingLeft: "78px",
+          paddingRight: "18px",
           paddingBottom: "40px",
-          maxWidth: "700px",
-          margin: "0 auto",
         }}
       >
 
         {/* HEADER */}
         <div
           style={{
-            marginBottom: "35px",
+            marginBottom: "34px",
           }}
         >
 
-          {/* TASKWAVE */}
+          {/* TOP */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              marginBottom: "14px",
+              height: "48px",
+              marginBottom: "18px",
             }}
           >
 
+            {/* TASKWAVE */}
             <h1
               style={{
                 fontSize: "34px",
                 fontWeight: "900",
                 letterSpacing: "-1px",
-                lineHeight: "1",
               }}
             >
 
@@ -79,11 +78,10 @@ function Dashboard() {
           {/* DASHBOARD */}
           <h1
             style={{
-              fontSize: "46px",
+              fontSize: "42px",
               fontWeight: "900",
               letterSpacing: "-2px",
               marginBottom: "12px",
-              textAlign: "left",
             }}
           >
             Dashboard
@@ -94,9 +92,8 @@ function Dashboard() {
             style={{
               color: "#9ca3af",
               fontSize: "15px",
-              lineHeight: "29px",
-              textAlign: "left",
-              maxWidth: "340px",
+              lineHeight: "28px",
+              maxWidth: "320px",
             }}
           >
             Manage tasks, earnings and
@@ -133,7 +130,9 @@ function Dashboard() {
               display: "flex",
               justifyContent:
                 "space-between",
+
               alignItems: "center",
+
               marginBottom: "20px",
             }}
           >
@@ -151,10 +150,13 @@ function Dashboard() {
               style={{
                 background:
                   "rgba(255,255,255,0.14)",
+
                 padding:
                   "8px 14px",
+
                 borderRadius:
                   "999px",
+
                 fontSize: "12px",
               }}
             >
@@ -175,7 +177,7 @@ function Dashboard() {
             $0.00
           </h1>
 
-          {/* DETAILS */}
+          {/* TEXT */}
           <p
             style={{
               fontSize: "14px",
@@ -196,9 +198,13 @@ function Dashboard() {
               height: "180px",
               background:
                 "rgba(255,255,255,0.10)",
+
               borderRadius: "50%",
+
               right: "-60px",
+
               bottom: "-60px",
+
               filter: "blur(10px)",
             }}
           />
