@@ -1,16 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// src/App.jsx
+
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
 
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import Wallet from "./pages/wallet";
-import TaskDetails from "./pages/TaskDetails";
-import Admin from "./pages/Admin";
 import History from "./pages/history";
+import Admin from "./pages/Admin";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
+import Disclaimer from "./pages/Disclaimer";
 
 function App() {
   return (
@@ -18,67 +26,67 @@ function App() {
 
       <Routes>
 
-        {/* Home */}
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-        {/* Signup */}
-        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        {/* Login */}
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
 
-        {/* Dashboard */}
         <Route
           path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
+          element={<Dashboard />}
         />
 
-        {/* Tasks */}
         <Route
           path="/tasks"
-          element={
-            <ProtectedRoute>
-              <Tasks />
-            </ProtectedRoute>
-          }
+          element={<Tasks />}
         />
 
-        {/* Wallet */}
         <Route
           path="/wallet"
-          element={
-            <ProtectedRoute>
-              <Wallet />
-            </ProtectedRoute>
-          }
+          element={<Wallet />}
         />
 
-        {/* Task Details */}
-        <Route
-          path="/tasks/:id"
-          element={
-            <ProtectedRoute>
-              <TaskDetails />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* History */}
         <Route
           path="/history"
-          element={
-            <ProtectedRoute>
-              <History />
-            </ProtectedRoute>
-          }
+          element={<History />}
         />
 
-        {/* Admin */}
-        <Route path="/admin" element={<Admin />} />
+        <Route
+          path="/admin"
+          element={<Admin />}
+        />
+
+        {/* LEGAL PAGES */}
+
+        <Route
+          path="/terms"
+          element={<Terms />}
+        />
+
+        <Route
+          path="/privacy"
+          element={<Privacy />}
+        />
+
+        <Route
+          path="/cookies"
+          element={<Cookies />}
+        />
+
+        <Route
+          path="/disclaimer"
+          element={<Disclaimer />}
+        />
 
       </Routes>
 
