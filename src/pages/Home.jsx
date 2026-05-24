@@ -11,7 +11,7 @@ function Home() {
         minHeight: "100vh",
         color: "white",
         overflow: "hidden",
-        fontFamily: "Arial",
+        fontFamily: "Inter, Arial",
       }}
     >
       {/* NAVBAR */}
@@ -73,7 +73,7 @@ function Home() {
           padding: "35px 20px 90px",
         }}
       >
-        {/* LIVE BADGE */}
+        {/* BADGE */}
         <div
           style={{
             display: "inline-flex",
@@ -136,7 +136,7 @@ function Home() {
           instantly via Binance or UPI.
         </p>
 
-        {/* MAIN EARNING CARD */}
+        {/* MAIN CARD */}
         <div
           style={{
             background:
@@ -167,7 +167,7 @@ function Home() {
             }}
           />
 
-          {/* BALANCE */}
+          {/* EARNINGS */}
           <div
             style={{
               display: "flex",
@@ -216,7 +216,7 @@ function Home() {
             </div>
           </div>
 
-          {/* TASK BOXES */}
+          {/* TASKS */}
           <div
             style={{
               display: "grid",
@@ -382,12 +382,13 @@ function Home() {
                 style={{
                   color: "#9ca3af",
                   lineHeight: "32px",
-                  fontSize: "17px",
+                  fontSize: "15px",
                 }}
               >
                 Complete social media
-                tasks and withdraw via
-                Binance or UPI.
+                tasks and withdraw
+                instantly using Binance
+                or UPI.
               </p>
             </div>
 
@@ -396,7 +397,7 @@ function Home() {
               <h2
                 style={{
                   marginBottom: "18px",
-                  fontSize: "22px",
+                  fontSize: "20px",
                 }}
               >
                 Platform
@@ -436,7 +437,7 @@ function Home() {
               <h2
                 style={{
                   marginBottom: "18px",
-                  fontSize: "22px",
+                  fontSize: "20px",
                 }}
               >
                 Legal
@@ -484,7 +485,7 @@ function Home() {
               <h2
                 style={{
                   marginBottom: "18px",
-                  fontSize: "22px",
+                  fontSize: "20px",
                 }}
               >
                 Community
@@ -498,25 +499,12 @@ function Home() {
                 }}
               >
                 <a
-                  href="https://discord.gg/"
+                  href="https://discord.gg/CGtfreSMP"
                   target="_blank"
+                  rel="noreferrer"
                   style={footerLink}
                 >
-                  Discord
-                </a>
-
-                <a
-                  href="#"
-                  style={footerLink}
-                >
-                  Telegram
-                </a>
-
-                <a
-                  href="#"
-                  style={footerLink}
-                >
-                  Instagram
+                  Discord Server
                 </a>
               </div>
             </div>
@@ -531,7 +519,7 @@ function Home() {
               paddingTop: "25px",
               textAlign: "center",
               color: "#6b7280",
-              fontSize: "15px",
+              fontSize: "14px",
             }}
           >
             © 2026 TaskWave.
@@ -585,7 +573,7 @@ const payCard = {
 const footerLink = {
   color: "#9ca3af",
   textDecoration: "none",
-  fontSize: "17px",
+  fontSize: "15px",
 };
 
 export default Home;
