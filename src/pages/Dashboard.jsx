@@ -38,18 +38,15 @@ function Dashboard() {
           }}
         >
 
-          {/* TOP BAR */}
+          {/* TASKWAVE */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "18px",
-              marginBottom: "18px",
-              minHeight: "52px",
+              marginBottom: "14px",
             }}
           >
 
-            {/* TASKWAVE */}
             <h1
               style={{
                 fontSize: "34px",
@@ -79,25 +76,27 @@ function Dashboard() {
 
           </div>
 
-          {/* DASHBOARD TITLE */}
+          {/* DASHBOARD */}
           <h1
             style={{
-              fontSize: "42px",
-              fontWeight: "800",
-              letterSpacing: "-1px",
+              fontSize: "46px",
+              fontWeight: "900",
+              letterSpacing: "-2px",
               marginBottom: "12px",
+              textAlign: "left",
             }}
           >
             Dashboard
           </h1>
 
-          {/* DESCRIPTION */}
+          {/* DETAILS */}
           <p
             style={{
               color: "#9ca3af",
               fontSize: "15px",
-              lineHeight: "28px",
-              maxWidth: "500px",
+              lineHeight: "29px",
+              textAlign: "left",
+              maxWidth: "340px",
             }}
           >
             Manage tasks, earnings and
@@ -176,7 +175,7 @@ function Dashboard() {
             $0.00
           </h1>
 
-          {/* TEXT */}
+          {/* DETAILS */}
           <p
             style={{
               fontSize: "14px",
@@ -214,7 +213,7 @@ function Dashboard() {
           }}
         >
 
-          {/* TASK CARD */}
+          {/* TASKS */}
           <div
             style={cardStyle}
           >
@@ -243,7 +242,7 @@ function Dashboard() {
 
           </div>
 
-          {/* WITHDRAW CARD */}
+          {/* WITHDRAWABLE */}
           <div
             style={cardStyle}
           >
@@ -272,7 +271,7 @@ function Dashboard() {
 
           </div>
 
-          {/* HISTORY CARD */}
+          {/* HISTORY */}
           <div
             style={cardStyle}
           >
