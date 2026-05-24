@@ -1,165 +1,298 @@
-import { Link } from "react-router-dom";
-
-import { useEffect, useState } from "react";
+// src/components/Sidebar.jsx
 
 import {
-  collection,
-  getDocs
-} from "firebase/firestore";
+  Link,
+  useLocation,
+  useNavigate
+} from "react-router-dom";
 
 import {
-  auth,
-  db
-} from "../firebase";
+  signOut
+} from "firebase/auth";
 
-import { FiMenu, FiX } from "react-icons/fi";
+import { auth } from "../firebase";
 
 function Sidebar() {
 
-  const [open, setOpen] = useState(false);
+  const location =
+    useLocation();
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const navigate =
+    useNavigate();
 
-  useEffect(() => {
+  const handleLogout =
+    async () => {
 
-    checkAdmin();
+      try {
 
-  }, []);
+        await signOut(auth);
 
-  const checkAdmin = async () => {
+        navigate("/login");
 
-    try {
+      } catch (error) {
 
-      const snapshot = await getDocs(
-        collection(db, "admins")
-      );
+        console.log(error);
 
-      const admins = snapshot.docs.map(
-        (doc) => doc.data().email
-      );
+        alert("Logout Failed");
 
-      if (
-        admins.includes(auth.currentUser?.email)
-      ) {
-        setIsAdmin(true);
       }
+    };
 
-    } catch (error) {
+  const menuItems = [
 
-      console.log(error);
+    {
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: "🏠",
+    },
 
-    }
-  };
+    {
+      name: "Tasks",
+      path: "/tasks",
+      icon: "⚡",
+    },
+
+    {
+      name: "Wallet",
+      path: "/wallet",
+      icon: "💸",
+    },
+
+    {
+      name: "History",
+      path: "/history",
+      icon: "📜",
+    },
+
+    {
+      name: "Admin",
+      path: "/admin",
+      icon: "🛡️",
+    },
+
+  ];
 
   return (
-    <>
 
-      {/* MENU BUTTON */}
-      <button
-        onClick={() => setOpen(true)}
-        style={{
-          position: "fixed",
-          top: "20px",
-          left: "20px",
-          zIndex: 1000,
-          background: "#00d4ff",
-          border: "none",
-          color: "black",
-          padding: "10px",
-          borderRadius: "10px",
-          fontSize: "22px",
-          cursor: "pointer"
-        }}
-      >
-        <FiMenu />
-      </button>
+    <div
+      style={{
+        width: "260px",
+        minHeight: "100vh",
+        background:
+          "linear-gradient(180deg,#0f172a,#050816)",
+        borderRight:
+          "1px solid rgba(255,255,255,0.06)",
+        padding: "26px 18px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent:
+          "space-between",
+        position: "fixed",
+        left: 0,
+        top: 0,
+        overflow: "hidden",
+        zIndex: 999,
+        backdropFilter: "blur(16px)",
+      }}
+    >
 
-      {/* SIDEBAR */}
+      {/* PURPLE GLOW */}
       <div
         style={{
-          position: "fixed",
-          top: 0,
-          left: open ? "0" : "-260px",
+          position: "absolute",
           width: "240px",
-          height: "100vh",
-          background: "#081028",
-          color: "white",
-          padding: "30px 20px",
-          transition: "0.3s",
-          zIndex: 999
+          height: "240px",
+          background:
+            "rgba(139,92,246,0.16)",
+          borderRadius: "50%",
+          top: "-80px",
+          left: "-80px",
+          filter: "blur(60px)",
+        }}
+      />
+
+      {/* TOP */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 5,
         }}
       >
 
-        {/* CLOSE BUTTON */}
-        <button
-          onClick={() => setOpen(false)}
+        {/* LOGO */}
+        <h1
           style={{
-            background: "none",
-            border: "none",
-            color: "white",
-            fontSize: "28px",
-            cursor: "pointer",
-            marginBottom: "30px"
+            fontSize: "38px",
+            fontWeight: "900",
+            marginBottom: "45px",
+            letterSpacing: "-1px",
           }}
         >
-          <FiX />
-        </button>
 
-        <h2 style={{ marginBottom: "40px" }}>
-          TaskWave
-        </h2>
+          <span style={{ color: "white" }}>
+            Task
+          </span>
 
-        <nav
+          <span
+            style={{
+              color: "#8b5cf6",
+              textShadow:
+                "0 0 20px rgba(139,92,246,0.8)",
+            }}
+          >
+            Wave
+          </span>
+
+        </h1>
+
+        {/* MENU */}
+        <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "25px"
+            gap: "14px",
           }}
         >
 
-          <Link to="/dashboard" style={linkStyle}>
-            Dashboard
-          </Link>
-
-          <Link to="/tasks" style={linkStyle}>
-            Tasks
-          </Link>
-
-          <Link to="/wallet" style={linkStyle}>
-            Wallet
-          </Link>
-
-          <Link to="/history" style={linkStyle}>
-            History
-          </Link>
-
-          {/* SHOW ONLY FOR ADMINS */}
-          {isAdmin && (
+          {menuItems.map((item) => (
 
             <Link
-              to="/admin"
-              style={linkStyle}
+              key={item.name}
+              to={item.path}
+              style={{
+                textDecoration: "none",
+              }}
             >
-              Admin
+
+              <div
+                style={{
+                  padding: "16px 18px",
+                  borderRadius: "18px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "14px",
+                  fontSize: "15px",
+                  fontWeight: "600",
+                  transition: "0.3s",
+
+                  background:
+                    location.pathname ===
+                    item.path
+
+                      ? "linear-gradient(135deg,#8b5cf6,#7c3aed)"
+
+                      : "rgba(255,255,255,0.03)",
+
+                  color:
+                    location.pathname ===
+                    item.path
+
+                      ? "white"
+
+                      : "#d1d5db",
+
+                  border:
+                    location.pathname ===
+                    item.path
+
+                      ? "1px solid rgba(139,92,246,0.4)"
+
+                      : "1px solid rgba(255,255,255,0.04)",
+
+                  boxShadow:
+                    location.pathname ===
+                    item.path
+
+                      ? "0 0 30px rgba(139,92,246,0.25)"
+
+                      : "none",
+                }}
+              >
+
+                <span
+                  style={{
+                    fontSize: "18px",
+                  }}
+                >
+                  {item.icon}
+                </span>
+
+                {item.name}
+
+              </div>
+
             </Link>
 
-          )}
+          ))}
 
-        </nav>
+        </div>
 
       </div>
 
-    </>
+      {/* BOTTOM */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 5,
+        }}
+      >
+
+        {/* DISCORD */}
+        <a
+          href="https://discord.gg/CGtfreSMP"
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            textDecoration: "none",
+          }}
+        >
+
+          <div
+            style={{
+              padding: "16px",
+              borderRadius: "18px",
+              background:
+                "rgba(139,92,246,0.08)",
+              border:
+                "1px solid rgba(139,92,246,0.16)",
+              color: "#c4b5fd",
+              fontWeight: "600",
+              marginBottom: "16px",
+              textAlign: "center",
+              boxShadow:
+                "0 0 25px rgba(139,92,246,0.12)",
+            }}
+          >
+            💬 Join Discord
+          </div>
+
+        </a>
+
+        {/* LOGOUT */}
+        <button
+          onClick={handleLogout}
+          style={{
+            width: "100%",
+            padding: "17px",
+            border: "none",
+            borderRadius: "18px",
+            background:
+              "linear-gradient(135deg,#ef4444,#dc2626)",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: "15px",
+            cursor: "pointer",
+            boxShadow:
+              "0 0 30px rgba(239,68,68,0.25)",
+          }}
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </div>
   );
 }
-
-const linkStyle = {
-
-  color: "white",
-
-  textDecoration: "none",
-
-  fontSize: "22px"
-};
 
 export default Sidebar;
