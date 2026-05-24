@@ -10,302 +10,211 @@ function Dashboard() {
       style={{
         minHeight: "100vh",
         background:
-          "linear-gradient(180deg,#050816,#0f172a)",
+          "radial-gradient(circle at top,#111827,#050816)",
         color: "white",
         fontFamily: "Inter, sans-serif",
+
+        /* FINAL FIXED SPACING */
+        paddingTop: "95px",
+        paddingLeft: "24px",
+        paddingRight: "24px",
+        paddingBottom: "40px",
       }}
     >
 
-      {/* SIDEBAR */}
       <Sidebar />
 
-      {/* MAIN */}
+      {/* HEADER */}
       <div
         style={{
-          paddingTop: "24px",
-          paddingLeft: "78px",
-          paddingRight: "18px",
-          paddingBottom: "40px",
+          marginBottom: "32px",
         }}
       >
 
-        {/* HEADER */}
-        <div
+        <h1
           style={{
-            marginBottom: "34px",
+            fontSize: "64px",
+            fontWeight: "900",
+            letterSpacing: "-3px",
+            lineHeight: "1",
+            marginBottom: "18px",
           }}
         >
+          Dashboard
+        </h1>
 
-          {/* TOP */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              height: "48px",
-              marginBottom: "18px",
-            }}
-          >
+        <p
+          style={{
+            fontSize: "17px",
+            color: "#9ca3af",
+            lineHeight: "38px",
+            maxWidth: "700px",
+          }}
+        >
+          Manage tasks, earnings and
+          withdrawals through your
+          premium TaskWave account.
+        </p>
 
-            {/* TASKWAVE */}
-            <h1
-              style={{
-                fontSize: "34px",
-                fontWeight: "900",
-                letterSpacing: "-1px",
-              }}
-            >
+      </div>
 
-              <span
-                style={{
-                  color: "white",
-                }}
-              >
-                Task
-              </span>
+      {/* BALANCE CARD */}
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg,#8b5cf6,#7c3aed)",
 
-              <span
-                style={{
-                  color: "#8b5cf6",
-                }}
-              >
-                Wave
-              </span>
+          borderRadius: "38px",
 
-            </h1>
+          padding: "34px",
 
-          </div>
+          marginBottom: "26px",
 
-          {/* DASHBOARD */}
-          <h1
-            style={{
-              fontSize: "42px",
-              fontWeight: "900",
-              letterSpacing: "-2px",
-              marginBottom: "12px",
-            }}
-          >
-            Dashboard
-          </h1>
+          boxShadow:
+            "0 0 50px rgba(139,92,246,0.28)",
 
-          {/* DETAILS */}
+          position: "relative",
+
+          overflow: "hidden",
+        }}
+      >
+
+        {/* SMALL CHIP */}
+        <div
+          style={{
+            position: "absolute",
+            top: "28px",
+            right: "28px",
+
+            background:
+              "rgba(255,255,255,0.14)",
+
+            padding:
+              "12px 18px",
+
+            borderRadius:
+              "18px",
+
+            fontSize: "14px",
+
+            fontWeight: "600",
+          }}
+        >
+          Today
+        </div>
+
+        <p
+          style={{
+            fontSize: "15px",
+            opacity: 0.82,
+            marginBottom: "26px",
+          }}
+        >
+          Current Balance
+        </p>
+
+        <h2
+          style={{
+            fontSize: "78px",
+            fontWeight: "900",
+            marginBottom: "28px",
+            letterSpacing: "-3px",
+          }}
+        >
+          $0.00
+        </h2>
+
+        <p
+          style={{
+            fontSize: "17px",
+            opacity: 0.9,
+            lineHeight: "38px",
+            maxWidth: "520px",
+          }}
+        >
+          Withdraw earnings instantly
+          through Binance and UPI.
+        </p>
+
+      </div>
+
+      {/* TASK CARD */}
+      <div
+        style={{
+          background:
+            "rgba(255,255,255,0.03)",
+
+          border:
+            "1px solid rgba(255,255,255,0.05)",
+
+          borderRadius: "34px",
+
+          padding: "30px",
+
+          display: "flex",
+
+          justifyContent:
+            "space-between",
+
+          alignItems: "center",
+
+          backdropFilter:
+            "blur(18px)",
+        }}
+      >
+
+        <div>
+
           <p
             style={{
               color: "#9ca3af",
               fontSize: "15px",
-              lineHeight: "28px",
-              maxWidth: "320px",
+              marginBottom: "18px",
             }}
           >
-            Manage tasks, earnings and
-            withdrawals through your
-            premium TaskWave account.
+            Available Tasks
           </p>
 
-        </div>
-
-        {/* BALANCE CARD */}
-        <div
-          style={{
-            background:
-              "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-            borderRadius: "28px",
-
-            padding: "28px",
-
-            marginBottom: "26px",
-
-            boxShadow:
-              "0 0 45px rgba(139,92,246,0.22)",
-
-            position: "relative",
-
-            overflow: "hidden",
-          }}
-        >
-
-          {/* TOP */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent:
-                "space-between",
-
-              alignItems: "center",
-
-              marginBottom: "20px",
-            }}
-          >
-
-            <p
-              style={{
-                opacity: 0.8,
-                fontSize: "14px",
-              }}
-            >
-              Current Balance
-            </p>
-
-            <div
-              style={{
-                background:
-                  "rgba(255,255,255,0.14)",
-
-                padding:
-                  "8px 14px",
-
-                borderRadius:
-                  "999px",
-
-                fontSize: "12px",
-              }}
-            >
-              Today
-            </div>
-
-          </div>
-
-          {/* BALANCE */}
-          <h1
+          <h2
             style={{
               fontSize: "52px",
               fontWeight: "900",
-              marginBottom: "14px",
               letterSpacing: "-2px",
             }}
           >
-            $0.00
-          </h1>
-
-          {/* TEXT */}
-          <p
-            style={{
-              fontSize: "14px",
-              opacity: 0.9,
-              lineHeight: "26px",
-              maxWidth: "240px",
-            }}
-          >
-            Withdraw earnings instantly
-            through Binance and UPI.
-          </p>
-
-          {/* GLOW */}
-          <div
-            style={{
-              position: "absolute",
-              width: "180px",
-              height: "180px",
-              background:
-                "rgba(255,255,255,0.10)",
-
-              borderRadius: "50%",
-
-              right: "-60px",
-
-              bottom: "-60px",
-
-              filter: "blur(10px)",
-            }}
-          />
+            0 Tasks
+          </h2>
 
         </div>
 
-        {/* SMALL CARDS */}
+        {/* ICON */}
         <div
           style={{
-            display: "grid",
-            gap: "18px",
+            width: "110px",
+            height: "110px",
+
+            borderRadius: "30px",
+
+            background:
+              "rgba(139,92,246,0.12)",
+
+            border:
+              "1px solid rgba(139,92,246,0.18)",
+
+            display: "flex",
+
+            alignItems: "center",
+
+            justifyContent:
+              "center",
+
+            fontSize: "48px",
+
+            boxShadow:
+              "0 0 35px rgba(139,92,246,0.16)",
           }}
         >
-
-          {/* TASKS */}
-          <div
-            style={cardStyle}
-          >
-
-            <div>
-
-              <p
-                style={smallTitle}
-              >
-                Available Tasks
-              </p>
-
-              <h2
-                style={bigText}
-              >
-                0 Tasks
-              </h2>
-
-            </div>
-
-            <div
-              style={iconStyle}
-            >
-              ⚡
-            </div>
-
-          </div>
-
-          {/* WITHDRAWABLE */}
-          <div
-            style={cardStyle}
-          >
-
-            <div>
-
-              <p
-                style={smallTitle}
-              >
-                Withdrawable
-              </p>
-
-              <h2
-                style={bigText}
-              >
-                $0.00
-              </h2>
-
-            </div>
-
-            <div
-              style={iconStyle}
-            >
-              💸
-            </div>
-
-          </div>
-
-          {/* HISTORY */}
-          <div
-            style={cardStyle}
-          >
-
-            <div>
-
-              <p
-                style={smallTitle}
-              >
-                Completed Tasks
-              </p>
-
-              <h2
-                style={bigText}
-              >
-                0 Done
-              </h2>
-
-            </div>
-
-            <div
-              style={iconStyle}
-            >
-              ✓
-            </div>
-
-          </div>
-
+          ⚡
         </div>
 
       </div>
@@ -313,53 +222,5 @@ function Dashboard() {
     </div>
   );
 }
-
-const cardStyle = {
-
-  background:
-    "rgba(255,255,255,0.03)",
-
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-
-  padding: "22px",
-
-  borderRadius: "24px",
-
-  display: "flex",
-
-  justifyContent:
-    "space-between",
-
-  alignItems: "center",
-
-  backdropFilter:
-    "blur(14px)",
-};
-
-const smallTitle = {
-  color: "#9ca3af",
-  fontSize: "13px",
-  marginBottom: "10px",
-};
-
-const bigText = {
-  fontSize: "28px",
-  fontWeight: "800",
-};
-
-const iconStyle = {
-  width: "54px",
-  height: "54px",
-  borderRadius: "18px",
-  background:
-    "rgba(139,92,246,0.12)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: "22px",
-  border:
-    "1px solid rgba(139,92,246,0.14)",
-};
 
 export default Dashboard;
