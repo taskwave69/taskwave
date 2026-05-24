@@ -12,14 +12,25 @@ import {
 } from "firebase/auth";
 
 import {
+  doc,
+  setDoc
+} from "firebase/firestore";
+
+import {
   useState
 } from "react";
 
-import { auth } from "../firebase";
+import {
+  auth,
+  db
+} from "../firebase";
 
 function Signup() {
 
   const navigate = useNavigate();
+
+  const [username, setUsername] =
+    useState("");
 
   const [email, setEmail] =
     useState("");
@@ -33,10 +44,27 @@ function Signup() {
 
       try {
 
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
+        const userCredential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+        const user =
+          userCredential.user;
+
+        // SAVE USER DATA
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            username,
+            email,
+            uid: user.uid,
+            balance: 0,
+            createdAt:
+              new Date(),
+          }
         );
 
         navigate("/dashboard");
@@ -59,9 +87,26 @@ function Signup() {
         const provider =
           new GoogleAuthProvider();
 
-        await signInWithPopup(
-          auth,
-          provider
+        const result =
+          await signInWithPopup(
+            auth,
+            provider
+          );
+
+        const user =
+          result.user;
+
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            username:
+              user.displayName,
+            email: user.email,
+            uid: user.uid,
+            balance: 0,
+            createdAt:
+              new Date(),
+          }
         );
 
         navigate("/dashboard");
@@ -107,21 +152,6 @@ function Signup() {
         }}
       />
 
-      {/* SECOND GLOW */}
-      <div
-        style={{
-          position: "absolute",
-          width: "250px",
-          height: "250px",
-          background:
-            "rgba(139,92,246,0.12)",
-          borderRadius: "50%",
-          bottom: "-80px",
-          left: "-80px",
-          filter: "blur(80px)",
-        }}
-      />
-
       {/* CARD */}
       <div
         style={{
@@ -159,7 +189,7 @@ function Signup() {
           </span>
         </h1>
 
-        {/* SUBTEXT */}
+        {/* TEXT */}
         <p
           style={{
             textAlign: "center",
@@ -170,9 +200,22 @@ function Signup() {
           }}
         >
           Create your account and start
-          earning through premium
-          social tasks.
+          earning with premium social
+          tasks.
         </p>
+
+        {/* USERNAME */}
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) =>
+            setUsername(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
 
         {/* EMAIL */}
         <input
@@ -229,7 +272,7 @@ function Signup() {
           <div style={line} />
         </div>
 
-        {/* GOOGLE SIGNUP */}
+        {/* GOOGLE */}
         <button
           onClick={handleGoogleSignup}
           style={googleButton}
@@ -251,36 +294,13 @@ function Signup() {
 
         </button>
 
-        {/* FEATURES */}
-        <div
-          style={{
-            display: "grid",
-            gap: "14px",
-            marginTop: "30px",
-            marginBottom: "30px",
-          }}
-        >
-
-          <div style={featureCard}>
-            ⚡ Instant access to tasks
-          </div>
-
-          <div style={featureCard}>
-            💸 Binance & UPI withdrawals
-          </div>
-
-          <div style={featureCard}>
-            🔒 Secure account protection
-          </div>
-
-        </div>
-
         {/* LOGIN */}
         <p
           style={{
             textAlign: "center",
             color: "#9ca3af",
             fontSize: "14px",
+            marginTop: "28px",
           }}
         >
           Already have an account?{" "}
@@ -357,17 +377,6 @@ const line = {
   height: "1px",
   background:
     "rgba(255,255,255,0.08)",
-};
-
-const featureCard = {
-  background:
-    "rgba(255,255,255,0.03)",
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-  padding: "16px",
-  borderRadius: "16px",
-  color: "#d1d5db",
-  fontSize: "14px",
 };
 
 export default Signup;
