@@ -81,38 +81,88 @@ function Sidebar() {
 
     <>
 
-      {/* MOBILE MENU BUTTON */}
+      {/* PREMIUM MENU BUTTON */}
       <button
         onClick={() =>
           setOpen(true)
         }
         style={{
           position: "fixed",
-          top: "18px",
-          left: "18px",
+          top: "20px",
+          left: "20px",
           zIndex: 2000,
-          width: "48px",
-          height: "48px",
-          borderRadius: "16px",
+
+          width: "46px",
+          height: "46px",
+
+          borderRadius: "14px",
+
           border:
-            "1px solid rgba(255,255,255,0.08)",
+            "1px solid rgba(255,255,255,0.06)",
+
           background:
-            "rgba(15,23,42,0.92)",
+            "rgba(15,23,42,0.82)",
+
           backdropFilter:
-            "blur(12px)",
-          color: "white",
-          fontSize: "22px",
+            "blur(14px)",
+
+          boxShadow:
+            "0 0 30px rgba(139,92,246,0.12)",
+
           cursor: "pointer",
+
           display: open
             ? "none"
             : "flex",
+
           alignItems: "center",
           justifyContent: "center",
-          boxShadow:
-            "0 0 30px rgba(139,92,246,0.15)",
+
+          padding: 0,
         }}
       >
-        ☰
+
+        {/* LINES */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "5px",
+          }}
+        >
+
+          <div
+            style={{
+              width: "18px",
+              height: "2px",
+              borderRadius: "20px",
+              background:
+                "linear-gradient(90deg,#ffffff,#8b5cf6)",
+            }}
+          />
+
+          <div
+            style={{
+              width: "14px",
+              height: "2px",
+              borderRadius: "20px",
+              background:
+                "linear-gradient(90deg,#ffffff,#8b5cf6)",
+            }}
+          />
+
+          <div
+            style={{
+              width: "18px",
+              height: "2px",
+              borderRadius: "20px",
+              background:
+                "linear-gradient(90deg,#ffffff,#8b5cf6)",
+            }}
+          />
+
+        </div>
+
       </button>
 
       {/* OVERLAY */}
@@ -142,23 +192,35 @@ function Sidebar() {
           minHeight: "100vh",
           background:
             "rgba(8,15,32,0.98)",
+
           backdropFilter:
             "blur(18px)",
+
           borderRight:
             "1px solid rgba(255,255,255,0.05)",
+
           padding: "22px 16px",
+
           position: "fixed",
+
           left: open
             ? "0"
             : "-270px",
+
           top: 0,
+
           zIndex: 1600,
+
           display: "flex",
+
           flexDirection: "column",
+
           justifyContent:
             "space-between",
+
           fontFamily:
             "Inter, sans-serif",
+
           transition:
             "0.35s ease",
         }}
@@ -171,9 +233,12 @@ function Sidebar() {
           <div
             style={{
               display: "flex",
+
               justifyContent:
                 "space-between",
+
               alignItems: "center",
+
               marginBottom: "34px",
             }}
           >
@@ -221,7 +286,7 @@ function Sidebar() {
 
             </div>
 
-            {/* CLOSE BUTTON */}
+            {/* CLOSE */}
             <button
               onClick={() =>
                 setOpen(false)
@@ -229,13 +294,20 @@ function Sidebar() {
               style={{
                 width: "38px",
                 height: "38px",
-                borderRadius: "12px",
+
+                borderRadius:
+                  "12px",
+
                 border:
                   "1px solid rgba(255,255,255,0.08)",
+
                 background:
                   "rgba(255,255,255,0.04)",
+
                 color: "white",
-                fontSize: "18px",
+
+                fontSize: "16px",
+
                 cursor: "pointer",
               }}
             >
@@ -249,9 +321,13 @@ function Sidebar() {
             style={{
               background:
                 "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
               padding: "18px",
+
               borderRadius: "20px",
+
               marginBottom: "28px",
+
               boxShadow:
                 "0 0 30px rgba(139,92,246,0.22)",
             }}
@@ -308,9 +384,12 @@ function Sidebar() {
                       display: "flex",
                       alignItems:
                         "center",
+
                       gap: "14px",
+
                       padding:
                         "14px 16px",
+
                       borderRadius:
                         "16px",
 
@@ -353,6 +432,7 @@ function Sidebar() {
                       style={{
                         fontSize:
                           "14px",
+
                         fontWeight:
                           "500",
                       }}
@@ -374,17 +454,26 @@ function Sidebar() {
               }
               style={{
                 marginTop: "8px",
+
                 width: "100%",
+
                 padding: "14px",
+
                 borderRadius:
                   "16px",
+
                 border:
                   "1px solid rgba(239,68,68,0.18)",
+
                 background:
                   "rgba(239,68,68,0.08)",
+
                 color: "#f87171",
+
                 fontSize: "14px",
+
                 fontWeight: "600",
+
                 cursor: "pointer",
               }}
             >
@@ -411,15 +500,22 @@ function Sidebar() {
             <div
               style={{
                 padding: "14px",
+
                 borderRadius:
                   "16px",
+
                 background:
                   "rgba(139,92,246,0.08)",
+
                 border:
                   "1px solid rgba(139,92,246,0.16)",
+
                 textAlign: "center",
+
                 color: "#c4b5fd",
+
                 fontSize: "13px",
+
                 fontWeight: "600",
               }}
             >
