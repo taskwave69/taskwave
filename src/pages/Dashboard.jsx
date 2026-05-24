@@ -107,70 +107,6 @@ function Dashboard() {
 
         </div>
 
-        {/* STATUS CARD */}
-        <div
-          style={{
-            background:
-              "rgba(139,92,246,0.10)",
-
-            border:
-              "1px solid rgba(139,92,246,0.18)",
-
-            padding: "18px",
-
-            borderRadius: "18px",
-
-            display: "flex",
-
-            justifyContent:
-              "space-between",
-
-            alignItems: "center",
-
-            marginBottom: "28px",
-
-            backdropFilter:
-              "blur(14px)",
-          }}
-        >
-
-          <div>
-
-            <p
-              style={{
-                color: "#c4b5fd",
-                fontSize: "14px",
-                fontWeight: "600",
-                marginBottom: "6px",
-              }}
-            >
-              Ready to Accept Tasks
-            </p>
-
-            <p
-              style={{
-                color: "#9ca3af",
-                fontSize: "13px",
-              }}
-            >
-              New premium tasks available
-            </p>
-
-          </div>
-
-          <div
-            style={{
-              width: "14px",
-              height: "14px",
-              borderRadius: "50%",
-              background: "#8b5cf6",
-              boxShadow:
-                "0 0 20px #8b5cf6",
-            }}
-          />
-
-        </div>
-
         {/* BALANCE CARD */}
         <div
           style={{
@@ -185,9 +121,14 @@ function Dashboard() {
 
             boxShadow:
               "0 0 45px rgba(139,92,246,0.22)",
+
+            position: "relative",
+
+            overflow: "hidden",
           }}
         >
 
+          {/* TOP */}
           <div
             style={{
               display: "flex",
@@ -223,6 +164,7 @@ function Dashboard() {
 
           </div>
 
+          {/* BALANCE */}
           <h1
             style={{
               fontSize: "52px",
@@ -234,16 +176,33 @@ function Dashboard() {
             $0.00
           </h1>
 
+          {/* TEXT */}
           <p
             style={{
               fontSize: "14px",
               opacity: 0.9,
               lineHeight: "26px",
+              maxWidth: "240px",
             }}
           >
             Withdraw earnings instantly
             through Binance and UPI.
           </p>
+
+          {/* GLOW */}
+          <div
+            style={{
+              position: "absolute",
+              width: "180px",
+              height: "180px",
+              background:
+                "rgba(255,255,255,0.10)",
+              borderRadius: "50%",
+              right: "-60px",
+              bottom: "-60px",
+              filter: "blur(10px)",
+            }}
+          />
 
         </div>
 
