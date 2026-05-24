@@ -33,8 +33,6 @@ function Sidebar() {
 
         console.log(error);
 
-        alert("Logout Failed");
-
       }
     };
 
@@ -43,31 +41,31 @@ function Sidebar() {
     {
       name: "Dashboard",
       path: "/dashboard",
-      icon: "🏠",
+      icon: "⌂",
     },
 
     {
       name: "Tasks",
       path: "/tasks",
-      icon: "⚡",
+      icon: "◉",
     },
 
     {
       name: "Wallet",
       path: "/wallet",
-      icon: "💸",
+      icon: "◈",
     },
 
     {
       name: "History",
       path: "/history",
-      icon: "📜",
+      icon: "◎",
     },
 
     {
       name: "Admin",
       path: "/admin",
-      icon: "🛡️",
+      icon: "◌",
     },
 
   ];
@@ -76,81 +74,116 @@ function Sidebar() {
 
     <div
       style={{
-        width: "260px",
+        width: "245px",
         minHeight: "100vh",
         background:
-          "linear-gradient(180deg,#0f172a,#050816)",
+          "rgba(8,15,32,0.96)",
+        backdropFilter:
+          "blur(18px)",
         borderRight:
-          "1px solid rgba(255,255,255,0.06)",
-        padding: "26px 18px",
+          "1px solid rgba(255,255,255,0.05)",
+        padding: "22px 16px",
+        position: "fixed",
+        left: 0,
+        top: 0,
+        zIndex: 999,
         display: "flex",
         flexDirection: "column",
         justifyContent:
           "space-between",
-        position: "fixed",
-        left: 0,
-        top: 0,
-        overflow: "hidden",
-        zIndex: 999,
-        backdropFilter: "blur(16px)",
+        fontFamily:
+          "Inter, sans-serif",
       }}
     >
 
-      {/* PURPLE GLOW */}
-      <div
-        style={{
-          position: "absolute",
-          width: "240px",
-          height: "240px",
-          background:
-            "rgba(139,92,246,0.16)",
-          borderRadius: "50%",
-          top: "-80px",
-          left: "-80px",
-          filter: "blur(60px)",
-        }}
-      />
-
       {/* TOP */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 5,
-        }}
-      >
+      <div>
 
         {/* LOGO */}
-        <h1
+        <div
           style={{
-            fontSize: "38px",
-            fontWeight: "900",
-            marginBottom: "45px",
-            letterSpacing: "-1px",
+            marginBottom: "38px",
           }}
         >
 
-          <span style={{ color: "white" }}>
-            Task
-          </span>
-
-          <span
+          <h1
             style={{
-              color: "#8b5cf6",
-              textShadow:
-                "0 0 20px rgba(139,92,246,0.8)",
+              fontSize: "30px",
+              fontWeight: "800",
+              letterSpacing: "-1px",
             }}
           >
-            Wave
-          </span>
 
-        </h1>
+            <span
+              style={{
+                color: "white",
+              }}
+            >
+              Task
+            </span>
+
+            <span
+              style={{
+                color: "#8b5cf6",
+              }}
+            >
+              Wave
+            </span>
+
+          </h1>
+
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "12px",
+              marginTop: "-5px",
+            }}
+          >
+            Premium earning platform
+          </p>
+
+        </div>
+
+        {/* BALANCE CARD */}
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+            padding: "18px",
+            borderRadius: "20px",
+            marginBottom: "28px",
+            boxShadow:
+              "0 0 30px rgba(139,92,246,0.22)",
+          }}
+        >
+
+          <p
+            style={{
+              fontSize: "12px",
+              opacity: 0.8,
+              marginBottom: "8px",
+            }}
+          >
+            Balance
+          </p>
+
+          <h2
+            style={{
+              fontSize: "28px",
+              fontWeight: "800",
+            }}
+          >
+            $0.00
+          </h2>
+
+        </div>
 
         {/* MENU */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "14px",
+            gap: "10px",
           }}
         >
 
@@ -160,64 +193,65 @@ function Sidebar() {
               key={item.name}
               to={item.path}
               style={{
-                textDecoration: "none",
+                textDecoration:
+                  "none",
               }}
             >
 
               <div
                 style={{
-                  padding: "16px 18px",
-                  borderRadius: "18px",
                   display: "flex",
                   alignItems: "center",
                   gap: "14px",
-                  fontSize: "15px",
-                  fontWeight: "600",
-                  transition: "0.3s",
+                  padding:
+                    "14px 16px",
+                  borderRadius:
+                    "16px",
+                  transition:
+                    "0.25s ease",
 
                   background:
                     location.pathname ===
                     item.path
 
-                      ? "linear-gradient(135deg,#8b5cf6,#7c3aed)"
+                      ? "rgba(139,92,246,0.14)"
 
-                      : "rgba(255,255,255,0.03)",
-
-                  color:
-                    location.pathname ===
-                    item.path
-
-                      ? "white"
-
-                      : "#d1d5db",
+                      : "transparent",
 
                   border:
                     location.pathname ===
                     item.path
 
-                      ? "1px solid rgba(139,92,246,0.4)"
+                      ? "1px solid rgba(139,92,246,0.22)"
 
-                      : "1px solid rgba(255,255,255,0.04)",
+                      : "1px solid transparent",
 
-                  boxShadow:
+                  color:
                     location.pathname ===
                     item.path
 
-                      ? "0 0 30px rgba(139,92,246,0.25)"
+                      ? "#ffffff"
 
-                      : "none",
+                      : "#9ca3af",
                 }}
               >
 
                 <span
                   style={{
-                    fontSize: "18px",
+                    fontSize: "15px",
                   }}
                 >
                   {item.icon}
                 </span>
 
-                {item.name}
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "500",
+                  }}
+                >
+                  {item.name}
+                </span>
 
               </div>
 
@@ -225,17 +259,34 @@ function Sidebar() {
 
           ))}
 
+          {/* LOGOUT BUTTON */}
+          <button
+            onClick={handleLogout}
+            style={{
+              marginTop: "8px",
+              width: "100%",
+              padding: "14px",
+              borderRadius: "16px",
+              border:
+                "1px solid rgba(239,68,68,0.18)",
+              background:
+                "rgba(239,68,68,0.08)",
+              color: "#f87171",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "0.25s",
+            }}
+          >
+            Logout
+          </button>
+
         </div>
 
       </div>
 
       {/* BOTTOM */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 5,
-        }}
-      >
+      <div>
 
         {/* DISCORD */}
         <a
@@ -243,51 +294,29 @@ function Sidebar() {
           target="_blank"
           rel="noreferrer"
           style={{
-            textDecoration: "none",
+            textDecoration:
+              "none",
           }}
         >
 
           <div
             style={{
-              padding: "16px",
-              borderRadius: "18px",
+              padding: "14px",
+              borderRadius: "16px",
               background:
                 "rgba(139,92,246,0.08)",
               border:
                 "1px solid rgba(139,92,246,0.16)",
-              color: "#c4b5fd",
-              fontWeight: "600",
-              marginBottom: "16px",
               textAlign: "center",
-              boxShadow:
-                "0 0 25px rgba(139,92,246,0.12)",
+              color: "#c4b5fd",
+              fontSize: "13px",
+              fontWeight: "600",
             }}
           >
-            💬 Join Discord
+            Join Discord
           </div>
 
         </a>
-
-        {/* LOGOUT */}
-        <button
-          onClick={handleLogout}
-          style={{
-            width: "100%",
-            padding: "17px",
-            border: "none",
-            borderRadius: "18px",
-            background:
-              "linear-gradient(135deg,#ef4444,#dc2626)",
-            color: "white",
-            fontWeight: "bold",
-            fontSize: "15px",
-            cursor: "pointer",
-            boxShadow:
-              "0 0 30px rgba(239,68,68,0.25)",
-          }}
-        >
-          Logout
-        </button>
 
       </div>
 
