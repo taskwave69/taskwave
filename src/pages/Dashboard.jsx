@@ -20,9 +20,9 @@ function Dashboard() {
 
         paddingTop: "95px",
 
-        paddingLeft: "22px",
+        paddingLeft: "20px",
 
-        paddingRight: "22px",
+        paddingRight: "20px",
 
         paddingBottom: "40px",
       }}
@@ -33,19 +33,19 @@ function Dashboard() {
       {/* HEADER */}
       <div
         style={{
-          marginBottom: "24px",
+          marginBottom: "20px",
         }}
       >
 
         <h1
           style={{
-            fontSize: "34px",
+            fontSize: "28px",
 
-            fontWeight: "800",
+            fontWeight: "700",
 
             letterSpacing: "-1px",
 
-            marginBottom: "8px",
+            marginBottom: "6px",
           }}
         >
           Dashboard
@@ -53,194 +53,237 @@ function Dashboard() {
 
         <p
           style={{
-            fontSize: "14px",
-
             color: "#9ca3af",
 
-            lineHeight: "26px",
-
-            maxWidth: "420px",
-          }}
-        >
-          Manage earnings,
-          withdrawals and active
-          social tasks through
-          TaskWave.
-        </p>
-
-      </div>
-
-      {/* BALANCE CARD */}
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-          borderRadius: "24px",
-
-          padding: "22px",
-
-          marginBottom: "18px",
-
-          boxShadow:
-            "0 0 35px rgba(139,92,246,0.20)",
-
-          position: "relative",
-        }}
-      >
-
-        {/* SMALL CHIP */}
-        <div
-          style={{
-            position: "absolute",
-
-            top: "18px",
-
-            right: "18px",
-
-            background:
-              "rgba(255,255,255,0.14)",
-
-            padding:
-              "7px 12px",
-
-            borderRadius:
-              "12px",
-
-            fontSize: "11px",
-
-            fontWeight: "600",
-          }}
-        >
-          Today
-        </div>
-
-        <p
-          style={{
             fontSize: "13px",
 
-            opacity: 0.82,
-
-            marginBottom: "12px",
+            lineHeight: "24px",
           }}
         >
-          Current Balance
-        </p>
-
-        <h2
-          style={{
-            fontSize: "42px",
-
-            fontWeight: "800",
-
-            marginBottom: "12px",
-
-            letterSpacing: "-2px",
-          }}
-        >
-          $0.00
-        </h2>
-
-        <p
-          style={{
-            fontSize: "14px",
-
-            opacity: 0.92,
-
-            lineHeight: "26px",
-
-            maxWidth: "320px",
-          }}
-        >
-          Withdraw instantly
-          through Binance
-          and UPI.
+          Manage tasks and earnings
+          through your TaskWave account.
         </p>
 
       </div>
 
-      {/* TASK CARD */}
+      {/* PROFILE APPROVED */}
       <div
         style={{
           background:
-            "rgba(255,255,255,0.03)",
+            "rgba(139,92,246,0.10)",
 
           border:
-            "1px solid rgba(255,255,255,0.05)",
+            "1px solid rgba(139,92,246,0.22)",
 
-          borderRadius: "22px",
+          borderRadius: "18px",
 
-          padding: "20px",
+          padding: "16px",
 
-          display: "flex",
-
-          justifyContent:
-            "space-between",
-
-          alignItems: "center",
+          marginBottom: "20px",
 
           backdropFilter:
-            "blur(18px)",
+            "blur(14px)",
         }}
       >
 
-        <div>
+        <p
+          style={{
+            color: "#c4b5fd",
 
-          <p
-            style={{
-              color: "#9ca3af",
+            fontSize: "14px",
 
-              fontSize: "13px",
+            fontWeight: "600",
 
-              marginBottom: "10px",
-            }}
-          >
-            Available Tasks
-          </p>
+            marginBottom: "6px",
+          }}
+        >
+          ✓ Profile Approved
+        </p>
 
-          <h2
-            style={{
-              fontSize: "28px",
+        <p
+          style={{
+            color: "#9ca3af",
 
-              fontWeight: "700",
+            fontSize: "13px",
 
-              letterSpacing: "-1px",
-            }}
-          >
-            0 Tasks
-          </h2>
+            lineHeight: "22px",
+          }}
+        >
+          Your account is approved.
+          You can now browse and
+          complete tasks.
+        </p>
+
+      </div>
+
+      {/* CARDS */}
+      <div
+        style={{
+          display: "grid",
+
+          gap: "16px",
+        }}
+      >
+
+        {/* AVAILABLE */}
+        <div style={cardStyle}>
+
+          <div>
+
+            <p style={smallText}>
+              Available Tasks
+            </p>
+
+            <h2 style={numberText}>
+              0
+            </h2>
+
+            <p style={subText}>
+              Tasks you can accept
+            </p>
+
+          </div>
+
+          <div style={iconBox}>
+            ⚡
+          </div>
 
         </div>
 
-        {/* SMALL ICON */}
+        {/* ACTIVE */}
+        <div style={cardStyle}>
+
+          <div>
+
+            <p style={smallText}>
+              Active Tasks
+            </p>
+
+            <h2 style={numberText}>
+              0
+            </h2>
+
+            <p style={subText}>
+              Tasks in progress
+            </p>
+
+          </div>
+
+          <div style={iconBox}>
+            ⏳
+          </div>
+
+        </div>
+
+        {/* COMPLETED */}
+        <div style={cardStyle}>
+
+          <div>
+
+            <p style={smallText}>
+              Completed
+            </p>
+
+            <h2 style={numberText}>
+              0
+            </h2>
+
+            <p style={subText}>
+              Successfully completed
+            </p>
+
+          </div>
+
+          <div style={iconBox}>
+            ✓
+          </div>
+
+        </div>
+
+        {/* BALANCE */}
         <div
           style={{
-            width: "58px",
-
-            height: "58px",
-
-            borderRadius: "18px",
-
             background:
-              "rgba(139,92,246,0.10)",
+              "linear-gradient(135deg,#8b5cf6,#7c3aed)",
 
-            border:
-              "1px solid rgba(139,92,246,0.16)",
+            borderRadius: "22px",
+
+            padding: "22px",
 
             display: "flex",
 
+            justifyContent:
+              "space-between",
+
             alignItems: "center",
 
-            justifyContent:
-              "center",
-
-            fontSize: "22px",
-
             boxShadow:
-              "0 0 18px rgba(139,92,246,0.10)",
+              "0 0 35px rgba(139,92,246,0.18)",
           }}
         >
-          ⚡
+
+          <div>
+
+            <p
+              style={{
+                fontSize: "13px",
+
+                opacity: 0.85,
+
+                marginBottom: "10px",
+              }}
+            >
+              Balance
+            </p>
+
+            <h2
+              style={{
+                fontSize: "34px",
+
+                fontWeight: "700",
+
+                marginBottom: "8px",
+              }}
+            >
+              $0.00
+            </h2>
+
+            <p
+              style={{
+                fontSize: "13px",
+
+                opacity: 0.85,
+              }}
+            >
+              Available to withdraw
+            </p>
+
+          </div>
+
+          <div
+            style={{
+              width: "56px",
+
+              height: "56px",
+
+              borderRadius: "18px",
+
+              background:
+                "rgba(255,255,255,0.14)",
+
+              display: "flex",
+
+              alignItems: "center",
+
+              justifyContent:
+                "center",
+
+              fontSize: "24px",
+            }}
+          >
+            💸
+          </div>
+
         </div>
 
       </div>
@@ -248,5 +291,77 @@ function Dashboard() {
     </div>
   );
 }
+
+const cardStyle = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "22px",
+
+  padding: "20px",
+
+  display: "flex",
+
+  justifyContent:
+    "space-between",
+
+  alignItems: "center",
+
+  backdropFilter:
+    "blur(18px)",
+};
+
+const iconBox = {
+
+  width: "52px",
+
+  height: "52px",
+
+  borderRadius: "16px",
+
+  background:
+    "rgba(139,92,246,0.10)",
+
+  border:
+    "1px solid rgba(139,92,246,0.18)",
+
+  display: "flex",
+
+  alignItems: "center",
+
+  justifyContent:
+    "center",
+
+  fontSize: "20px",
+};
+
+const smallText = {
+
+  color: "#9ca3af",
+
+  fontSize: "13px",
+
+  marginBottom: "10px",
+};
+
+const numberText = {
+
+  fontSize: "34px",
+
+  fontWeight: "700",
+
+  marginBottom: "8px",
+};
+
+const subText = {
+
+  color: "#9ca3af",
+
+  fontSize: "13px",
+};
 
 export default Dashboard;
