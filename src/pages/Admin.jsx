@@ -1,13 +1,179 @@
 // src/pages/Admin.jsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Sidebar from "../components/Sidebar";
+
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
+
+import { db } from "../firebase";
 
 function Admin() {
 
   const [section, setSection] =
     useState("tasks");
+
+  const [tasks, setTasks] =
+    useState([]);
+
+  // ADD TASK STATES
+  const [title, setTitle] =
+    useState("");
+
+  const [description, setDescription] =
+    useState("");
+
+  const [image, setImage] =
+    useState("");
+
+  const [instructions, setInstructions] =
+    useState("");
+
+  const [amount, setAmount] =
+    useState("");
+
+  // WALLET STATES
+  const [userId, setUserId] =
+    useState("");
+
+  const [walletAmount, setWalletAmount] =
+    useState("");
+
+  // FETCH TASKS
+  const fetchTasks =
+    async () => {
+
+      try {
+
+        const snapshot =
+          await getDocs(
+            collection(
+              db,
+              "tasks"
+            )
+          );
+
+        const taskList =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        setTasks(taskList);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  useEffect(() => {
+
+    fetchTasks();
+
+  }, []);
+
+  // ADD TASK
+  const handleAddTask =
+    async () => {
+
+      try {
+
+        await addDoc(
+          collection(db, "tasks"),
+          {
+            title,
+            description,
+            image,
+            instructions,
+            amount,
+            createdAt:
+              Date.now(),
+          }
+        );
+
+        alert("Task Added");
+
+        setTitle("");
+        setDescription("");
+        setImage("");
+        setInstructions("");
+        setAmount("");
+
+        fetchTasks();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // DELETE TASK
+  const handleDeleteTask =
+    async (id) => {
+
+      try {
+
+        await deleteDoc(
+          doc(
+            db,
+            "tasks",
+            id
+          )
+        );
+
+        fetchTasks();
+
+        alert("Task Deleted");
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // UPDATE WALLET
+  const handleWalletUpdate =
+    async () => {
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            userId
+          ),
+          {
+            balance:
+              Number(
+                walletAmount
+              ),
+          }
+        );
+
+        alert(
+          "Wallet Updated"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
 
   return (
 
@@ -59,8 +225,9 @@ function Admin() {
             lineHeight: "26px",
           }}
         >
-          Manage tasks, worker
-          reviews and wallet balances.
+          Manage tasks,
+          reviews and
+          wallet balances.
         </p>
 
       </div>
@@ -79,7 +246,7 @@ function Admin() {
         }}
       >
 
-        {/* ADD TASKS */}
+        {/* TASKS */}
         <div
           onClick={() =>
             setSection("tasks")
@@ -105,7 +272,7 @@ function Admin() {
           <h3
             style={folderTitle}
           >
-            Add Tasks
+            Tasks
           </h3>
 
         </div>
@@ -136,7 +303,7 @@ function Admin() {
           <h3
             style={folderTitle}
           >
-            Review Tasks
+            Review
           </h3>
 
         </div>
@@ -167,52 +334,148 @@ function Admin() {
           <h3
             style={folderTitle}
           >
-            Edit Wallet
+            Wallet
           </h3>
 
         </div>
 
       </div>
 
-      {/* ADD TASKS SECTION */}
+      {/* TASK SECTION */}
       {section === "tasks" && (
 
         <div style={cardStyle}>
 
           <h2 style={sectionTitle}>
-            Add New Task
+            Add Task
           </h2>
 
           <input
             placeholder="Task Title"
+            value={title}
+            onChange={(e) =>
+              setTitle(
+                e.target.value
+              )
+            }
             style={inputStyle}
           />
 
           <textarea
-            placeholder="Task Description"
+            placeholder="Description"
+            value={description}
+            onChange={(e) =>
+              setDescription(
+                e.target.value
+              )
+            }
             style={textareaStyle}
           />
 
           <input
             placeholder="Image Hyperlink"
+            value={image}
+            onChange={(e) =>
+              setImage(
+                e.target.value
+              )
+            }
             style={inputStyle}
           />
 
           <textarea
             placeholder="Instructions"
+            value={instructions}
+            onChange={(e) =>
+              setInstructions(
+                e.target.value
+              )
+            }
             style={textareaStyle}
           />
 
           <input
             placeholder="Task Amount"
+            value={amount}
+            onChange={(e) =>
+              setAmount(
+                e.target.value
+              )
+            }
             style={inputStyle}
           />
 
           <button
+            onClick={
+              handleAddTask
+            }
             style={buttonStyle}
           >
             Publish Task
           </button>
+
+          {/* EXISTING TASKS */}
+          <div
+            style={{
+              marginTop: "18px",
+
+              display: "grid",
+
+              gap: "14px",
+            }}
+          >
+
+            {tasks.map((task) => (
+
+              <div
+                key={task.id}
+                style={reviewCard}
+              >
+
+                <div>
+
+                  <h3
+                    style={{
+                      fontSize:
+                        "15px",
+                      marginBottom:
+                        "6px",
+                    }}
+                  >
+                    {task.title}
+                  </h3>
+
+                  <p
+                    style={{
+                      color:
+                        "#9ca3af",
+                      fontSize:
+                        "13px",
+                    }}
+                  >
+                    ${task.amount}
+                  </p>
+
+                </div>
+
+                <button
+                  onClick={() =>
+                    handleDeleteTask(
+                      task.id
+                    )
+                  }
+                  style={
+                    rejectBtn
+                  }
+                >
+                  Delete
+                </button>
+
+              </div>
+
+            ))}
+
+          </div>
 
         </div>
 
@@ -224,23 +487,20 @@ function Admin() {
         <div style={cardStyle}>
 
           <h2 style={sectionTitle}>
-            Review Worker Tasks
+            Review Tasks
           </h2>
 
-          {/* TASK CARD */}
-          <div
-            style={reviewCard}
-          >
+          <div style={reviewCard}>
 
             <div>
 
               <h3
                 style={{
-                  fontSize: "16px",
+                  fontSize: "15px",
                   marginBottom: "6px",
                 }}
               >
-                Instagram Follow
+                Worker Submission
               </h3>
 
               <p
@@ -249,7 +509,7 @@ function Admin() {
                   fontSize: "13px",
                 }}
               >
-                Submitted by Worker
+                Manual Review
               </p>
 
             </div>
@@ -262,13 +522,17 @@ function Admin() {
             >
 
               <button
-                style={approveBtn}
+                style={
+                  approveBtn
+                }
               >
                 Approve
               </button>
 
               <button
-                style={rejectBtn}
+                style={
+                  rejectBtn
+                }
               >
                 Reject
               </button>
@@ -287,23 +551,38 @@ function Admin() {
         <div style={cardStyle}>
 
           <h2 style={sectionTitle}>
-            Edit User Wallet
+            Edit Wallet
           </h2>
 
           <input
-            placeholder="User Email / UID"
+            placeholder="User UID"
+            value={userId}
+            onChange={(e) =>
+              setUserId(
+                e.target.value
+              )
+            }
             style={inputStyle}
           />
 
           <input
             placeholder="New Balance"
+            value={walletAmount}
+            onChange={(e) =>
+              setWalletAmount(
+                e.target.value
+              )
+            }
             style={inputStyle}
           />
 
           <button
+            onClick={
+              handleWalletUpdate
+            }
             style={buttonStyle}
           >
-            Update Balance
+            Update Wallet
           </button>
 
         </div>
@@ -311,6 +590,7 @@ function Admin() {
       )}
 
     </div>
+
   );
 }
 
@@ -327,8 +607,6 @@ const folderStyle = {
     "blur(18px)",
 
   cursor: "pointer",
-
-  transition: "0.25s ease",
 };
 
 const iconStyle = {
@@ -388,8 +666,6 @@ const sectionTitle = {
   fontSize: "20px",
 
   fontWeight: "700",
-
-  marginBottom: "4px",
 };
 
 const inputStyle = {
@@ -458,9 +734,6 @@ const buttonStyle = {
   fontWeight: "700",
 
   cursor: "pointer",
-
-  boxShadow:
-    "0 0 25px rgba(139,92,246,0.18)",
 };
 
 const reviewCard = {
