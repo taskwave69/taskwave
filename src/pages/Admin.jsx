@@ -1,207 +1,321 @@
-import { useEffect, useState } from "react";
+// src/pages/Admin.jsx
+
+import { useState } from "react";
+
+import Sidebar from "../components/Sidebar";
 
 import {
   collection,
-  getDocs,
-  doc,
-  updateDoc
+  addDoc,
+  updateDoc,
+  doc
 } from "firebase/firestore";
 
-import {
-  db
-} from "../firebase";
+import { db } from "../firebase";
 
 function Admin() {
 
-  const [tasks, setTasks] = useState([]);
+  const [title, setTitle] =
+    useState("");
 
-  const [reasons, setReasons] = useState({});
+  const [description, setDescription] =
+    useState("");
 
-  useEffect(() => {
+  const [image, setImage] =
+    useState("");
 
-    fetchTasks();
+  const [instructions, setInstructions] =
+    useState("");
 
-  }, []);
+  const [amount, setAmount] =
+    useState("");
 
-  const fetchTasks = async () => {
+  const [userId, setUserId] =
+    useState("");
 
-    const snapshot = await getDocs(
-      collection(db, "tasks")
-    );
+  const [walletAmount, setWalletAmount] =
+    useState("");
 
-    const data = snapshot.docs.map(
-      (doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })
-    );
+  const handleAddTask =
+    async () => {
 
-    setTasks(data);
+      if (
+        !title ||
+        !description ||
+        !instructions ||
+        !amount
+      ) {
 
-  };
+        alert("Fill all fields");
 
-  // APPROVE
-  const approveTask = async (taskId) => {
-
-    await updateDoc(
-      doc(db, "tasks", taskId),
-      {
-        status: "approved"
+        return;
       }
-    );
 
-    alert("Approved!");
+      try {
 
-    fetchTasks();
+        await addDoc(
+          collection(db, "tasks"),
+          {
 
-  };
+            title,
 
-  // REJECT
-  const rejectTask = async (taskId) => {
+            description,
 
-    await updateDoc(
-      doc(db, "tasks", taskId),
-      {
-        status: "available",
+            image,
 
-        claimedBy: "",
+            instructions,
 
-        claimedAt: null,
+            amount,
 
-        rejectionReason:
-          reasons[taskId] || "Rejected"
+            status: "available",
+
+            claimedBy: "",
+
+            submitted: false,
+
+            approved: false,
+
+            rejected: false,
+
+            createdAt:
+              Date.now(),
+          }
+        );
+
+        alert("Task Added");
+
+        setTitle("");
+        setDescription("");
+        setImage("");
+        setInstructions("");
+        setAmount("");
+
+      } catch (error) {
+
+        console.log(error);
+
       }
-    );
+    };
 
-    alert("Rejected!");
+  const handleWalletUpdate =
+    async () => {
 
-    fetchTasks();
+      if (
+        !userId ||
+        !walletAmount
+      ) {
 
-  };
+        alert("Fill fields");
+
+        return;
+      }
+
+      try {
+
+        await updateDoc(
+          doc(db, "users", userId),
+          {
+
+            balance:
+              Number(
+                walletAmount
+              ),
+          }
+        );
+
+        alert(
+          "Wallet Updated"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
 
   return (
 
     <div
       style={{
-        background: "#050816",
         minHeight: "100vh",
+
+        background:
+          "radial-gradient(circle at top,#111827,#050816)",
+
         color: "white",
-        padding: "30px"
+
+        fontFamily:
+          "Inter, sans-serif",
+
+        paddingTop: "95px",
+
+        paddingLeft: "22px",
+
+        paddingRight: "22px",
+
+        paddingBottom: "40px",
       }}
     >
 
-      <h1
-        style={{
-          fontSize: "35px",
-          marginBottom: "30px"
-        }}
-      >
-        Admin Panel
-      </h1>
+      <Sidebar />
 
+      {/* HEADER */}
       <div
         style={{
-          display: "grid",
-          gap: "25px"
+          marginBottom: "28px",
         }}
       >
 
-        {tasks
-          .filter(
-            (task) =>
-              task.status === "claimed"
-          )
-          .map((task) => (
+        <h1
+          style={{
+            fontSize: "34px",
 
-            <div
-              key={task.id}
-              style={{
-                background: "#111827",
-                padding: "20px",
-                borderRadius: "20px"
-              }}
-            >
+            fontWeight: "800",
 
-              <h2>{task.title}</h2>
+            marginBottom: "8px",
+          }}
+        >
+          Admin Panel
+        </h1>
 
-              <p
-                style={{
-                  marginTop: "10px",
-                  color: "#9ca3af"
-                }}
-              >
-                {task.description}
-              </p>
+        <p
+          style={{
+            color: "#9ca3af",
 
-              <p
-                style={{
-                  marginTop: "15px"
-                }}
-              >
-                Claimed By:
-                {" "}
-                {task.claimedBy}
-              </p>
+            fontSize: "14px",
 
-              <textarea
-                placeholder="Reject reason"
-                value={
-                  reasons[task.id] || ""
-                }
-                onChange={(e) =>
-                  setReasons({
-                    ...reasons,
-                    [task.id]:
-                      e.target.value
-                  })
-                }
-                style={{
-                  width: "100%",
-                  marginTop: "20px",
-                  padding: "15px",
-                  borderRadius: "12px",
-                  border: "none"
-                }}
-              />
+            lineHeight: "26px",
+          }}
+        >
+          Manage tasks,
+          worker approvals
+          and wallet balances.
+        </p>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: "15px",
-                  marginTop: "20px"
-                }}
-              >
+      </div>
 
-                <button
-                  onClick={() =>
-                    approveTask(task.id)
-                  }
-                  style={{
-                    ...btn,
-                    background: "#00d4ff",
-                    color: "black"
-                  }}
-                >
-                  Approve
-                </button>
+      {/* ADD TASK CARD */}
+      <div
+        style={cardStyle}
+      >
 
-                <button
-                  onClick={() =>
-                    rejectTask(task.id)
-                  }
-                  style={{
-                    ...btn,
-                    background: "red"
-                  }}
-                >
-                  Reject
-                </button>
+        <h2
+          style={titleStyle}
+        >
+          Add Task
+        </h2>
 
-              </div>
+        <input
+          placeholder="Task Title"
+          value={title}
+          onChange={(e) =>
+            setTitle(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
 
-            </div>
+        <textarea
+          placeholder="Task Description"
+          value={description}
+          onChange={(e) =>
+            setDescription(
+              e.target.value
+            )
+          }
+          style={textareaStyle}
+        />
 
-          ))}
+        <input
+          placeholder="Image Link"
+          value={image}
+          onChange={(e) =>
+            setImage(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
+
+        <textarea
+          placeholder="Instructions"
+          value={instructions}
+          onChange={(e) =>
+            setInstructions(
+              e.target.value
+            )
+          }
+          style={textareaStyle}
+        />
+
+        <input
+          placeholder="Task Amount"
+          value={amount}
+          onChange={(e) =>
+            setAmount(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
+
+        <button
+          onClick={
+            handleAddTask
+          }
+          style={buttonStyle}
+        >
+          Add Task
+        </button>
+
+      </div>
+
+      {/* WALLET SECTION */}
+      <div
+        style={{
+          ...cardStyle,
+          marginTop: "22px",
+        }}
+      >
+
+        <h2
+          style={titleStyle}
+        >
+          Update User Wallet
+        </h2>
+
+        <input
+          placeholder="User ID"
+          value={userId}
+          onChange={(e) =>
+            setUserId(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
+
+        <input
+          placeholder="New Balance"
+          value={walletAmount}
+          onChange={(e) =>
+            setWalletAmount(
+              e.target.value
+            )
+          }
+          style={inputStyle}
+        />
+
+        <button
+          onClick={
+            handleWalletUpdate
+          }
+          style={buttonStyle}
+        >
+          Update Wallet
+        </button>
 
       </div>
 
@@ -209,19 +323,106 @@ function Admin() {
   );
 }
 
-const btn = {
+const cardStyle = {
 
-  padding: "14px 25px",
+  background:
+    "rgba(255,255,255,0.03)",
 
-  border: "none",
+  border:
+    "1px solid rgba(255,255,255,0.05)",
 
-  borderRadius: "12px",
+  borderRadius: "24px",
+
+  padding: "22px",
+
+  backdropFilter:
+    "blur(18px)",
+
+  display: "flex",
+
+  flexDirection: "column",
+
+  gap: "16px",
+};
+
+const titleStyle = {
+
+  fontSize: "20px",
+
+  fontWeight: "700",
+
+  marginBottom: "8px",
+};
+
+const inputStyle = {
+
+  width: "100%",
+
+  padding: "16px",
+
+  borderRadius: "16px",
+
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+
+  background:
+    "rgba(255,255,255,0.04)",
 
   color: "white",
 
-  fontWeight: "bold",
+  fontSize: "14px",
 
-  cursor: "pointer"
+  outline: "none",
+};
+
+const textareaStyle = {
+
+  width: "100%",
+
+  padding: "16px",
+
+  borderRadius: "16px",
+
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+
+  background:
+    "rgba(255,255,255,0.04)",
+
+  color: "white",
+
+  fontSize: "14px",
+
+  outline: "none",
+
+  minHeight: "120px",
+
+  resize: "none",
+};
+
+const buttonStyle = {
+
+  width: "100%",
+
+  padding: "16px",
+
+  border: "none",
+
+  borderRadius: "18px",
+
+  background:
+    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+  color: "white",
+
+  fontSize: "15px",
+
+  fontWeight: "700",
+
+  cursor: "pointer",
+
+  boxShadow:
+    "0 0 25px rgba(139,92,246,0.18)",
 };
 
 export default Admin;
