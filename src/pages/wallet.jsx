@@ -1,240 +1,304 @@
-import { useEffect, useState } from "react";
-
-import {
-  auth,
-  db
-} from "../firebase";
-
-import {
-  doc,
-  getDoc,
-  addDoc,
-  collection,
-  updateDoc
-} from "firebase/firestore";
+// src/pages/Wallet.jsx
 
 import Sidebar from "../components/Sidebar";
 
 function Wallet() {
 
-  const [userData, setUserData] = useState(null);
-
-  const [amount, setAmount] = useState("");
-
-  const [upiId, setUpiId] = useState("");
-
-  const [binanceId, setBinanceId] = useState("");
-
-  useEffect(() => {
-
-    const fetchUser = async () => {
-
-      const user = auth.currentUser;
-
-      if (!user) return;
-
-      const userRef =
-        doc(db, "users", user.uid);
-
-      const userSnap =
-        await getDoc(userRef);
-
-      if (userSnap.exists()) {
-
-        setUserData(userSnap.data());
-
-      }
-
-    };
-
-    fetchUser();
-
-  }, []);
-
-  const requestWithdrawal = async () => {
-
-    const user = auth.currentUser;
-
-    if (!user || !userData) return;
-
-    const withdrawAmount =
-      Number(amount);
-
-    if (withdrawAmount <= 0) {
-
-      alert("Enter valid amount");
-
-      return;
-
-    }
-
-    if (
-      withdrawAmount >
-      userData.withdrawable
-    ) {
-
-      alert("Insufficient balance");
-
-      return;
-
-    }
-
-    if (!upiId && !binanceId) {
-
-      alert("Enter UPI or Binance ID");
-
-      return;
-
-    }
-
-    // Create request
-    await addDoc(
-      collection(db, "withdrawRequests"),
-      {
-
-        userId: user.uid,
-
-        amount: withdrawAmount,
-
-        upiId: upiId,
-
-        binanceId: binanceId,
-
-        status: "pending",
-
-        createdAt: new Date()
-
-      }
-    );
-
-    // Deduct balance
-    const userRef =
-      doc(db, "users", user.uid);
-
-    await updateDoc(userRef, {
-
-      withdrawable:
-        userData.withdrawable -
-        withdrawAmount
-
-    });
-
-    alert("Withdrawal requested!");
-
-    setAmount("");
-
-    setUpiId("");
-
-    setBinanceId("");
-
-  };
-
   return (
-    <div className="min-h-screen bg-black text-white flex">
+
+    <div
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top,#111827,#050816)",
+        color: "white",
+        fontFamily: "Inter, sans-serif",
+
+        paddingTop: "95px",
+        paddingLeft: "22px",
+        paddingRight: "22px",
+        paddingBottom: "40px",
+      }}
+    >
 
       <Sidebar />
 
-      <div className="flex-1 p-10">
+      {/* HEADER */}
+      <div
+        style={{
+          marginBottom: "24px",
+        }}
+      >
 
-        <h1 className="text-5xl font-bold">
+        <h1
+          style={{
+            fontSize: "34px",
+            fontWeight: "800",
+            letterSpacing: "-1px",
+            marginBottom: "8px",
+          }}
+        >
           Wallet
         </h1>
 
-        <p className="text-zinc-400 mt-3">
-          Manage your earnings and withdrawals.
+        <p
+          style={{
+            color: "#9ca3af",
+            fontSize: "14px",
+            lineHeight: "26px",
+            maxWidth: "420px",
+          }}
+        >
+          Manage earnings,
+          withdrawals and payment
+          methods securely.
         </p>
 
-        {/* Balance Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+      </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+      {/* BALANCE CARD */}
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg,#8b5cf6,#7c3aed)",
 
-            <p className="text-zinc-400">
-              Pending
+          borderRadius: "24px",
+
+          padding: "22px",
+
+          marginBottom: "20px",
+
+          boxShadow:
+            "0 0 35px rgba(139,92,246,0.20)",
+
+          position: "relative",
+        }}
+      >
+
+        {/* CHIP */}
+        <div
+          style={{
+            position: "absolute",
+            top: "18px",
+            right: "18px",
+
+            background:
+              "rgba(255,255,255,0.14)",
+
+            padding:
+              "7px 12px",
+
+            borderRadius:
+              "12px",
+
+            fontSize: "11px",
+
+            fontWeight: "600",
+          }}
+        >
+          Active
+        </div>
+
+        <p
+          style={{
+            fontSize: "13px",
+            opacity: 0.82,
+            marginBottom: "12px",
+          }}
+        >
+          Available Balance
+        </p>
+
+        <h2
+          style={{
+            fontSize: "42px",
+            fontWeight: "800",
+            marginBottom: "12px",
+            letterSpacing: "-2px",
+          }}
+        >
+          $0.00
+        </h2>
+
+        <p
+          style={{
+            fontSize: "14px",
+            opacity: 0.92,
+            lineHeight: "26px",
+            maxWidth: "320px",
+          }}
+        >
+          Withdraw instantly
+          through Binance
+          and UPI.
+        </p>
+
+      </div>
+
+      {/* PAYMENT METHODS */}
+      <div
+        style={{
+          display: "grid",
+          gap: "16px",
+          marginBottom: "20px",
+        }}
+      >
+
+        {/* BINANCE */}
+        <div
+          style={cardStyle}
+        >
+
+          <div>
+
+            <p
+              style={cardTitle}
+            >
+              Binance Wallet
             </p>
 
-            <h2 className="text-4xl font-bold text-cyan-400 mt-4">
-              ${userData?.pending || 0}
-            </h2>
+            <p
+              style={cardSub}
+            >
+              Crypto Withdrawal
+            </p>
 
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-
-            <p className="text-zinc-400">
-              Withdrawable
-            </p>
-
-            <h2 className="text-4xl font-bold text-green-400 mt-4">
-              ${userData?.withdrawable || 0}
-            </h2>
-
-          </div>
-
-          <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
-
-            <p className="text-zinc-400">
-              Total Earnings
-            </p>
-
-            <h2 className="text-4xl font-bold text-yellow-400 mt-4">
-              ${userData?.totalEarnings || 0}
-            </h2>
-
-          </div>
+          <button
+            style={buttonStyle}
+          >
+            Add
+          </button>
 
         </div>
 
-        {/* Withdraw Box */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mt-10 max-w-2xl">
+        {/* UPI */}
+        <div
+          style={cardStyle}
+        >
 
-          <h2 className="text-3xl font-bold">
-            Request Withdrawal
-          </h2>
+          <div>
 
-          <input
-            type="number"
-            placeholder="Amount"
-            value={amount}
-            onChange={(e) =>
-              setAmount(e.target.value)
-            }
-            className="w-full bg-zinc-800 rounded-2xl p-4 mt-6 outline-none"
-          />
+            <p
+              style={cardTitle}
+            >
+              UPI Payment
+            </p>
 
-          <input
-            type="text"
-            placeholder="UPI ID"
-            value={upiId}
-            onChange={(e) =>
-              setUpiId(e.target.value)
-            }
-            className="w-full bg-zinc-800 rounded-2xl p-4 mt-4 outline-none"
-          />
+            <p
+              style={cardSub}
+            >
+              Instant Transfer
+            </p>
 
-          <input
-            type="text"
-            placeholder="Binance ID"
-            value={binanceId}
-            onChange={(e) =>
-              setBinanceId(e.target.value)
-            }
-            className="w-full bg-zinc-800 rounded-2xl p-4 mt-4 outline-none"
-          />
+          </div>
 
           <button
-            onClick={requestWithdrawal}
-            className="mt-6 bg-cyan-400 hover:bg-cyan-300 text-black px-6 py-3 rounded-xl font-bold transition"
+            style={buttonStyle}
           >
-            Request Withdrawal
+            Add
           </button>
 
         </div>
 
       </div>
 
+      {/* WITHDRAW BUTTON */}
+      <button
+        style={{
+          width: "100%",
+
+          padding: "18px",
+
+          border: "none",
+
+          borderRadius: "18px",
+
+          background:
+            "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+          color: "white",
+
+          fontSize: "15px",
+
+          fontWeight: "700",
+
+          cursor: "pointer",
+
+          boxShadow:
+            "0 0 30px rgba(139,92,246,0.18)",
+        }}
+      >
+        Withdraw Earnings
+      </button>
+
     </div>
   );
 }
+
+const cardStyle = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "22px",
+
+  padding: "18px",
+
+  backdropFilter:
+    "blur(18px)",
+
+  display: "flex",
+
+  justifyContent:
+    "space-between",
+
+  alignItems: "center",
+};
+
+const cardTitle = {
+
+  fontSize: "16px",
+
+  fontWeight: "700",
+
+  marginBottom: "6px",
+};
+
+const cardSub = {
+
+  color: "#9ca3af",
+
+  fontSize: "13px",
+};
+
+const buttonStyle = {
+
+  border: "none",
+
+  padding:
+    "10px 16px",
+
+  borderRadius:
+    "14px",
+
+  background:
+    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+  color: "white",
+
+  fontSize: "13px",
+
+  fontWeight: "600",
+
+  cursor: "pointer",
+
+  boxShadow:
+    "0 0 20px rgba(139,92,246,0.18)",
+};
 
 export default Wallet;
