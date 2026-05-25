@@ -1,5 +1,3 @@
-// src/pages/Wallet.jsx
-
 import Sidebar from "../components/Sidebar";
 
 function Wallet() {
@@ -46,12 +44,10 @@ function Wallet() {
             color: "#9ca3af",
             fontSize: "14px",
             lineHeight: "26px",
-            maxWidth: "420px",
           }}
         >
-          Manage earnings,
-          withdrawals and payment
-          methods securely.
+          Manage withdrawals and
+          payment methods securely.
         </p>
 
       </div>
@@ -70,40 +66,14 @@ function Wallet() {
 
           boxShadow:
             "0 0 35px rgba(139,92,246,0.20)",
-
-          position: "relative",
         }}
       >
-
-        {/* CHIP */}
-        <div
-          style={{
-            position: "absolute",
-            top: "18px",
-            right: "18px",
-
-            background:
-              "rgba(255,255,255,0.14)",
-
-            padding:
-              "7px 12px",
-
-            borderRadius:
-              "12px",
-
-            fontSize: "11px",
-
-            fontWeight: "600",
-          }}
-        >
-          Active
-        </div>
 
         <p
           style={{
             fontSize: "13px",
             opacity: 0.82,
-            marginBottom: "12px",
+            marginBottom: "10px",
           }}
         >
           Available Balance
@@ -113,7 +83,7 @@ function Wallet() {
           style={{
             fontSize: "42px",
             fontWeight: "800",
-            marginBottom: "12px",
+            marginBottom: "10px",
             letterSpacing: "-2px",
           }}
         >
@@ -123,14 +93,12 @@ function Wallet() {
         <p
           style={{
             fontSize: "14px",
-            opacity: 0.92,
-            lineHeight: "26px",
-            maxWidth: "320px",
+            lineHeight: "24px",
+            opacity: 0.9,
           }}
         >
-          Withdraw instantly
-          through Binance
-          and UPI.
+          Instant payouts through
+          Binance and UPI.
         </p>
 
       </div>
@@ -145,58 +113,42 @@ function Wallet() {
       >
 
         {/* BINANCE */}
-        <div
-          style={cardStyle}
-        >
+        <div style={cardStyle}>
 
           <div>
 
-            <p
-              style={cardTitle}
-            >
+            <p style={titleStyle}>
               Binance Wallet
             </p>
 
-            <p
-              style={cardSub}
-            >
+            <p style={subStyle}>
               Crypto Withdrawal
             </p>
 
           </div>
 
-          <button
-            style={buttonStyle}
-          >
+          <button style={buttonStyle}>
             Add
           </button>
 
         </div>
 
         {/* UPI */}
-        <div
-          style={cardStyle}
-        >
+        <div style={cardStyle}>
 
           <div>
 
-            <p
-              style={cardTitle}
-            >
+            <p style={titleStyle}>
               UPI Payment
             </p>
 
-            <p
-              style={cardSub}
-            >
+            <p style={subStyle}>
               Instant Transfer
             </p>
 
           </div>
 
-          <button
-            style={buttonStyle}
-          >
+          <button style={buttonStyle}>
             Add
           </button>
 
@@ -208,8 +160,7 @@ function Wallet() {
       <button
         style={{
           width: "100%",
-
-          padding: "18px",
+          padding: "17px",
 
           border: "none",
 
@@ -227,7 +178,7 @@ function Wallet() {
           cursor: "pointer",
 
           boxShadow:
-            "0 0 30px rgba(139,92,246,0.18)",
+            "0 0 25px rgba(139,92,246,0.18)",
         }}
       >
         Withdraw Earnings
@@ -260,7 +211,7 @@ const cardStyle = {
   alignItems: "center",
 };
 
-const cardTitle = {
+const titleStyle = {
 
   fontSize: "16px",
 
@@ -269,7 +220,7 @@ const cardTitle = {
   marginBottom: "6px",
 };
 
-const cardSub = {
+const subStyle = {
 
   color: "#9ca3af",
 
@@ -296,9 +247,6 @@ const buttonStyle = {
   fontWeight: "600",
 
   cursor: "pointer",
-
-  boxShadow:
-    "0 0 20px rgba(139,92,246,0.18)",
 };
 
 export default Wallet;
