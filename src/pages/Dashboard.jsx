@@ -14,10 +14,10 @@ function Dashboard() {
         color: "white",
         fontFamily: "Inter, sans-serif",
 
-        /* FINAL FIXED SPACING */
+        /* FIXED PREMIUM SPACING */
         paddingTop: "95px",
-        paddingLeft: "24px",
-        paddingRight: "24px",
+        paddingLeft: "22px",
+        paddingRight: "22px",
         paddingBottom: "40px",
       }}
     >
@@ -27,17 +27,16 @@ function Dashboard() {
       {/* HEADER */}
       <div
         style={{
-          marginBottom: "32px",
+          marginBottom: "28px",
         }}
       >
 
         <h1
           style={{
-            fontSize: "64px",
-            fontWeight: "900",
-            letterSpacing: "-3px",
-            lineHeight: "1",
-            marginBottom: "18px",
+            fontSize: "42px",
+            fontWeight: "800",
+            letterSpacing: "-1.5px",
+            marginBottom: "10px",
           }}
         >
           Dashboard
@@ -45,15 +44,16 @@ function Dashboard() {
 
         <p
           style={{
-            fontSize: "17px",
+            fontSize: "15px",
             color: "#9ca3af",
-            lineHeight: "38px",
-            maxWidth: "700px",
+            lineHeight: "28px",
+            maxWidth: "500px",
           }}
         >
-          Manage tasks, earnings and
-          withdrawals through your
-          premium TaskWave account.
+          Manage your earnings,
+          withdrawals and active
+          social tasks through
+          TaskWave.
         </p>
 
       </div>
@@ -64,38 +64,36 @@ function Dashboard() {
           background:
             "linear-gradient(135deg,#8b5cf6,#7c3aed)",
 
-          borderRadius: "38px",
+          borderRadius: "28px",
 
-          padding: "34px",
+          padding: "26px",
 
-          marginBottom: "26px",
+          marginBottom: "22px",
 
           boxShadow:
-            "0 0 50px rgba(139,92,246,0.28)",
+            "0 0 40px rgba(139,92,246,0.22)",
 
           position: "relative",
-
-          overflow: "hidden",
         }}
       >
 
-        {/* SMALL CHIP */}
+        {/* SMALL TAG */}
         <div
           style={{
             position: "absolute",
-            top: "28px",
-            right: "28px",
+            top: "22px",
+            right: "22px",
 
             background:
               "rgba(255,255,255,0.14)",
 
             padding:
-              "12px 18px",
+              "8px 14px",
 
             borderRadius:
-              "18px",
+              "14px",
 
-            fontSize: "14px",
+            fontSize: "12px",
 
             fontWeight: "600",
           }}
@@ -105,9 +103,9 @@ function Dashboard() {
 
         <p
           style={{
-            fontSize: "15px",
-            opacity: 0.82,
-            marginBottom: "26px",
+            fontSize: "14px",
+            opacity: 0.85,
+            marginBottom: "18px",
           }}
         >
           Current Balance
@@ -115,10 +113,10 @@ function Dashboard() {
 
         <h2
           style={{
-            fontSize: "78px",
-            fontWeight: "900",
-            marginBottom: "28px",
-            letterSpacing: "-3px",
+            fontSize: "52px",
+            fontWeight: "800",
+            marginBottom: "18px",
+            letterSpacing: "-2px",
           }}
         >
           $0.00
@@ -126,10 +124,10 @@ function Dashboard() {
 
         <p
           style={{
-            fontSize: "17px",
-            opacity: 0.9,
-            lineHeight: "38px",
-            maxWidth: "520px",
+            fontSize: "15px",
+            opacity: 0.92,
+            lineHeight: "30px",
+            maxWidth: "420px",
           }}
         >
           Withdraw earnings instantly
@@ -147,9 +145,9 @@ function Dashboard() {
           border:
             "1px solid rgba(255,255,255,0.05)",
 
-          borderRadius: "34px",
+          borderRadius: "28px",
 
-          padding: "30px",
+          padding: "24px",
 
           display: "flex",
 
@@ -168,8 +166,8 @@ function Dashboard() {
           <p
             style={{
               color: "#9ca3af",
-              fontSize: "15px",
-              marginBottom: "18px",
+              fontSize: "14px",
+              marginBottom: "12px",
             }}
           >
             Available Tasks
@@ -177,9 +175,9 @@ function Dashboard() {
 
           <h2
             style={{
-              fontSize: "52px",
-              fontWeight: "900",
-              letterSpacing: "-2px",
+              fontSize: "36px",
+              fontWeight: "800",
+              letterSpacing: "-1px",
             }}
           >
             0 Tasks
@@ -190,10 +188,10 @@ function Dashboard() {
         {/* ICON */}
         <div
           style={{
-            width: "110px",
-            height: "110px",
+            width: "82px",
+            height: "82px",
 
-            borderRadius: "30px",
+            borderRadius: "24px",
 
             background:
               "rgba(139,92,246,0.12)",
@@ -208,10 +206,10 @@ function Dashboard() {
             justifyContent:
               "center",
 
-            fontSize: "48px",
+            fontSize: "34px",
 
             boxShadow:
-              "0 0 35px rgba(139,92,246,0.16)",
+              "0 0 25px rgba(139,92,246,0.12)",
           }}
         >
           ⚡
