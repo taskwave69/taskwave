@@ -1,8 +1,24 @@
 // src/pages/Admin.jsx
 
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect
+} from "react";
+
+import {
+  useNavigate
+} from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
+
+import {
+  auth,
+  db
+} from "../firebase";
+
+import {
+  onAuthStateChanged
+} from "firebase/auth";
 
 import {
   collection,
@@ -13,9 +29,21 @@ import {
   doc,
 } from "firebase/firestore";
 
-import { db } from "../firebase";
-
 function Admin() {
+
+  const navigate =
+    useNavigate();
+
+  // APPROVED ADMINS
+  const allowedAdmins = [
+
+    "jinoyfelix956@gmail.com",
+
+    "alanjaison159@gmail.com",
+
+    "nixondavidnd13@gmail.com",
+
+  ];
 
   const [section, setSection] =
     useState("tasks");
@@ -45,6 +73,43 @@ function Admin() {
 
   const [walletAmount, setWalletAmount] =
     useState("");
+
+  // ADMIN PROTECTION
+  useEffect(() => {
+
+    const unsubscribe =
+      onAuthStateChanged(
+        auth,
+        (user) => {
+
+          if (!user) {
+
+            navigate("/login");
+
+            return;
+          }
+
+          if (
+            !allowedAdmins.includes(
+              user.email
+            )
+          ) {
+
+            alert(
+              "Access Denied"
+            );
+
+            navigate(
+              "/dashboard"
+            );
+          }
+        }
+      );
+
+    return () =>
+      unsubscribe();
+
+  }, []);
 
   // FETCH TASKS
   const fetchTasks =
