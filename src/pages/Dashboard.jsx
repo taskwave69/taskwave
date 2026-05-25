@@ -2,7 +2,98 @@
 
 import Sidebar from "../components/Sidebar";
 
+import {
+  useEffect,
+  useState
+} from "react";
+
+import {
+  auth,
+  db
+} from "../firebase";
+
+import {
+  doc,
+  getDoc
+} from "firebase/firestore";
+
+import {
+  useNavigate
+} from "react-router-dom";
+
 function Dashboard() {
+
+  const navigate =
+    useNavigate();
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // CHECK VERIFICATION
+  useEffect(() => {
+
+    const checkVerification =
+      async () => {
+
+        try {
+
+          const user =
+            auth.currentUser;
+
+          // NOT LOGGED IN
+          if (!user) {
+
+            navigate("/login");
+
+            return;
+          }
+
+          const docRef =
+            doc(
+              db,
+              "users",
+              user.uid
+            );
+
+          const docSnap =
+            await getDoc(
+              docRef
+            );
+
+          // NOT VERIFIED
+          if (
+            !docSnap.exists() ||
+
+            !docSnap.data()
+              .verified
+          ) {
+
+            navigate(
+              "/verification"
+            );
+
+            return;
+          }
+
+          setLoading(false);
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+      };
+
+    checkVerification();
+
+  }, []);
+
+  // LOADING
+  if (loading) {
+
+    return null;
+
+  }
 
   return (
 
@@ -110,9 +201,8 @@ function Dashboard() {
             lineHeight: "22px",
           }}
         >
-          Your account is approved.
-          You can now browse and
-          complete tasks.
+          Your account is verified
+          and ready for tasks.
         </p>
 
       </div>
