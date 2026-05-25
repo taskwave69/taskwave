@@ -61,28 +61,29 @@ function Dashboard() {
           }}
         >
           Manage tasks and earnings
-          through your TaskWave account.
+          through your premium
+          TaskWave account.
         </p>
 
       </div>
 
-      {/* PROFILE APPROVED */}
+      {/* APPROVED CARD */}
       <div
         style={{
           background:
             "rgba(139,92,246,0.10)",
 
           border:
-            "1px solid rgba(139,92,246,0.22)",
+            "1px solid rgba(139,92,246,0.20)",
 
           borderRadius: "18px",
 
           padding: "16px",
 
-          marginBottom: "20px",
+          marginBottom: "18px",
 
           backdropFilter:
-            "blur(14px)",
+            "blur(18px)",
         }}
       >
 
@@ -97,7 +98,7 @@ function Dashboard() {
             marginBottom: "6px",
           }}
         >
-          ✓ Profile Approved
+          Profile Approved
         </p>
 
         <p
@@ -144,10 +145,6 @@ function Dashboard() {
 
           </div>
 
-          <div style={iconBox}>
-            ⚡
-          </div>
-
         </div>
 
         {/* ACTIVE */}
@@ -169,10 +166,6 @@ function Dashboard() {
 
           </div>
 
-          <div style={iconBox}>
-            ⏳
-          </div>
-
         </div>
 
         {/* COMPLETED */}
@@ -181,7 +174,7 @@ function Dashboard() {
           <div>
 
             <p style={smallText}>
-              Completed
+              Completed Tasks
             </p>
 
             <h2 style={numberText}>
@@ -192,10 +185,6 @@ function Dashboard() {
               Successfully completed
             </p>
 
-          </div>
-
-          <div style={iconBox}>
-            ✓
           </div>
 
         </div>
@@ -210,79 +199,44 @@ function Dashboard() {
 
             padding: "22px",
 
-            display: "flex",
-
-            justifyContent:
-              "space-between",
-
-            alignItems: "center",
-
             boxShadow:
               "0 0 35px rgba(139,92,246,0.18)",
           }}
         >
 
-          <div>
-
-            <p
-              style={{
-                fontSize: "13px",
-
-                opacity: 0.85,
-
-                marginBottom: "10px",
-              }}
-            >
-              Balance
-            </p>
-
-            <h2
-              style={{
-                fontSize: "34px",
-
-                fontWeight: "700",
-
-                marginBottom: "8px",
-              }}
-            >
-              $0.00
-            </h2>
-
-            <p
-              style={{
-                fontSize: "13px",
-
-                opacity: 0.85,
-              }}
-            >
-              Available to withdraw
-            </p>
-
-          </div>
-
-          <div
+          <p
             style={{
-              width: "56px",
+              fontSize: "13px",
 
-              height: "56px",
+              opacity: 0.85,
 
-              borderRadius: "18px",
-
-              background:
-                "rgba(255,255,255,0.14)",
-
-              display: "flex",
-
-              alignItems: "center",
-
-              justifyContent:
-                "center",
-
-              fontSize: "24px",
+              marginBottom: "10px",
             }}
           >
-            💸
-          </div>
+            Balance
+          </p>
+
+          <h2
+            style={{
+              fontSize: "34px",
+
+              fontWeight: "700",
+
+              marginBottom: "8px",
+            }}
+          >
+            $0.00
+          </h2>
+
+          <p
+            style={{
+              fontSize: "13px",
+
+              opacity: 0.85,
+            }}
+          >
+            Available to withdraw
+          </p>
 
         </div>
 
@@ -304,39 +258,8 @@ const cardStyle = {
 
   padding: "20px",
 
-  display: "flex",
-
-  justifyContent:
-    "space-between",
-
-  alignItems: "center",
-
   backdropFilter:
     "blur(18px)",
-};
-
-const iconBox = {
-
-  width: "52px",
-
-  height: "52px",
-
-  borderRadius: "16px",
-
-  background:
-    "rgba(139,92,246,0.10)",
-
-  border:
-    "1px solid rgba(139,92,246,0.18)",
-
-  display: "flex",
-
-  alignItems: "center",
-
-  justifyContent:
-    "center",
-
-  fontSize: "20px",
 };
 
 const smallText = {
