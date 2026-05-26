@@ -27,11 +27,11 @@ function Dashboard() {
   const [loading, setLoading] =
     useState(true);
 
-  const [userData, setUserData] =
-    useState(null);
-
   const [pending, setPending] =
     useState(false);
+
+  const [userData, setUserData] =
+    useState(null);
 
   useEffect(() => {
 
@@ -43,6 +43,7 @@ function Dashboard() {
           const user =
             auth.currentUser;
 
+          // NOT LOGGED IN
           if (!user) {
 
             navigate("/login");
@@ -62,7 +63,7 @@ function Dashboard() {
               docRef
             );
 
-          // NEVER VERIFIED
+          // NO USER DATA
           if (
             !docSnap.exists()
           ) {
@@ -77,7 +78,21 @@ function Dashboard() {
           const data =
             docSnap.data();
 
-          // WAITING FOR ADMIN
+          // NO REDDIT DETAILS
+          if (
+            !data.redditUsername ||
+
+            !data.redditLink
+          ) {
+
+            navigate(
+              "/verification"
+            );
+
+            return;
+          }
+
+          // WAITING FOR APPROVAL
           if (
             !data.approved
           ) {
@@ -112,7 +127,7 @@ function Dashboard() {
 
   }
 
-  // WAITING APPROVAL SCREEN
+  // PENDING PAGE
   if (pending) {
 
     return (
@@ -184,10 +199,9 @@ function Dashboard() {
               lineHeight: "28px",
             }}
           >
-            Your Reddit profile has been
-            submitted for manual review.
-            Please wait for an admin
-            approval to access TaskWave.
+            Your Reddit account is
+            waiting for admin review.
+            Please wait for approval.
           </p>
 
         </div>
@@ -197,6 +211,7 @@ function Dashboard() {
     );
   }
 
+  // MAIN DASHBOARD
   return (
 
     <div
@@ -221,33 +236,15 @@ function Dashboard() {
 
       <Sidebar />
 
-      {/* HEADER */}
-      <div
+      <h1
         style={{
+          fontSize: "28px",
+
           marginBottom: "20px",
         }}
       >
-
-        <h1
-          style={{
-            fontSize: "28px",
-            fontWeight: "700",
-            marginBottom: "6px",
-          }}
-        >
-          Dashboard
-        </h1>
-
-        <p
-          style={{
-            color: "#9ca3af",
-            fontSize: "13px",
-          }}
-        >
-          Welcome back to TaskWave.
-        </p>
-
-      </div>
+        Dashboard
+      </h1>
 
       {/* VERIFIED REDDIT */}
       <div
@@ -261,8 +258,6 @@ function Dashboard() {
           borderRadius: "22px",
 
           padding: "20px",
-
-          marginBottom: "18px",
         }}
       >
 
@@ -312,6 +307,7 @@ function Dashboard() {
       </div>
 
     </div>
+
   );
 }
 
