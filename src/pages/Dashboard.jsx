@@ -63,7 +63,7 @@ function Dashboard() {
               docRef
             );
 
-          // NO USER DATA
+          // NO FIREBASE USER DOC
           if (
             !docSnap.exists()
           ) {
@@ -78,11 +78,15 @@ function Dashboard() {
           const data =
             docSnap.data();
 
-          // NO REDDIT DETAILS
+          // NO REDDIT SUBMISSION YET
           if (
             !data.redditUsername ||
 
-            !data.redditLink
+            !data.redditLink ||
+
+            data.redditUsername === "" ||
+
+            data.redditLink === ""
           ) {
 
             navigate(
@@ -92,9 +96,9 @@ function Dashboard() {
             return;
           }
 
-          // WAITING FOR APPROVAL
+          // WAITING FOR ADMIN APPROVAL
           if (
-            !data.approved
+            data.approved === false
           ) {
 
             setPending(true);
@@ -104,7 +108,7 @@ function Dashboard() {
             return;
           }
 
-          // APPROVED
+          // APPROVED USER
           setUserData(data);
 
           setLoading(false);
@@ -127,7 +131,7 @@ function Dashboard() {
 
   }
 
-  // PENDING PAGE
+  // WAITING PAGE
   if (pending) {
 
     return (
@@ -157,7 +161,7 @@ function Dashboard() {
           style={{
             width: "100%",
 
-            maxWidth: "420px",
+            maxWidth: "430px",
 
             background:
               "rgba(255,255,255,0.03)",
@@ -167,7 +171,7 @@ function Dashboard() {
 
             borderRadius: "28px",
 
-            padding: "30px",
+            padding: "32px",
 
             textAlign: "center",
 
@@ -180,7 +184,7 @@ function Dashboard() {
             style={{
               color: "white",
 
-              fontSize: "30px",
+              fontSize: "32px",
 
               fontWeight: "700",
 
@@ -199,9 +203,11 @@ function Dashboard() {
               lineHeight: "28px",
             }}
           >
-            Your Reddit account is
-            waiting for admin review.
-            Please wait for approval.
+            Your Reddit profile has
+            been submitted for manual
+            review. Please wait for
+            admin approval to access
+            TaskWave.
           </p>
 
         </div>
@@ -211,7 +217,7 @@ function Dashboard() {
     );
   }
 
-  // MAIN DASHBOARD
+  // APPROVED DASHBOARD
   return (
 
     <div
