@@ -24,72 +24,177 @@ function Dashboard() {
   const navigate =
     useNavigate();
 
+  const [loading, setLoading] =
+    useState(true);
+
   const [userData, setUserData] =
     useState(null);
+
+  const [pending, setPending] =
+    useState(false);
 
   useEffect(() => {
 
     const checkUser =
       async () => {
 
-        const user =
-          auth.currentUser;
+        try {
 
-        if (!user) {
+          const user =
+            auth.currentUser;
 
-          navigate("/login");
+          if (!user) {
 
-          return;
+            navigate("/login");
+
+            return;
+          }
+
+          const docRef =
+            doc(
+              db,
+              "users",
+              user.uid
+            );
+
+          const docSnap =
+            await getDoc(
+              docRef
+            );
+
+          // NEVER VERIFIED
+          if (
+            !docSnap.exists()
+          ) {
+
+            navigate(
+              "/verification"
+            );
+
+            return;
+          }
+
+          const data =
+            docSnap.data();
+
+          // WAITING FOR ADMIN
+          if (
+            !data.approved
+          ) {
+
+            setPending(true);
+
+            setLoading(false);
+
+            return;
+          }
+
+          // APPROVED
+          setUserData(data);
+
+          setLoading(false);
+
+        } catch (error) {
+
+          console.log(error);
+
         }
-
-        const docRef =
-          doc(
-            db,
-            "users",
-            user.uid
-          );
-
-        const docSnap =
-          await getDoc(
-            docRef
-          );
-
-        if (
-          !docSnap.exists()
-        ) {
-
-          navigate(
-            "/verification"
-          );
-
-          return;
-        }
-
-        const data =
-          docSnap.data();
-
-        if (
-          !data.approved
-        ) {
-
-          navigate(
-            "/verification"
-          );
-
-          return;
-        }
-
-        setUserData(data);
       };
 
     checkUser();
 
   }, []);
 
-  if (!userData) {
+  // LOADING
+  if (loading) {
 
     return null;
 
+  }
+
+  // WAITING APPROVAL SCREEN
+  if (pending) {
+
+    return (
+
+      <div
+        style={{
+          minHeight: "100vh",
+
+          background:
+            "radial-gradient(circle at top,#111827,#050816)",
+
+          display: "flex",
+
+          justifyContent:
+            "center",
+
+          alignItems: "center",
+
+          padding: "24px",
+
+          fontFamily:
+            "Inter, sans-serif",
+        }}
+      >
+
+        <div
+          style={{
+            width: "100%",
+
+            maxWidth: "420px",
+
+            background:
+              "rgba(255,255,255,0.03)",
+
+            border:
+              "1px solid rgba(255,255,255,0.06)",
+
+            borderRadius: "28px",
+
+            padding: "30px",
+
+            textAlign: "center",
+
+            backdropFilter:
+              "blur(18px)",
+          }}
+        >
+
+          <h1
+            style={{
+              color: "white",
+
+              fontSize: "30px",
+
+              fontWeight: "700",
+
+              marginBottom: "14px",
+            }}
+          >
+            Verification Pending
+          </h1>
+
+          <p
+            style={{
+              color: "#9ca3af",
+
+              fontSize: "14px",
+
+              lineHeight: "28px",
+            }}
+          >
+            Your Reddit profile has been
+            submitted for manual review.
+            Please wait for an admin
+            approval to access TaskWave.
+          </p>
+
+        </div>
+
+      </div>
+
+    );
   }
 
   return (
@@ -116,15 +221,35 @@ function Dashboard() {
 
       <Sidebar />
 
-      <h1
+      {/* HEADER */}
+      <div
         style={{
-          fontSize: "28px",
-          marginBottom: "18px",
+          marginBottom: "20px",
         }}
       >
-        Dashboard
-      </h1>
 
+        <h1
+          style={{
+            fontSize: "28px",
+            fontWeight: "700",
+            marginBottom: "6px",
+          }}
+        >
+          Dashboard
+        </h1>
+
+        <p
+          style={{
+            color: "#9ca3af",
+            fontSize: "13px",
+          }}
+        >
+          Welcome back to TaskWave.
+        </p>
+
+      </div>
+
+      {/* VERIFIED REDDIT */}
       <div
         style={{
           background:
@@ -144,16 +269,19 @@ function Dashboard() {
         <p
           style={{
             color: "#c4b5fd",
+
             fontSize: "13px",
+
             marginBottom: "10px",
           }}
         >
-          VERIFIED REDDIT
+          VERIFIED REDDIT ACCOUNT
         </p>
 
         <h2
           style={{
             fontSize: "24px",
+
             marginBottom: "10px",
           }}
         >
@@ -164,12 +292,17 @@ function Dashboard() {
           href={
             userData.redditLink
           }
+
           target="_blank"
+
           rel="noreferrer"
+
           style={{
             color: "#a78bfa",
+
             textDecoration:
               "none",
+
             fontSize: "13px",
           }}
         >
