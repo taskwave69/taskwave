@@ -1,3 +1,5 @@
+// src/pages/Dashboard.jsx
+
 import Sidebar from "../components/Sidebar";
 
 import {
@@ -63,7 +65,7 @@ function Dashboard() {
               docRef
             );
 
-          // NO FIREBASE USER DOC
+          // NO FIREBASE DOC
           if (
             !docSnap.exists()
           ) {
@@ -78,15 +80,11 @@ function Dashboard() {
           const data =
             docSnap.data();
 
-          // NO REDDIT SUBMISSION YET
+          // FIRST TIME USER
           if (
             !data.redditUsername ||
 
-            !data.redditLink ||
-
-            data.redditUsername === "" ||
-
-            data.redditLink === ""
+            !data.redditLink
           ) {
 
             navigate(
@@ -96,9 +94,13 @@ function Dashboard() {
             return;
           }
 
-          // WAITING FOR ADMIN APPROVAL
+          // WAITING FOR APPROVAL
           if (
-            data.approved === false
+            data.approved === false &&
+
+            data.redditUsername &&
+
+            data.redditLink
           ) {
 
             setPending(true);
@@ -131,7 +133,7 @@ function Dashboard() {
 
   }
 
-  // WAITING PAGE
+  // PENDING PAGE
   if (pending) {
 
     return (
@@ -169,14 +171,14 @@ function Dashboard() {
             border:
               "1px solid rgba(255,255,255,0.06)",
 
-            borderRadius: "28px",
+            borderRadius: "30px",
 
-            padding: "32px",
-
-            textAlign: "center",
+            padding: "36px",
 
             backdropFilter:
-              "blur(18px)",
+              "blur(20px)",
+
+            textAlign: "center",
           }}
         >
 
@@ -184,11 +186,13 @@ function Dashboard() {
             style={{
               color: "white",
 
-              fontSize: "32px",
+              fontSize: "34px",
 
-              fontWeight: "700",
+              fontWeight: "800",
 
-              marginBottom: "14px",
+              letterSpacing: "-1px",
+
+              marginBottom: "16px",
             }}
           >
             Verification Pending
@@ -200,14 +204,14 @@ function Dashboard() {
 
               fontSize: "14px",
 
-              lineHeight: "28px",
+              lineHeight: "30px",
             }}
           >
             Your Reddit profile has
             been submitted for manual
-            review. Please wait for
-            admin approval to access
-            TaskWave.
+            admin review. Please wait
+            for approval to access
+            TaskWave tasks.
           </p>
 
         </div>
@@ -217,7 +221,7 @@ function Dashboard() {
     );
   }
 
-  // APPROVED DASHBOARD
+  // MAIN DASHBOARD
   return (
 
     <div
@@ -237,20 +241,47 @@ function Dashboard() {
         paddingLeft: "20px",
 
         paddingRight: "20px",
+
+        paddingBottom: "40px",
       }}
     >
 
       <Sidebar />
 
-      <h1
+      {/* HEADER */}
+      <div
         style={{
-          fontSize: "28px",
-
-          marginBottom: "20px",
+          marginBottom: "24px",
         }}
       >
-        Dashboard
-      </h1>
+
+        <h1
+          style={{
+            fontSize: "30px",
+
+            fontWeight: "800",
+
+            letterSpacing: "-1px",
+
+            marginBottom: "8px",
+          }}
+        >
+          Dashboard
+        </h1>
+
+        <p
+          style={{
+            color: "#9ca3af",
+
+            fontSize: "13px",
+
+            lineHeight: "26px",
+          }}
+        >
+          Welcome back to TaskWave.
+        </p>
+
+      </div>
 
       {/* VERIFIED REDDIT */}
       <div
@@ -261,9 +292,11 @@ function Dashboard() {
           border:
             "1px solid rgba(139,92,246,0.18)",
 
-          borderRadius: "22px",
+          borderRadius: "24px",
 
-          padding: "20px",
+          padding: "24px",
+
+          marginBottom: "20px",
         }}
       >
 
@@ -271,9 +304,11 @@ function Dashboard() {
           style={{
             color: "#c4b5fd",
 
-            fontSize: "13px",
+            fontSize: "12px",
 
-            marginBottom: "10px",
+            letterSpacing: "1px",
+
+            marginBottom: "12px",
           }}
         >
           VERIFIED REDDIT ACCOUNT
@@ -281,9 +316,11 @@ function Dashboard() {
 
         <h2
           style={{
-            fontSize: "24px",
+            fontSize: "26px",
 
-            marginBottom: "10px",
+            fontWeight: "700",
+
+            marginBottom: "12px",
           }}
         >
           u/{userData.redditUsername}
