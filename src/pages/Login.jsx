@@ -1,31 +1,137 @@
 // src/pages/Login.jsx
 
-import {
-  Link,
-  useNavigate
-} from "react-router-dom";
+import { useState } from "react";
 
 import {
-  signInWithPopup,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithEmailAndPassword
+  signInWithPopup,
+  fetchSignInMethodsForEmail,
 } from "firebase/auth";
 
 import {
-  useState
-} from "react";
+  doc,
+  getDoc
+} from "firebase/firestore";
 
-import { auth } from "../firebase";
+import {
+  auth,
+  db
+} from "../firebase";
+
+import {
+  useNavigate,
+  Link
+} from "react-router-dom";
 
 function Login() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const [email, setEmail] =
     useState("");
 
   const [password, setPassword] =
     useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  // EMAIL LOGIN
+  const handleLogin =
+    async () => {
+
+      if (
+        !email ||
+        !password
+      ) {
+
+        alert(
+          "Fill all fields"
+        );
+
+        return;
+      }
+
+      try {
+
+        setLoading(true);
+
+        // CHECK IF ACCOUNT EXISTS
+        const methods =
+          await fetchSignInMethodsForEmail(
+            auth,
+            email
+          );
+
+        // NO ACCOUNT
+        if (
+          methods.length === 0
+        ) {
+
+          alert(
+            "No account found. Please sign up first."
+          );
+
+          setLoading(false);
+
+          return;
+        }
+
+        // LOGIN
+        const userCredential =
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+        const user =
+          userCredential.user;
+
+        const docRef =
+          doc(
+            db,
+            "users",
+            user.uid
+          );
+
+        const docSnap =
+          await getDoc(
+            docRef
+          );
+
+        // FIRST TIME USER
+        if (
+          !docSnap.exists()
+        ) {
+
+          navigate(
+            "/verification"
+          );
+
+          return;
+        }
+
+        navigate(
+          "/dashboard"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+        alert(
+          "Invalid login credentials"
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+    };
 
   // GOOGLE LOGIN
   const handleGoogleLogin =
@@ -36,41 +142,46 @@ function Login() {
         const provider =
           new GoogleAuthProvider();
 
-        await signInWithPopup(
-          auth,
-          provider
-        );
+        const result =
+          await signInWithPopup(
+            auth,
+            provider
+          );
 
-        navigate("/dashboard");
+        const user =
+          result.user;
+
+        const docRef =
+          doc(
+            db,
+            "users",
+            user.uid
+          );
+
+        const docSnap =
+          await getDoc(
+            docRef
+          );
+
+        // NEW USER
+        if (
+          !docSnap.exists()
+        ) {
+
+          navigate(
+            "/verification"
+          );
+
+          return;
+        }
+
+        navigate(
+          "/dashboard"
+        );
 
       } catch (error) {
 
         console.log(error);
-
-        alert("Google Login Failed");
-
-      }
-    };
-
-  // EMAIL LOGIN
-  const handleEmailLogin =
-    async () => {
-
-      try {
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-        navigate("/dashboard");
-
-      } catch (error) {
-
-        console.log(error);
-
-        alert("Invalid Email or Password");
 
       }
     };
@@ -80,203 +191,223 @@ function Login() {
     <div
       style={{
         minHeight: "100vh",
+
         background:
           "radial-gradient(circle at top,#111827,#050816)",
+
         display: "flex",
-        justifyContent: "center",
+
+        justifyContent:
+          "center",
+
         alignItems: "center",
-        padding: "20px",
-        overflow: "hidden",
-        fontFamily: "Inter, sans-serif",
-        position: "relative",
+
+        padding: "24px",
+
+        fontFamily:
+          "Inter, sans-serif",
       }}
     >
 
-      {/* GLOW */}
-      <div
-        style={{
-          position: "absolute",
-          width: "350px",
-          height: "350px",
-          background:
-            "rgba(139,92,246,0.18)",
-          borderRadius: "50%",
-          top: "-100px",
-          right: "-100px",
-          filter: "blur(80px)",
-        }}
-      />
-
-      {/* CARD */}
       <div
         style={{
           width: "100%",
-          maxWidth: "420px",
+
+          maxWidth: "440px",
+
           background:
             "rgba(255,255,255,0.03)",
+
           border:
-            "1px solid rgba(255,255,255,0.06)",
+            "1px solid rgba(255,255,255,0.05)",
+
           borderRadius: "34px",
-          padding: "38px 26px",
-          backdropFilter: "blur(18px)",
+
+          padding: "40px",
+
+          backdropFilter:
+            "blur(22px)",
+
           boxShadow:
-            "0 0 50px rgba(139,92,246,0.18)",
-          position: "relative",
-          zIndex: 5,
+            "0 0 45px rgba(139,92,246,0.10)",
         }}
       >
 
-        {/* LOGO */}
+        {/* TITLE */}
         <h1
           style={{
-            textAlign: "center",
-            fontSize: "44px",
-            fontWeight: "900",
+            color: "white",
+
+            fontSize: "36px",
+
+            fontWeight: "800",
+
+            letterSpacing: "-1.5px",
+
             marginBottom: "14px",
           }}
         >
-          <span style={{ color: "white" }}>
-            Task
-          </span>
-
-          <span style={{ color: "#8b5cf6" }}>
-            Wave
-          </span>
+          Welcome Back
         </h1>
 
         <p
           style={{
-            textAlign: "center",
             color: "#9ca3af",
-            fontSize: "15px",
-            lineHeight: "28px",
-            marginBottom: "35px",
+
+            fontSize: "14px",
+
+            lineHeight: "30px",
+
+            marginBottom: "34px",
           }}
         >
-          Login to continue earning
-          through premium social tasks.
+          Sign in to continue
+          accessing your TaskWave
+          dashboard and tasks.
         </p>
 
         {/* EMAIL */}
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-          style={inputStyle}
-        />
+        <div
+          style={{
+            marginBottom: "18px",
+          }}
+        >
+
+          <p style={labelStyle}>
+            Email Address
+          </p>
+
+          <input
+            type="email"
+
+            placeholder="Enter your email"
+
+            value={email}
+
+            onChange={(e) =>
+              setEmail(
+                e.target.value
+              )
+            }
+
+            style={inputStyle}
+          />
+
+        </div>
 
         {/* PASSWORD */}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(
-              e.target.value
-            )
-          }
-          style={inputStyle}
-        />
+        <div
+          style={{
+            marginBottom: "28px",
+          }}
+        >
+
+          <p style={labelStyle}>
+            Password
+          </p>
+
+          <input
+            type="password"
+
+            placeholder="Enter your password"
+
+            value={password}
+
+            onChange={(e) =>
+              setPassword(
+                e.target.value
+              )
+            }
+
+            style={inputStyle}
+          />
+
+        </div>
 
         {/* LOGIN BUTTON */}
         <button
-          onClick={handleEmailLogin}
-          style={mainButton}
+          onClick={handleLogin}
+
+          disabled={loading}
+
+          style={buttonStyle}
         >
-          Login
+          {loading
+            ? "Signing In..."
+            : "Sign In"}
         </button>
 
         {/* DIVIDER */}
         <div
           style={{
             display: "flex",
+
             alignItems: "center",
-            margin: "28px 0",
-            gap: "10px",
+
+            gap: "12px",
+
+            marginTop: "28px",
+
+            marginBottom: "28px",
           }}
         >
-          <div style={line} />
 
-          <span
+          <div style={dividerStyle}></div>
+
+          <p
             style={{
               color: "#6b7280",
+
               fontSize: "12px",
             }}
           >
-            OR CONTINUE WITH
-          </span>
+            OR
+          </p>
 
-          <div style={line} />
+          <div style={dividerStyle}></div>
+
         </div>
 
         {/* GOOGLE */}
         <button
-          onClick={handleGoogleLogin}
+          onClick={
+            handleGoogleLogin
+          }
+
           style={googleButton}
         >
-
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/300/300221.png"
-            alt="google"
-            style={{
-              width: "22px",
-              height: "22px",
-              background: "white",
-              borderRadius: "50%",
-              padding: "2px",
-            }}
-          />
-
           Continue with Google
-
         </button>
-
-        {/* FEATURES */}
-        <div
-          style={{
-            display: "grid",
-            gap: "14px",
-            marginTop: "30px",
-            marginBottom: "30px",
-          }}
-        >
-
-          <div style={featureCard}>
-            ⚡ Instant task access
-          </div>
-
-          <div style={featureCard}>
-            💸 Binance & UPI withdrawals
-          </div>
-
-          <div style={featureCard}>
-            🔒 Secure cloud authentication
-          </div>
-
-        </div>
 
         {/* SIGNUP */}
         <p
           style={{
-            textAlign: "center",
             color: "#9ca3af",
-            fontSize: "14px",
+
+            fontSize: "13px",
+
+            textAlign: "center",
+
+            marginTop: "30px",
+
+            lineHeight: "26px",
           }}
         >
-          Don’t have an account?{" "}
+          New to TaskWave?{" "}
 
           <Link
             to="/signup"
+
             style={{
-              color: "#8b5cf6",
-              textDecoration: "none",
-              fontWeight: "bold",
+              color: "#a78bfa",
+
+              textDecoration:
+                "none",
+
+              fontWeight: "600",
             }}
           >
-            Create one
+            Create account
           </Link>
 
         </p>
@@ -287,70 +418,94 @@ function Login() {
   );
 }
 
-const inputStyle = {
-  width: "100%",
-  padding: "18px",
-  borderRadius: "18px",
-  border:
-    "1px solid rgba(255,255,255,0.06)",
-  background:
-    "rgba(255,255,255,0.03)",
-  color: "white",
-  fontSize: "15px",
-  marginBottom: "16px",
-  outline: "none",
-  boxSizing: "border-box",
+const labelStyle = {
+
+  color: "#d1d5db",
+
+  fontSize: "13px",
+
+  marginBottom: "12px",
+
+  fontWeight: "600",
 };
 
-const mainButton = {
+const inputStyle = {
+
   width: "100%",
+
   padding: "18px",
-  borderRadius: "20px",
+
+  borderRadius: "18px",
+
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+
+  background:
+    "rgba(255,255,255,0.04)",
+
+  color: "white",
+
+  fontSize: "14px",
+
+  outline: "none",
+};
+
+const buttonStyle = {
+
+  width: "100%",
+
+  padding: "18px",
+
   border: "none",
+
+  borderRadius: "20px",
+
   background:
     "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
   color: "white",
-  fontSize: "16px",
-  fontWeight: "bold",
+
+  fontSize: "14px",
+
+  fontWeight: "700",
+
   cursor: "pointer",
+
   boxShadow:
-    "0 0 35px rgba(139,92,246,0.35)",
+    "0 0 35px rgba(139,92,246,0.18)",
 };
 
 const googleButton = {
+
   width: "100%",
+
   padding: "18px",
+
   borderRadius: "20px",
+
   border:
     "1px solid rgba(255,255,255,0.06)",
+
   background:
     "rgba(255,255,255,0.03)",
+
   color: "white",
-  fontSize: "15px",
-  fontWeight: "bold",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "12px",
-};
 
-const line = {
-  flex: 1,
-  height: "1px",
-  background:
-    "rgba(255,255,255,0.08)",
-};
-
-const featureCard = {
-  background:
-    "rgba(255,255,255,0.03)",
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-  padding: "16px",
-  borderRadius: "16px",
-  color: "#d1d5db",
   fontSize: "14px",
+
+  fontWeight: "600",
+
+  cursor: "pointer",
+};
+
+const dividerStyle = {
+
+  flex: 1,
+
+  height: "1px",
+
+  background:
+    "rgba(255,255,255,0.06)",
 };
 
 export default Login;
