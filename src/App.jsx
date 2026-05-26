@@ -1,32 +1,31 @@
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Navigate,
 } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Tasks from "./pages/Tasks";
 import Wallet from "./pages/wallet";
-import History from "./pages/history";
 import Admin from "./pages/Admin";
-
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
-import Cookies from "./pages/Cookies";
-import Disclaimer from "./pages/Disclaimer";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Verification from "./pages/Verification";
 
 function App() {
+
   return (
+
     <BrowserRouter>
 
       <Routes>
 
         <Route
           path="/"
-          element={<Home />}
+          element={
+            <Navigate to="/login" />
+          }
         />
 
         <Route
@@ -37,6 +36,11 @@ function App() {
         <Route
           path="/signup"
           element={<Signup />}
+        />
+
+        <Route
+          path="/verification"
+          element={<Verification />}
         />
 
         <Route
@@ -55,40 +59,14 @@ function App() {
         />
 
         <Route
-          path="/history"
-          element={<History />}
-        />
-
-        <Route
           path="/admin"
           element={<Admin />}
-        />
-
-        {/* LEGAL PAGES */}
-
-        <Route
-          path="/terms"
-          element={<Terms />}
-        />
-
-        <Route
-          path="/privacy"
-          element={<Privacy />}
-        />
-
-        <Route
-          path="/cookies"
-          element={<Cookies />}
-        />
-
-        <Route
-          path="/disclaimer"
-          element={<Disclaimer />}
         />
 
       </Routes>
 
     </BrowserRouter>
+
   );
 }
 
