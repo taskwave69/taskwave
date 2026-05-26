@@ -1,3 +1,5 @@
+// src/pages/Verification.jsx
+
 import { useState } from "react";
 
 import {
@@ -28,6 +30,9 @@ function Verification() {
   const [discordJoined, setDiscordJoined] =
     useState(false);
 
+  const [loading, setLoading] =
+    useState(false);
+
   const handleVerification =
     async () => {
 
@@ -45,6 +50,8 @@ function Verification() {
       }
 
       try {
+
+        setLoading(true);
 
         const user =
           auth.currentUser;
@@ -72,11 +79,8 @@ function Verification() {
           { merge: true }
         );
 
-        alert(
-          "Verification submitted. Wait for admin approval."
-        );
-
-        navigate("/login");
+        // REDIRECT TO DASHBOARD
+        navigate("/dashboard");
 
       } catch (error) {
 
@@ -126,9 +130,13 @@ function Verification() {
 
           backdropFilter:
             "blur(18px)",
+
+          boxShadow:
+            "0 0 35px rgba(139,92,246,0.10)",
         }}
       >
 
+        {/* TITLE */}
         <h1
           style={{
             color: "white",
@@ -137,10 +145,12 @@ function Verification() {
 
             fontWeight: "800",
 
+            letterSpacing: "-1px",
+
             marginBottom: "10px",
           }}
         >
-          Reddit Verification
+          Profile Verification
         </h1>
 
         <p
@@ -154,43 +164,155 @@ function Verification() {
             marginBottom: "26px",
           }}
         >
-          Verify your Reddit profile
+          Submit your Reddit account
+          for manual verification
           before accessing tasks.
         </p>
 
-        <input
-          placeholder="Reddit Username"
-
-          value={redditUsername}
-
-          onChange={(e) =>
-            setRedditUsername(
-              e.target.value
-            )
-          }
-
-          style={inputStyle}
-        />
-
-        <input
-          placeholder="Reddit Profile Link"
-
-          value={redditLink}
-
-          onChange={(e) =>
-            setRedditLink(
-              e.target.value
-            )
-          }
-
-          style={inputStyle}
-        />
-
+        {/* REDDIT USERNAME */}
         <div
           style={{
-            marginBottom: "22px",
+            marginBottom: "18px",
           }}
         >
+
+          <p
+            style={labelStyle}
+          >
+            Reddit Username
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+
+              alignItems: "center",
+
+              background:
+                "rgba(255,255,255,0.04)",
+
+              border:
+                "1px solid rgba(255,255,255,0.06)",
+
+              borderRadius: "16px",
+
+              paddingLeft: "16px",
+            }}
+          >
+
+            <span
+              style={{
+                color: "#8b5cf6",
+
+                fontSize: "14px",
+
+                fontWeight: "600",
+              }}
+            >
+              u/
+            </span>
+
+            <input
+              type="text"
+
+              placeholder="redditusername"
+
+              value={
+                redditUsername
+              }
+
+              onChange={(e) =>
+                setRedditUsername(
+                  e.target.value
+                )
+              }
+
+              style={{
+                ...inputInsideStyle,
+              }}
+            />
+
+          </div>
+
+        </div>
+
+        {/* PROFILE LINK */}
+        <div
+          style={{
+            marginBottom: "18px",
+          }}
+        >
+
+          <p
+            style={labelStyle}
+          >
+            Reddit Profile Link
+          </p>
+
+          <input
+            type="text"
+
+            placeholder="https://reddit.com/u/username"
+
+            value={redditLink}
+
+            onChange={(e) =>
+              setRedditLink(
+                e.target.value
+              )
+            }
+
+            style={inputStyle}
+          />
+
+        </div>
+
+        {/* DISCORD */}
+        <div
+          style={{
+            background:
+              "rgba(139,92,246,0.08)",
+
+            border:
+              "1px solid rgba(139,92,246,0.14)",
+
+            borderRadius: "18px",
+
+            padding: "18px",
+
+            marginBottom: "24px",
+          }}
+        >
+
+          <p
+            style={{
+              color: "white",
+
+              fontSize: "14px",
+
+              fontWeight: "600",
+
+              marginBottom: "10px",
+            }}
+          >
+            Discord Requirement
+          </p>
+
+          <p
+            style={{
+              color: "#9ca3af",
+
+              fontSize: "13px",
+
+              lineHeight: "24px",
+
+              marginBottom: "14px",
+            }}
+          >
+            Join our official Discord
+            community before
+            verification approval.
+          </p>
 
           <a
             href="https://discord.gg/CGtfreSMP"
@@ -200,9 +322,13 @@ function Verification() {
             rel="noreferrer"
 
             style={{
-              color: "#a78bfa",
+              display: "inline-block",
 
-              fontSize: "14px",
+              color: "#c4b5fd",
+
+              fontSize: "13px",
+
+              marginBottom: "16px",
 
               textDecoration:
                 "none",
@@ -211,50 +337,51 @@ function Verification() {
             Join Discord Server
           </a>
 
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-
-            alignItems: "center",
-
-            gap: "10px",
-
-            marginBottom: "24px",
-          }}
-        >
-
-          <input
-            type="checkbox"
-
-            checked={
-              discordJoined
-            }
-
-            onChange={(e) =>
-              setDiscordJoined(
-                e.target.checked
-              )
-            }
-          />
-
-          <p
+          <div
             style={{
-              color: "#d1d5db",
+              display: "flex",
 
-              fontSize: "13px",
+              alignItems: "center",
+
+              gap: "10px",
             }}
           >
-            I joined the Discord server
-          </p>
+
+            <input
+              type="checkbox"
+
+              checked={
+                discordJoined
+              }
+
+              onChange={(e) =>
+                setDiscordJoined(
+                  e.target.checked
+                )
+              }
+            />
+
+            <p
+              style={{
+                color: "#d1d5db",
+
+                fontSize: "13px",
+              }}
+            >
+              I joined the Discord server
+            </p>
+
+          </div>
 
         </div>
 
+        {/* BUTTON */}
         <button
           onClick={
             handleVerification
           }
+
+          disabled={loading}
 
           style={{
             width: "100%",
@@ -275,9 +402,19 @@ function Verification() {
             fontWeight: "700",
 
             cursor: "pointer",
+
+            opacity:
+              loading
+                ? 0.7
+                : 1,
+
+            boxShadow:
+              "0 0 30px rgba(139,92,246,0.18)",
           }}
         >
-          Submit Verification
+          {loading
+            ? "Submitting..."
+            : "Submit Verification"}
         </button>
 
       </div>
@@ -286,13 +423,22 @@ function Verification() {
   );
 }
 
+const labelStyle = {
+
+  color: "#d1d5db",
+
+  fontSize: "13px",
+
+  marginBottom: "10px",
+
+  fontWeight: "600",
+};
+
 const inputStyle = {
 
   width: "100%",
 
   padding: "16px",
-
-  marginBottom: "16px",
 
   borderRadius: "16px",
 
@@ -301,6 +447,23 @@ const inputStyle = {
 
   background:
     "rgba(255,255,255,0.04)",
+
+  color: "white",
+
+  fontSize: "14px",
+
+  outline: "none",
+};
+
+const inputInsideStyle = {
+
+  width: "100%",
+
+  padding: "16px",
+
+  border: "none",
+
+  background: "transparent",
 
   color: "white",
 
