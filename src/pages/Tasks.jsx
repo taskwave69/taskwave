@@ -1,36 +1,179 @@
 // src/pages/Tasks.jsx
 
+import {
+  useEffect,
+  useState
+} from "react";
+
 import Sidebar from "../components/Sidebar";
+
+import {
+  auth,
+  db
+} from "../firebase";
+
+import {
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 
 function Tasks() {
 
-  const tasks = [
+  const [tasks, setTasks] =
+    useState([]);
 
-    {
-      title: "Instagram Follow",
-      reward: "$2.00",
-      category: "Social Task",
-    },
+  const [loading, setLoading] =
+    useState(true);
 
-    {
-      title: "Twitter Repost",
-      reward: "$1.50",
-      category: "Promotion",
-    },
+  // FETCH TASKS
+  const fetchTasks =
+    async () => {
 
-    {
-      title: "Discord Invite",
-      reward: "$3.00",
-      category: "Community",
-    },
+      try {
 
-    {
-      title: "YouTube Like",
-      reward: "$1.20",
-      category: "Video Task",
-    },
+        const user =
+          auth.currentUser;
 
-  ];
+        const q =
+          query(
+            collection(
+              db,
+              "tasks"
+            ),
+
+            where(
+              "claimed",
+              "==",
+              false
+            )
+          );
+
+        const snapshot =
+          await getDocs(q);
+
+        const taskList =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        // REMOVE OWN CLAIMED TASKS
+        const filtered =
+          taskList.filter(
+            (task) =>
+              task.claimedBy !==
+              user.uid
+          );
+
+        setTasks(filtered);
+
+      } catch (error) {
+
+        console.log(error);
+
+      } finally {
+
+        setLoading(false);
+
+      }
+    };
+
+  useEffect(() => {
+
+    fetchTasks();
+
+  }, []);
+
+  // CLAIM TASK
+  const claimTask =
+    async (taskId) => {
+
+      try {
+
+        const user =
+          auth.currentUser;
+
+        // ADD CLAIM
+        await addDoc(
+          collection(
+            db,
+            "taskClaims"
+          ),
+          {
+            taskId,
+
+            userId:
+              user.uid,
+
+            status:
+              "pending",
+
+            createdAt:
+              Date.now(),
+          }
+        );
+
+        // HIDE TASK
+        await updateDoc(
+          doc(
+            db,
+            "tasks",
+            taskId
+          ),
+          {
+            claimed: true,
+
+            claimedBy:
+              user.uid,
+          }
+        );
+
+        fetchTasks();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // REJECT TASK
+  const rejectTask =
+    async (taskId) => {
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "tasks",
+            taskId
+          ),
+          {
+            rejected: true,
+          }
+        );
+
+        setTasks(
+          tasks.filter(
+            (task) =>
+              task.id !== taskId
+          )
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
 
   return (
 
@@ -41,18 +184,18 @@ function Tasks() {
         background:
           "radial-gradient(circle at top,#111827,#050816)",
 
+        paddingTop: "95px",
+
+        paddingLeft: "20px",
+
+        paddingRight: "20px",
+
+        paddingBottom: "40px",
+
         color: "white",
 
         fontFamily:
           "Inter, sans-serif",
-
-        paddingTop: "95px",
-
-        paddingLeft: "22px",
-
-        paddingRight: "22px",
-
-        paddingBottom: "40px",
       }}
     >
 
@@ -61,13 +204,13 @@ function Tasks() {
       {/* HEADER */}
       <div
         style={{
-          marginBottom: "26px",
+          marginBottom: "24px",
         }}
       >
 
         <h1
           style={{
-            fontSize: "34px",
+            fontSize: "28px",
 
             fontWeight: "800",
 
@@ -83,91 +226,36 @@ function Tasks() {
           style={{
             color: "#9ca3af",
 
-            fontSize: "14px",
+            fontSize: "12px",
 
-            lineHeight: "26px",
-
-            maxWidth: "420px",
+            lineHeight: "24px",
           }}
         >
-          Complete premium social
-          tasks and earn instantly
-          through TaskWave.
+          Complete tasks and earn rewards.
         </p>
 
       </div>
 
-      {/* STATS CARD */}
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-          borderRadius: "24px",
-
-          padding: "22px",
-
-          marginBottom: "22px",
-
-          boxShadow:
-            "0 0 35px rgba(139,92,246,0.20)",
-        }}
-      >
+      {/* LOADING */}
+      {loading && (
 
         <p
           style={{
+            color: "#9ca3af",
+
             fontSize: "13px",
-
-            opacity: 0.82,
-
-            marginBottom: "10px",
           }}
         >
-          Available Rewards
+          Loading tasks...
         </p>
 
-        <h2
-          style={{
-            fontSize: "40px",
+      )}
 
-            fontWeight: "800",
-
-            letterSpacing: "-2px",
-
-            marginBottom: "10px",
-          }}
-        >
-          $7.70
-        </h2>
-
-        <p
-          style={{
-            fontSize: "14px",
-
-            opacity: 0.9,
-
-            lineHeight: "26px",
-          }}
-        >
-          Complete tasks below
-          and increase your balance.
-        </p>
-
-      </div>
-
-      {/* TASKS */}
-      <div
-        style={{
-          display: "grid",
-
-          gap: "16px",
-        }}
-      >
-
-        {tasks.map((task, index) => (
+      {/* EMPTY */}
+      {!loading &&
+        tasks.length === 0 && (
 
           <div
-            key={index}
             style={{
               background:
                 "rgba(255,255,255,0.03)",
@@ -175,97 +263,275 @@ function Tasks() {
               border:
                 "1px solid rgba(255,255,255,0.05)",
 
-              borderRadius: "22px",
+              borderRadius: "24px",
 
-              padding: "18px",
+              padding: "26px",
 
-              backdropFilter:
-                "blur(18px)",
-
-              display: "flex",
-
-              justifyContent:
-                "space-between",
-
-              alignItems: "center",
+              textAlign: "center",
             }}
           >
 
-            {/* LEFT */}
-            <div>
+            <p
+              style={{
+                color: "#9ca3af",
 
-              <p
+                fontSize: "13px",
+
+                lineHeight: "26px",
+              }}
+            >
+              No available tasks right now.
+            </p>
+
+          </div>
+
+        )}
+
+      {/* TASK LIST */}
+      <div
+        style={{
+          display: "grid",
+
+          gap: "18px",
+        }}
+      >
+
+        {tasks.map((task) => (
+
+          <div
+            key={task.id}
+
+            style={{
+              background:
+                "rgba(255,255,255,0.03)",
+
+              border:
+                "1px solid rgba(255,255,255,0.05)",
+
+              borderRadius: "26px",
+
+              padding: "22px",
+
+              backdropFilter:
+                "blur(20px)",
+            }}
+          >
+
+            {/* IMAGE */}
+            {task.image && (
+
+              <img
+                src={task.image}
+
+                alt="task"
+
                 style={{
-                  fontSize: "17px",
+                  width: "100%",
 
-                  fontWeight: "700",
+                  height: "180px",
 
-                  marginBottom: "6px",
+                  objectFit: "cover",
+
+                  borderRadius: "18px",
+
+                  marginBottom: "18px",
                 }}
-              >
-                {task.title}
-              </p>
+              />
 
-              <p
-                style={{
-                  color: "#9ca3af",
+            )}
 
-                  fontSize: "13px",
-                }}
-              >
-                {task.category}
-              </p>
+            {/* TITLE */}
+            <h2
+              style={{
+                fontSize: "18px",
 
-            </div>
+                fontWeight: "700",
 
-            {/* RIGHT */}
+                marginBottom: "10px",
+
+                letterSpacing: "-0.5px",
+              }}
+            >
+              {task.title}
+            </h2>
+
+            {/* DESCRIPTION */}
+            <p
+              style={{
+                color: "#9ca3af",
+
+                fontSize: "12px",
+
+                lineHeight: "24px",
+
+                marginBottom: "18px",
+              }}
+            >
+              {task.description}
+            </p>
+
+            {/* INSTRUCTIONS */}
             <div
               style={{
-                textAlign: "right",
+                background:
+                  "rgba(139,92,246,0.08)",
+
+                border:
+                  "1px solid rgba(139,92,246,0.12)",
+
+                borderRadius: "18px",
+
+                padding: "16px",
+
+                marginBottom: "18px",
               }}
             >
 
               <p
                 style={{
-                  color: "#8b5cf6",
+                  color: "#c4b5fd",
 
-                  fontSize: "20px",
-
-                  fontWeight: "800",
+                  fontSize: "11px",
 
                   marginBottom: "10px",
+
+                  letterSpacing: "1px",
                 }}
               >
-                {task.reward}
+                INSTRUCTIONS
               </p>
 
-              <button
+              <p
                 style={{
-                  border: "none",
+                  color: "#d1d5db",
 
-                  padding:
-                    "10px 16px",
+                  fontSize: "12px",
 
-                  borderRadius:
-                    "14px",
-
-                  background:
-                    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-                  color: "white",
-
-                  fontSize: "13px",
-
-                  fontWeight: "600",
-
-                  cursor: "pointer",
-
-                  boxShadow:
-                    "0 0 20px rgba(139,92,246,0.18)",
+                  lineHeight: "24px",
                 }}
               >
-                Claim
-              </button>
+                {task.instructions}
+              </p>
+
+            </div>
+
+            {/* FOOTER */}
+            <div
+              style={{
+                display: "flex",
+
+                justifyContent:
+                  "space-between",
+
+                alignItems: "center",
+
+                gap: "12px",
+              }}
+            >
+
+              <div>
+
+                <p
+                  style={{
+                    color: "#9ca3af",
+
+                    fontSize: "11px",
+
+                    marginBottom: "6px",
+                  }}
+                >
+                  TASK REWARD
+                </p>
+
+                <h3
+                  style={{
+                    color: "white",
+
+                    fontSize: "22px",
+
+                    fontWeight: "800",
+                  }}
+                >
+                  ${task.amount}
+                </h3>
+
+              </div>
+
+              {/* BUTTONS */}
+              <div
+                style={{
+                  display: "flex",
+
+                  gap: "10px",
+                }}
+              >
+
+                <button
+                  onClick={() =>
+                    rejectTask(
+                      task.id
+                    )
+                  }
+
+                  style={{
+                    padding:
+                      "12px 16px",
+
+                    border: "none",
+
+                    borderRadius:
+                      "16px",
+
+                    background:
+                      "rgba(239,68,68,0.12)",
+
+                    color: "#f87171",
+
+                    fontSize: "12px",
+
+                    fontWeight: "700",
+
+                    cursor: "pointer",
+                  }}
+                >
+                  Reject
+                </button>
+
+                <button
+                  onClick={() =>
+                    claimTask(
+                      task.id
+                    )
+                  }
+
+                  style={{
+                    padding:
+                      "12px 18px",
+
+                    border: "none",
+
+                    borderRadius:
+                      "16px",
+
+                    background:
+                      "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+                    color: "white",
+
+                    fontSize: "12px",
+
+                    fontWeight: "700",
+
+                    cursor: "pointer",
+
+                    boxShadow:
+                      "0 0 25px rgba(139,92,246,0.15)",
+                  }}
+                >
+                  Claim
+                </button>
+
+              </div>
 
             </div>
 
