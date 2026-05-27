@@ -55,7 +55,6 @@ function Tasks() {
             })
           );
 
-        // ONLY AVAILABLE TASKS
         const filtered =
           taskList.filter(
             (task) =>
@@ -126,21 +125,6 @@ function Tasks() {
 
         console.log(error);
 
-      }
-    };
-
-  // OPEN IMAGE
-  const openImage =
-    () => {
-
-      if (
-        selectedTask.image
-      ) {
-
-        window.open(
-          selectedTask.image,
-          "_blank"
-        );
       }
     };
 
@@ -224,7 +208,7 @@ function Tasks() {
           }
         );
 
-        // ADD TO PENDING BALANCE
+        // UPDATE PENDING BALANCE
         const userRef =
           doc(
             db,
@@ -255,7 +239,7 @@ function Tasks() {
           }
         );
 
-        // REMOVE FROM TASK LIST
+        // REMOVE TASK
         setTasks(
           tasks.filter(
             (task) =>
@@ -420,7 +404,6 @@ function Tasks() {
             }}
           >
 
-            {/* LEFT */}
             <div>
 
               <p
@@ -444,8 +427,6 @@ function Tasks() {
                   fontWeight: "700",
 
                   marginBottom: "6px",
-
-                  letterSpacing: "-0.3px",
                 }}
               >
                 {task.title}
@@ -464,7 +445,6 @@ function Tasks() {
 
             </div>
 
-            {/* CLAIM */}
             <button
               onClick={() =>
                 openTask(task)
@@ -489,9 +469,6 @@ function Tasks() {
                 fontWeight: "700",
 
                 cursor: "pointer",
-
-                boxShadow:
-                  "0 0 25px rgba(139,92,246,0.14)",
               }}
             >
               Claim
@@ -584,7 +561,7 @@ function Tasks() {
               }
             </h1>
 
-            {/* COPY BUTTONS */}
+            {/* ACTION BUTTONS */}
             <div
               style={{
                 display: "flex",
@@ -617,13 +594,28 @@ function Tasks() {
 
               {selectedTask.image && (
 
-                <button
-                  onClick={openImage}
+                <a
+                  href={
+                    selectedTask.image
+                  }
 
-                  style={actionBtn}
+                  target="_blank"
+
+                  rel="noreferrer"
+
+                  style={{
+                    textDecoration:
+                      "none",
+                  }}
                 >
-                  Open Image
-                </button>
+
+                  <button
+                    style={actionBtn}
+                  >
+                    Open Image Link
+                  </button>
+
+                </a>
 
               )}
 
@@ -809,9 +801,6 @@ function Tasks() {
                   fontSize: "13px",
 
                   cursor: "pointer",
-
-                  boxShadow:
-                    "0 0 35px rgba(139,92,246,0.16)",
                 }}
               >
                 Submit Task
