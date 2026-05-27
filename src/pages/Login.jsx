@@ -1,17 +1,14 @@
-// src/pages/Login.jsx
-
 import { useState } from "react";
 
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  fetchSignInMethodsForEmail,
 } from "firebase/auth";
 
 import {
   doc,
-  getDoc
+  getDoc,
 } from "firebase/firestore";
 
 import {
@@ -58,28 +55,7 @@ function Login() {
 
         setLoading(true);
 
-        // CHECK IF ACCOUNT EXISTS
-        const methods =
-          await fetchSignInMethodsForEmail(
-            auth,
-            email
-          );
-
-        // NO ACCOUNT
-        if (
-          methods.length === 0
-        ) {
-
-          alert(
-            "No account found. Please sign up first."
-          );
-
-          setLoading(false);
-
-          return;
-        }
-
-        // LOGIN
+        // LOGIN FIRST
         const userCredential =
           await signInWithEmailAndPassword(
             auth,
@@ -90,26 +66,31 @@ function Login() {
         const user =
           userCredential.user;
 
-        const docRef =
+        // CHECK IF REGISTERED
+        const userRef =
           doc(
             db,
             "users",
             user.uid
           );
 
-        const docSnap =
+        const userSnap =
           await getDoc(
-            docRef
+            userRef
           );
 
-        // FIRST TIME USER
+        // NOT REGISTERED
         if (
-          !docSnap.exists()
+          !userSnap.exists()
         ) {
 
-          navigate(
-            "/verification"
+          await auth.signOut();
+
+          alert(
+            "Account not registered. Please sign up first."
           );
+
+          setLoading(false);
 
           return;
         }
@@ -123,7 +104,7 @@ function Login() {
         console.log(error);
 
         alert(
-          "Invalid login credentials"
+          "Invalid account or password"
         );
 
       } finally {
@@ -151,25 +132,28 @@ function Login() {
         const user =
           result.user;
 
-        const docRef =
+        // CHECK IF REGISTERED
+        const userRef =
           doc(
             db,
             "users",
             user.uid
           );
 
-        const docSnap =
+        const userSnap =
           await getDoc(
-            docRef
+            userRef
           );
 
-        // NEW USER
+        // NOT REGISTERED
         if (
-          !docSnap.exists()
+          !userSnap.exists()
         ) {
 
-          navigate(
-            "/verification"
+          await auth.signOut();
+
+          alert(
+            "Google account not registered. Please sign up first."
           );
 
           return;
@@ -261,9 +245,7 @@ function Login() {
             marginBottom: "34px",
           }}
         >
-          Sign in to continue
-          accessing your TaskWave
-          dashboard and tasks.
+          Sign in to continue using TaskWave.
         </p>
 
         {/* EMAIL */}
@@ -324,7 +306,7 @@ function Login() {
 
         </div>
 
-        {/* LOGIN BUTTON */}
+        {/* LOGIN */}
         <button
           onClick={handleLogin}
 
