@@ -16,8 +16,6 @@ import {
   collection,
   getDocs,
   addDoc,
-  query,
-  where,
   doc,
   updateDoc,
 } from "firebase/firestore";
@@ -36,25 +34,13 @@ function Tasks() {
 
       try {
 
-        const user =
-          auth.currentUser;
-
-        const q =
-          query(
+        const snapshot =
+          await getDocs(
             collection(
               db,
               "tasks"
-            ),
-
-            where(
-              "claimed",
-              "==",
-              false
             )
           );
-
-        const snapshot =
-          await getDocs(q);
 
         const taskList =
           snapshot.docs.map(
@@ -64,12 +50,11 @@ function Tasks() {
             })
           );
 
-        // REMOVE OWN CLAIMED TASKS
+        // SHOW ONLY AVAILABLE TASKS
         const filtered =
           taskList.filter(
             (task) =>
-              task.claimedBy !==
-              user.uid
+              task.claimed !== true
           );
 
         setTasks(filtered);
@@ -100,7 +85,7 @@ function Tasks() {
         const user =
           auth.currentUser;
 
-        // ADD CLAIM
+        // SAVE CLAIM
         await addDoc(
           collection(
             db,
@@ -135,32 +120,7 @@ function Tasks() {
           }
         );
 
-        fetchTasks();
-
-      } catch (error) {
-
-        console.log(error);
-
-      }
-    };
-
-  // REJECT TASK
-  const rejectTask =
-    async (taskId) => {
-
-      try {
-
-        await updateDoc(
-          doc(
-            db,
-            "tasks",
-            taskId
-          ),
-          {
-            rejected: true,
-          }
-        );
-
+        // REMOVE FROM UI
         setTasks(
           tasks.filter(
             (task) =>
@@ -173,6 +133,18 @@ function Tasks() {
         console.log(error);
 
       }
+    };
+
+  // REJECT TASK
+  const rejectTask =
+    async (taskId) => {
+
+      setTasks(
+        tasks.filter(
+          (task) =>
+            task.id !== taskId
+        )
+      );
     };
 
   return (
@@ -204,13 +176,13 @@ function Tasks() {
       {/* HEADER */}
       <div
         style={{
-          marginBottom: "24px",
+          marginBottom: "28px",
         }}
       >
 
         <h1
           style={{
-            fontSize: "28px",
+            fontSize: "30px",
 
             fontWeight: "800",
 
@@ -265,7 +237,7 @@ function Tasks() {
 
               borderRadius: "24px",
 
-              padding: "26px",
+              padding: "28px",
 
               textAlign: "center",
             }}
@@ -280,14 +252,14 @@ function Tasks() {
                 lineHeight: "26px",
               }}
             >
-              No available tasks right now.
+              No tasks available right now.
             </p>
 
           </div>
 
         )}
 
-      {/* TASK LIST */}
+      {/* TASKS */}
       <div
         style={{
           display: "grid",
@@ -308,12 +280,15 @@ function Tasks() {
               border:
                 "1px solid rgba(255,255,255,0.05)",
 
-              borderRadius: "26px",
+              borderRadius: "28px",
 
               padding: "22px",
 
               backdropFilter:
                 "blur(20px)",
+
+              boxShadow:
+                "0 0 35px rgba(139,92,246,0.04)",
             }}
           >
 
@@ -377,13 +352,13 @@ function Tasks() {
                   "rgba(139,92,246,0.08)",
 
                 border:
-                  "1px solid rgba(139,92,246,0.12)",
+                  "1px solid rgba(139,92,246,0.14)",
 
                 borderRadius: "18px",
 
                 padding: "16px",
 
-                marginBottom: "18px",
+                marginBottom: "20px",
               }}
             >
 
@@ -393,9 +368,9 @@ function Tasks() {
 
                   fontSize: "11px",
 
-                  marginBottom: "10px",
-
                   letterSpacing: "1px",
+
+                  marginBottom: "10px",
                 }}
               >
                 INSTRUCTIONS
@@ -425,10 +400,11 @@ function Tasks() {
 
                 alignItems: "center",
 
-                gap: "12px",
+                gap: "14px",
               }}
             >
 
+              {/* REWARD */}
               <div>
 
                 <p
@@ -447,9 +423,11 @@ function Tasks() {
                   style={{
                     color: "white",
 
-                    fontSize: "22px",
+                    fontSize: "24px",
 
                     fontWeight: "800",
+
+                    letterSpacing: "-1px",
                   }}
                 >
                   ${task.amount}
@@ -533,16 +511,4 @@ function Tasks() {
 
               </div>
 
-            </div>
-
-          </div>
-
-        ))}
-
-      </div>
-
-    </div>
-  );
-}
-
-export default Tasks;
+           
