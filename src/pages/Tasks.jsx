@@ -509,6 +509,18 @@ function Tasks() {
                   Claim
                 </button>
 
-              </div>
+                            </div>
 
-           
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </div>
+  );
+}
+
+export default Tasks;
