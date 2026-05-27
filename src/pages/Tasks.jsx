@@ -1,5 +1,3 @@
-// src/pages/Tasks.jsx
-
 import {
   useEffect,
   useState
@@ -27,6 +25,12 @@ function Tasks() {
 
   const [loading, setLoading] =
     useState(true);
+
+  const [selectedTask, setSelectedTask] =
+    useState(null);
+
+  const [proof, setProof] =
+    useState("");
 
   // FETCH TASKS
   const fetchTasks =
@@ -76,26 +80,39 @@ function Tasks() {
 
   }, []);
 
-  // CLAIM TASK
-  const claimTask =
-    async (taskId) => {
+  // OPEN TASK
+  const openTask =
+    (task) => {
+
+      setSelectedTask(task);
+
+    };
+
+  // SUBMIT TASK
+  const submitTask =
+    async () => {
 
       try {
 
         const user =
           auth.currentUser;
 
-        // SAVE CLAIM
         await addDoc(
           collection(
             db,
             "taskClaims"
           ),
           {
-            taskId,
+            taskId:
+              selectedTask.id,
 
             userId:
               user.uid,
+
+            proof,
+
+            amount:
+              selectedTask.amount,
 
             status:
               "pending",
@@ -105,18 +122,23 @@ function Tasks() {
           }
         );
 
-        // HIDE TASK
+        // HIDE TASK GLOBALLY
         await updateDoc(
           doc(
             db,
             "tasks",
-            taskId
+            selectedTask.id
           ),
           {
             claimed: true,
 
             claimedBy:
               user.uid,
+
+            pendingReview:
+              true,
+
+            proof,
           }
         );
 
@@ -124,27 +146,20 @@ function Tasks() {
         setTasks(
           tasks.filter(
             (task) =>
-              task.id !== taskId
+              task.id !==
+              selectedTask.id
           )
         );
+
+        setSelectedTask(null);
+
+        setProof("");
 
       } catch (error) {
 
         console.log(error);
 
       }
-    };
-
-  // REJECT TASK
-  const rejectTask =
-    async (taskId) => {
-
-      setTasks(
-        tasks.filter(
-          (task) =>
-            task.id !== taskId
-        )
-      );
     };
 
   return (
@@ -176,13 +191,13 @@ function Tasks() {
       {/* HEADER */}
       <div
         style={{
-          marginBottom: "28px",
+          marginBottom: "24px",
         }}
       >
 
         <h1
           style={{
-            fontSize: "30px",
+            fontSize: "28px",
 
             fontWeight: "800",
 
@@ -199,11 +214,9 @@ function Tasks() {
             color: "#9ca3af",
 
             fontSize: "12px",
-
-            lineHeight: "24px",
           }}
         >
-          Complete tasks and earn rewards.
+          Available community tasks
         </p>
 
       </div>
@@ -235,7 +248,7 @@ function Tasks() {
               border:
                 "1px solid rgba(255,255,255,0.05)",
 
-              borderRadius: "24px",
+              borderRadius: "22px",
 
               padding: "28px",
 
@@ -248,23 +261,21 @@ function Tasks() {
                 color: "#9ca3af",
 
                 fontSize: "13px",
-
-                lineHeight: "26px",
               }}
             >
-              No tasks available right now.
+              No available tasks right now.
             </p>
 
           </div>
 
         )}
 
-      {/* TASKS */}
+      {/* TASK LIST */}
       <div
         style={{
           display: "grid",
 
-          gap: "18px",
+          gap: "14px",
         }}
       >
 
@@ -280,30 +291,155 @@ function Tasks() {
               border:
                 "1px solid rgba(255,255,255,0.05)",
 
+              borderRadius: "22px",
+
+              padding: "18px",
+
+              display: "flex",
+
+              justifyContent:
+                "space-between",
+
+              alignItems: "center",
+            }}
+          >
+
+            {/* LEFT */}
+            <div>
+
+              <p
+                style={{
+                  color: "#8b5cf6",
+
+                  fontSize: "11px",
+
+                  marginBottom: "6px",
+                }}
+              >
+                {task.subreddit}
+              </p>
+
+              <h2
+                style={{
+                  fontSize: "15px",
+
+                  fontWeight: "700",
+
+                  marginBottom: "6px",
+                }}
+              >
+                {task.title}
+              </h2>
+
+              <p
+                style={{
+                  color: "#9ca3af",
+
+                  fontSize: "11px",
+                }}
+              >
+                Reward: $
+                {task.amount}
+              </p>
+
+            </div>
+
+            {/* VIEW */}
+            <button
+              onClick={() =>
+                openTask(task)
+              }
+
+              style={{
+                border: "none",
+
+                padding:
+                  "12px 16px",
+
+                borderRadius:
+                  "14px",
+
+                background:
+                  "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+                color: "white",
+
+                fontSize: "12px",
+
+                fontWeight: "700",
+
+                cursor: "pointer",
+              }}
+            >
+              View
+            </button>
+
+          </div>
+
+        ))}
+
+      </div>
+
+      {/* TASK DETAIL */}
+      {selectedTask && (
+
+        <div
+          style={{
+            position: "fixed",
+
+            inset: 0,
+
+            background:
+              "rgba(0,0,0,0.72)",
+
+            backdropFilter:
+              "blur(6px)",
+
+            display: "flex",
+
+            justifyContent:
+              "center",
+
+            alignItems: "center",
+
+            padding: "20px",
+
+            zIndex: 3000,
+          }}
+        >
+
+          <div
+            style={{
+              width: "100%",
+
+              maxWidth: "520px",
+
+              background:
+                "#0f172a",
+
+              border:
+                "1px solid rgba(255,255,255,0.06)",
+
               borderRadius: "28px",
 
-              padding: "22px",
-
-              backdropFilter:
-                "blur(20px)",
-
-              boxShadow:
-                "0 0 35px rgba(139,92,246,0.04)",
+              padding: "24px",
             }}
           >
 
             {/* IMAGE */}
-            {task.image && (
+            {selectedTask.image && (
 
               <img
-                src={task.image}
+                src={
+                  selectedTask.image
+                }
 
                 alt="task"
 
                 style={{
                   width: "100%",
 
-                  height: "180px",
+                  height: "220px",
 
                   objectFit: "cover",
 
@@ -315,22 +451,34 @@ function Tasks() {
 
             )}
 
-            {/* TITLE */}
+            <p
+              style={{
+                color: "#8b5cf6",
+
+                fontSize: "11px",
+
+                marginBottom: "8px",
+              }}
+            >
+              {
+                selectedTask.subreddit
+              }
+            </p>
+
             <h2
               style={{
-                fontSize: "18px",
+                fontSize: "22px",
 
                 fontWeight: "700",
 
-                marginBottom: "10px",
-
-                letterSpacing: "-0.5px",
+                marginBottom: "14px",
               }}
             >
-              {task.title}
+              {
+                selectedTask.title
+              }
             </h2>
 
-            {/* DESCRIPTION */}
             <p
               style={{
                 color: "#9ca3af",
@@ -342,7 +490,9 @@ function Tasks() {
                 marginBottom: "18px",
               }}
             >
-              {task.description}
+              {
+                selectedTask.description
+              }
             </p>
 
             {/* INSTRUCTIONS */}
@@ -352,13 +502,13 @@ function Tasks() {
                   "rgba(139,92,246,0.08)",
 
                 border:
-                  "1px solid rgba(139,92,246,0.14)",
+                  "1px solid rgba(139,92,246,0.12)",
 
                 borderRadius: "18px",
 
                 padding: "16px",
 
-                marginBottom: "20px",
+                marginBottom: "18px",
               }}
             >
 
@@ -367,8 +517,6 @@ function Tasks() {
                   color: "#c4b5fd",
 
                   fontSize: "11px",
-
-                  letterSpacing: "1px",
 
                   marginBottom: "10px",
                 }}
@@ -385,139 +533,126 @@ function Tasks() {
                   lineHeight: "24px",
                 }}
               >
-                {task.instructions}
+                {
+                  selectedTask.instructions
+                }
               </p>
 
             </div>
 
-            {/* FOOTER */}
+            {/* PROOF */}
+            <textarea
+              placeholder="Submit proof link here..."
+
+              value={proof}
+
+              onChange={(e) =>
+                setProof(
+                  e.target.value
+                )
+              }
+
+              style={{
+                width: "100%",
+
+                minHeight: "120px",
+
+                padding: "16px",
+
+                borderRadius: "18px",
+
+                border:
+                  "1px solid rgba(255,255,255,0.06)",
+
+                background:
+                  "rgba(255,255,255,0.04)",
+
+                color: "white",
+
+                fontSize: "13px",
+
+                outline: "none",
+
+                resize: "none",
+
+                marginBottom: "18px",
+              }}
+            />
+
+            {/* ACTIONS */}
             <div
               style={{
                 display: "flex",
 
-                justifyContent:
-                  "space-between",
-
-                alignItems: "center",
-
-                gap: "14px",
+                gap: "12px",
               }}
             >
 
-              {/* REWARD */}
-              <div>
+              <button
+                onClick={() =>
+                  setSelectedTask(
+                    null
+                  )
+                }
 
-                <p
-                  style={{
-                    color: "#9ca3af",
-
-                    fontSize: "11px",
-
-                    marginBottom: "6px",
-                  }}
-                >
-                  TASK REWARD
-                </p>
-
-                <h3
-                  style={{
-                    color: "white",
-
-                    fontSize: "24px",
-
-                    fontWeight: "800",
-
-                    letterSpacing: "-1px",
-                  }}
-                >
-                  ${task.amount}
-                </h3>
-
-              </div>
-
-              {/* BUTTONS */}
-              <div
                 style={{
-                  display: "flex",
+                  flex: 1,
 
-                  gap: "10px",
+                  padding: "16px",
+
+                  border: "none",
+
+                  borderRadius:
+                    "18px",
+
+                  background:
+                    "rgba(239,68,68,0.10)",
+
+                  color: "#f87171",
+
+                  fontWeight: "700",
+
+                  cursor: "pointer",
                 }}
               >
+                Reject
+              </button>
 
-                <button
-                  onClick={() =>
-                    rejectTask(
-                      task.id
-                    )
-                  }
+              <button
+                onClick={
+                  submitTask
+                }
 
-                  style={{
-                    padding:
-                      "12px 16px",
+                style={{
+                  flex: 1,
 
-                    border: "none",
+                  padding: "16px",
 
-                    borderRadius:
-                      "16px",
+                  border: "none",
 
-                    background:
-                      "rgba(239,68,68,0.12)",
+                  borderRadius:
+                    "18px",
 
-                    color: "#f87171",
+                  background:
+                    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
 
-                    fontSize: "12px",
+                  color: "white",
 
-                    fontWeight: "700",
+                  fontWeight: "700",
 
-                    cursor: "pointer",
-                  }}
-                >
-                  Reject
-                </button>
-
-                <button
-                  onClick={() =>
-                    claimTask(
-                      task.id
-                    )
-                  }
-
-                  style={{
-                    padding:
-                      "12px 18px",
-
-                    border: "none",
-
-                    borderRadius:
-                      "16px",
-
-                    background:
-                      "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-                    color: "white",
-
-                    fontSize: "12px",
-
-                    fontWeight: "700",
-
-                    cursor: "pointer",
-
-                    boxShadow:
-                      "0 0 25px rgba(139,92,246,0.15)",
-                  }}
-                >
-                  Claim
-                </button>
-
-                            </div>
+                  cursor: "pointer",
+                }}
+              >
+                Submit Task
+              </button>
 
             </div>
 
           </div>
 
-        ))}
+        </div>
 
-      </div>
+      )}
 
     </div>
   );

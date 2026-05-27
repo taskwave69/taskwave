@@ -1,5 +1,3 @@
-// src/pages/Admin.jsx
-
 import {
   useState,
   useEffect
@@ -29,6 +27,7 @@ import {
   doc,
   query,
   where,
+  getDoc,
 } from "firebase/firestore";
 
 function Admin() {
@@ -36,7 +35,6 @@ function Admin() {
   const navigate =
     useNavigate();
 
-  // APPROVED ADMINS
   const allowedAdmins = [
 
     "jinoyfelix956@gmail.com",
@@ -56,6 +54,9 @@ function Admin() {
   const [users, setUsers] =
     useState([]);
 
+  const [claims, setClaims] =
+    useState([]);
+
   // TASK STATES
   const [title, setTitle] =
     useState("");
@@ -72,7 +73,10 @@ function Admin() {
   const [amount, setAmount] =
     useState("");
 
-  // WALLET STATES
+  const [subreddit, setSubreddit] =
+    useState("");
+
+  // WALLET
   const [userId, setUserId] =
     useState("");
 
@@ -101,9 +105,7 @@ function Admin() {
 
           if (!isAdmin) {
 
-            navigate(
-              "/dashboard"
-            );
+            navigate("/dashboard");
           }
         }
       );
@@ -184,11 +186,44 @@ function Admin() {
       }
     };
 
+  // FETCH CLAIMS
+  const fetchClaims =
+    async () => {
+
+      try {
+
+        const snapshot =
+          await getDocs(
+            collection(
+              db,
+              "taskClaims"
+            )
+          );
+
+        const claimList =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        setClaims(claimList);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
   useEffect(() => {
 
     fetchTasks();
 
     fetchUsers();
+
+    fetchClaims();
 
   }, []);
 
@@ -205,10 +240,26 @@ function Admin() {
           ),
           {
             title,
+            subreddit,
             description,
             image,
             instructions,
             amount,
+
+            claimed: false,
+
+            claimedBy: "",
+
+            pendingReview:
+              false,
+
+            proof: "",
+
+            status:
+              "available",
+
+            rejected: false,
+
             createdAt:
               Date.now(),
           }
@@ -217,6 +268,7 @@ function Admin() {
         alert("Task Added");
 
         setTitle("");
+        setSubreddit("");
         setDescription("");
         setImage("");
         setInstructions("");
@@ -316,7 +368,7 @@ function Admin() {
             userId
           ),
           {
-            balance:
+            withdrawableBalance:
               Number(
                 walletAmount
               ),
@@ -326,6 +378,90 @@ function Admin() {
         alert(
           "Wallet Updated"
         );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // APPROVE TASK
+  const approveTask =
+    async (claim) => {
+
+      try {
+
+        const userRef =
+          doc(
+            db,
+            "users",
+            claim.userId
+          );
+
+        const userSnap =
+          await getDoc(
+            userRef
+          );
+
+        const userData =
+          userSnap.data();
+
+        const currentBalance =
+          userData
+            ?.withdrawableBalance || 0;
+
+        await updateDoc(
+          userRef,
+          {
+            withdrawableBalance:
+              currentBalance +
+              Number(
+                claim.amount
+              ),
+          }
+        );
+
+        await updateDoc(
+          doc(
+            db,
+            "taskClaims",
+            claim.id
+          ),
+          {
+            status:
+              "approved",
+          }
+        );
+
+        fetchClaims();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // REJECT TASK
+  const rejectTaskClaim =
+    async (claim) => {
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "taskClaims",
+            claim.id
+          ),
+          {
+            status:
+              "rejected",
+          }
+        );
+
+        fetchClaims();
 
       } catch (error) {
 
@@ -369,23 +505,13 @@ function Admin() {
 
         <h1
           style={{
-            fontSize: "32px",
-            fontWeight: "700",
+            fontSize: "30px",
+            fontWeight: "800",
             marginBottom: "8px",
           }}
         >
           Admin Panel
         </h1>
-
-        <p
-          style={{
-            color: "#9ca3af",
-            fontSize: "13px",
-          }}
-        >
-          Manage workers,
-          tasks and wallets.
-        </p>
 
       </div>
 
@@ -414,7 +540,16 @@ function Admin() {
 
         <div
           onClick={() =>
-            setSection("review")
+            setSection("reviews")
+          }
+          style={folderStyle}
+        >
+          Reviews
+        </div>
+
+        <div
+          onClick={() =>
+            setSection("verification")
           }
           style={folderStyle}
         >
@@ -432,7 +567,7 @@ function Admin() {
 
       </div>
 
-      {/* TASKS */}
+      {/* ADD TASK */}
       {section === "tasks" && (
 
         <div style={cardStyle}>
@@ -446,6 +581,17 @@ function Admin() {
             value={title}
             onChange={(e) =>
               setTitle(
+                e.target.value
+              )
+            }
+            style={inputStyle}
+          />
+
+          <input
+            placeholder="Subreddit"
+            value={subreddit}
+            onChange={(e) =>
+              setSubreddit(
                 e.target.value
               )
             }
@@ -486,7 +632,7 @@ function Admin() {
           />
 
           <input
-            placeholder="Task Amount"
+            placeholder="Reward Amount"
             value={amount}
             onChange={(e) =>
               setAmount(
@@ -505,12 +651,145 @@ function Admin() {
             Publish Task
           </button>
 
+          {/* TASK LIST */}
+          {tasks.map((task) => (
+
+            <div
+              key={task.id}
+
+              style={taskCard}
+            >
+
+              <div>
+
+                <p
+                  style={{
+                    color: "#8b5cf6",
+                    fontSize: "11px",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {task.subreddit}
+                </p>
+
+                <h3
+                  style={{
+                    fontSize: "14px",
+                  }}
+                >
+                  {task.title}
+                </h3>
+
+              </div>
+
+              <button
+                onClick={() =>
+                  handleDeleteTask(
+                    task.id
+                  )
+                }
+
+                style={rejectBtn}
+              >
+                Delete
+              </button>
+
+            </div>
+
+          ))}
+
         </div>
 
       )}
 
-      {/* REVIEW */}
-      {section === "review" && (
+      {/* REVIEWS */}
+      {section === "reviews" && (
+
+        <div style={cardStyle}>
+
+          <h2 style={titleStyle}>
+            Task Reviews
+          </h2>
+
+          {claims
+            .filter(
+              (claim) =>
+                claim.status ===
+                "pending"
+            )
+            .map((claim) => (
+
+              <div
+                key={claim.id}
+
+                style={reviewCard}
+              >
+
+                <p
+                  style={{
+                    fontSize: "12px",
+                    color: "#9ca3af",
+                    marginBottom: "8px",
+                  }}
+                >
+                  {claim.userId}
+                </p>
+
+                <p
+                  style={{
+                    fontSize: "13px",
+                    marginBottom: "16px",
+                    lineHeight: "24px",
+                  }}
+                >
+                  {claim.proof}
+                </p>
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                  }}
+                >
+
+                  <button
+                    onClick={() =>
+                      approveTask(
+                        claim
+                      )
+                    }
+                    style={
+                      approveBtn
+                    }
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      rejectTaskClaim(
+                        claim
+                      )
+                    }
+                    style={
+                      rejectBtn
+                    }
+                  >
+                    Reject
+                  </button>
+
+                </div>
+
+              </div>
+
+            ))}
+
+        </div>
+
+      )}
+
+      {/* VERIFICATION */}
+      {section === "verification" && (
 
         <div style={cardStyle}>
 
@@ -538,29 +817,12 @@ function Admin() {
 
                 <h3
                   style={{
-                    fontSize: "18px",
-                    marginTop: "10px",
-                    marginBottom: "10px",
+                    fontSize: "16px",
+                    marginTop: "8px",
                   }}
                 >
                   u/{user.redditUsername}
                 </h3>
-
-                <a
-                  href={
-                    user.redditLink
-                  }
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    color: "#a78bfa",
-                    fontSize: "13px",
-                    textDecoration:
-                      "none",
-                  }}
-                >
-                  Open Reddit Profile
-                </a>
 
               </div>
 
@@ -628,7 +890,7 @@ function Admin() {
           />
 
           <input
-            placeholder="New Balance"
+            placeholder="Withdrawable Amount"
             value={walletAmount}
             onChange={(e) =>
               setWalletAmount(
@@ -652,7 +914,6 @@ function Admin() {
       )}
 
     </div>
-
   );
 }
 
@@ -666,9 +927,9 @@ const folderStyle = {
 
   borderRadius: "18px",
 
-  padding: "18px",
+  padding: "16px",
 
-  fontSize: "14px",
+  fontSize: "13px",
 
   fontWeight: "600",
 
@@ -719,7 +980,7 @@ const inputStyle = {
 
   color: "white",
 
-  fontSize: "14px",
+  fontSize: "13px",
 
   outline: "none",
 };
@@ -742,7 +1003,7 @@ const textareaStyle = {
 
   color: "white",
 
-  fontSize: "14px",
+  fontSize: "13px",
 
   outline: "none",
 
@@ -764,7 +1025,7 @@ const buttonStyle = {
 
   color: "white",
 
-  fontSize: "15px",
+  fontSize: "14px",
 
   fontWeight: "700",
 
@@ -782,6 +1043,19 @@ const reviewCard = {
   borderRadius: "18px",
 
   padding: "18px",
+};
+
+const taskCard = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "18px",
+
+  padding: "16px",
 
   display: "flex",
 

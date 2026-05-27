@@ -1,5 +1,3 @@
-// src/pages/Dashboard.jsx
-
 import Sidebar from "../components/Sidebar";
 
 import {
@@ -14,7 +12,7 @@ import {
 
 import {
   doc,
-  getDoc
+  getDoc,
 } from "firebase/firestore";
 
 import {
@@ -65,7 +63,7 @@ function Dashboard() {
               docRef
             );
 
-          // NO FIREBASE DOC
+          // NO USER DOC
           if (
             !docSnap.exists()
           ) {
@@ -96,11 +94,7 @@ function Dashboard() {
 
           // WAITING FOR APPROVAL
           if (
-            data.approved === false &&
-
-            data.redditUsername &&
-
-            data.redditLink
+            data.approved === false
           ) {
 
             setPending(true);
@@ -110,7 +104,6 @@ function Dashboard() {
             return;
           }
 
-          // APPROVED USER
           setUserData(data);
 
           setLoading(false);
@@ -186,7 +179,7 @@ function Dashboard() {
             style={{
               color: "white",
 
-              fontSize: "34px",
+              fontSize: "32px",
 
               fontWeight: "800",
 
@@ -207,11 +200,9 @@ function Dashboard() {
               lineHeight: "30px",
             }}
           >
-            Your Reddit profile has
-            been submitted for manual
-            admin review. Please wait
-            for approval to access
-            TaskWave tasks.
+            Your Reddit account is
+            currently under manual
+            admin review.
           </p>
 
         </div>
@@ -221,7 +212,6 @@ function Dashboard() {
     );
   }
 
-  // MAIN DASHBOARD
   return (
 
     <div
@@ -275,7 +265,7 @@ function Dashboard() {
 
             fontSize: "13px",
 
-            lineHeight: "26px",
+            lineHeight: "24px",
           }}
         >
           Welcome back to TaskWave.
@@ -283,7 +273,7 @@ function Dashboard() {
 
       </div>
 
-      {/* VERIFIED REDDIT */}
+      {/* REDDIT ACCOUNT */}
       <div
         style={{
           background:
@@ -304,7 +294,7 @@ function Dashboard() {
           style={{
             color: "#c4b5fd",
 
-            fontSize: "12px",
+            fontSize: "11px",
 
             letterSpacing: "1px",
 
@@ -316,7 +306,7 @@ function Dashboard() {
 
         <h2
           style={{
-            fontSize: "26px",
+            fontSize: "24px",
 
             fontWeight: "700",
 
@@ -349,9 +339,189 @@ function Dashboard() {
 
       </div>
 
-    </div>
+      {/* STATS */}
+      <div
+        style={{
+          display: "grid",
 
+          gap: "16px",
+
+          marginBottom: "22px",
+        }}
+      >
+
+        {/* WITHDRAWABLE */}
+        <div
+          style={cardStyle}
+        >
+
+          <p style={smallTitle}>
+            WITHDRAWABLE
+          </p>
+
+          <h2 style={bigAmount}>
+            $
+            {Number(
+              userData.withdrawableBalance || 0
+            ).toFixed(2)}
+          </h2>
+
+        </div>
+
+        {/* PENDING */}
+        <div
+          style={cardStyle}
+        >
+
+          <p style={smallTitle}>
+            PENDING REVIEW
+          </p>
+
+          <h2 style={bigAmount}>
+            $
+            {Number(
+              userData.pendingBalance || 0
+            ).toFixed(2)}
+          </h2>
+
+        </div>
+
+      </div>
+
+      {/* QUICK ACTIONS */}
+      <div
+        style={{
+          display: "grid",
+
+          gridTemplateColumns:
+            "1fr 1fr",
+
+          gap: "16px",
+        }}
+      >
+
+        <div style={actionCard}>
+
+          <p style={actionTitle}>
+            Available Tasks
+          </p>
+
+          <button
+            onClick={() =>
+              navigate("/tasks")
+            }
+
+            style={actionButton}
+          >
+            Open
+          </button>
+
+        </div>
+
+        <div style={actionCard}>
+
+          <p style={actionTitle}>
+            Wallet
+          </p>
+
+          <button
+            onClick={() =>
+              navigate("/wallet")
+            }
+
+            style={actionButton}
+          >
+            Open
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
   );
 }
+
+const cardStyle = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "22px",
+
+  padding: "22px",
+};
+
+const smallTitle = {
+
+  color: "#c4b5fd",
+
+  fontSize: "11px",
+
+  letterSpacing: "1px",
+
+  marginBottom: "12px",
+};
+
+const bigAmount = {
+
+  fontSize: "34px",
+
+  fontWeight: "800",
+
+  letterSpacing: "-1px",
+};
+
+const actionCard = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "22px",
+
+  padding: "18px",
+
+  display: "flex",
+
+  justifyContent:
+    "space-between",
+
+  alignItems: "center",
+};
+
+const actionTitle = {
+
+  fontSize: "14px",
+
+  fontWeight: "700",
+};
+
+const actionButton = {
+
+  border: "none",
+
+  padding:
+    "10px 16px",
+
+  borderRadius:
+    "14px",
+
+  background:
+    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+  color: "white",
+
+  fontSize: "12px",
+
+  fontWeight: "700",
+
+  cursor: "pointer",
+};
 
 export default Dashboard;

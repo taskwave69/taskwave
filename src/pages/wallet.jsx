@@ -1,20 +1,109 @@
+import {
+  useEffect,
+  useState
+} from "react";
+
 import Sidebar from "../components/Sidebar";
 
+import {
+  auth,
+  db
+} from "../firebase";
+
+import {
+  doc,
+  getDoc,
+} from "firebase/firestore";
+
 function Wallet() {
+
+  const [pendingBalance, setPendingBalance] =
+    useState(0);
+
+  const [
+    withdrawableBalance,
+    setWithdrawableBalance
+  ] = useState(0);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // FETCH USER WALLET
+  useEffect(() => {
+
+    const fetchWallet =
+      async () => {
+
+        try {
+
+          const user =
+            auth.currentUser;
+
+          if (!user) return;
+
+          const docRef =
+            doc(
+              db,
+              "users",
+              user.uid
+            );
+
+          const docSnap =
+            await getDoc(
+              docRef
+            );
+
+          if (
+            docSnap.exists()
+          ) {
+
+            const data =
+              docSnap.data();
+
+            setPendingBalance(
+              data.pendingBalance || 0
+            );
+
+            setWithdrawableBalance(
+              data.withdrawableBalance || 0
+            );
+          }
+
+        } catch (error) {
+
+          console.log(error);
+
+        } finally {
+
+          setLoading(false);
+
+        }
+      };
+
+    fetchWallet();
+
+  }, []);
 
   return (
 
     <div
       style={{
         minHeight: "100vh",
+
         background:
           "radial-gradient(circle at top,#111827,#050816)",
+
         color: "white",
-        fontFamily: "Inter, sans-serif",
+
+        fontFamily:
+          "Inter, sans-serif",
 
         paddingTop: "95px",
+
         paddingLeft: "22px",
+
         paddingRight: "22px",
+
         paddingBottom: "40px",
       }}
     >
@@ -30,9 +119,12 @@ function Wallet() {
 
         <h1
           style={{
-            fontSize: "34px",
+            fontSize: "30px",
+
             fontWeight: "800",
+
             letterSpacing: "-1px",
+
             marginBottom: "8px",
           }}
         >
@@ -42,73 +134,181 @@ function Wallet() {
         <p
           style={{
             color: "#9ca3af",
-            fontSize: "14px",
-            lineHeight: "26px",
-          }}
-        >
-          Manage withdrawals and
-          payment methods securely.
-        </p>
 
-      </div>
-
-      {/* BALANCE CARD */}
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-          borderRadius: "24px",
-
-          padding: "22px",
-
-          marginBottom: "20px",
-
-          boxShadow:
-            "0 0 35px rgba(139,92,246,0.20)",
-        }}
-      >
-
-        <p
-          style={{
             fontSize: "13px",
-            opacity: 0.82,
-            marginBottom: "10px",
-          }}
-        >
-          Available Balance
-        </p>
 
-        <h2
-          style={{
-            fontSize: "42px",
-            fontWeight: "800",
-            marginBottom: "10px",
-            letterSpacing: "-2px",
-          }}
-        >
-          $0.00
-        </h2>
-
-        <p
-          style={{
-            fontSize: "14px",
             lineHeight: "24px",
-            opacity: 0.9,
           }}
         >
-          Instant payouts through
-          Binance and UPI.
+          Manage your earnings and withdrawals.
         </p>
 
       </div>
+
+      {/* LOADING */}
+      {loading && (
+
+        <p
+          style={{
+            color: "#9ca3af",
+
+            fontSize: "13px",
+          }}
+        >
+          Loading wallet...
+        </p>
+
+      )}
+
+      {/* BALANCES */}
+      {!loading && (
+
+        <div
+          style={{
+            display: "grid",
+
+            gap: "18px",
+
+            marginBottom: "22px",
+          }}
+        >
+
+          {/* WITHDRAWABLE */}
+          <div
+            style={{
+              background:
+                "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+              borderRadius: "26px",
+
+              padding: "24px",
+
+              boxShadow:
+                "0 0 35px rgba(139,92,246,0.18)",
+            }}
+          >
+
+            <p
+              style={{
+                fontSize: "12px",
+
+                opacity: 0.82,
+
+                marginBottom: "10px",
+
+                letterSpacing: "1px",
+              }}
+            >
+              WITHDRAWABLE BALANCE
+            </p>
+
+            <h2
+              style={{
+                fontSize: "42px",
+
+                fontWeight: "800",
+
+                letterSpacing: "-2px",
+
+                marginBottom: "10px",
+              }}
+            >
+              $
+              {Number(
+                withdrawableBalance
+              ).toFixed(2)}
+            </h2>
+
+            <p
+              style={{
+                fontSize: "13px",
+
+                lineHeight: "24px",
+
+                opacity: 0.9,
+              }}
+            >
+              Approved rewards available
+              for withdrawal.
+            </p>
+
+          </div>
+
+          {/* PENDING */}
+          <div
+            style={{
+              background:
+                "rgba(255,255,255,0.03)",
+
+              border:
+                "1px solid rgba(255,255,255,0.05)",
+
+              borderRadius: "24px",
+
+              padding: "22px",
+
+              backdropFilter:
+                "blur(18px)",
+            }}
+          >
+
+            <p
+              style={{
+                color: "#c4b5fd",
+
+                fontSize: "12px",
+
+                marginBottom: "10px",
+
+                letterSpacing: "1px",
+              }}
+            >
+              PENDING REVIEW
+            </p>
+
+            <h2
+              style={{
+                fontSize: "34px",
+
+                fontWeight: "800",
+
+                marginBottom: "10px",
+
+                letterSpacing: "-1px",
+              }}
+            >
+              $
+              {Number(
+                pendingBalance
+              ).toFixed(2)}
+            </h2>
+
+            <p
+              style={{
+                color: "#9ca3af",
+
+                fontSize: "13px",
+
+                lineHeight: "24px",
+              }}
+            >
+              Waiting for manual admin approval.
+            </p>
+
+          </div>
+
+        </div>
+
+      )}
 
       {/* PAYMENT METHODS */}
       <div
         style={{
           display: "grid",
+
           gap: "16px",
-          marginBottom: "20px",
+
+          marginBottom: "22px",
         }}
       >
 
@@ -156,10 +356,11 @@ function Wallet() {
 
       </div>
 
-      {/* WITHDRAW BUTTON */}
+      {/* WITHDRAW */}
       <button
         style={{
           width: "100%",
+
           padding: "17px",
 
           border: "none",
@@ -171,7 +372,7 @@ function Wallet() {
 
           color: "white",
 
-          fontSize: "15px",
+          fontSize: "14px",
 
           fontWeight: "700",
 
@@ -213,7 +414,7 @@ const cardStyle = {
 
 const titleStyle = {
 
-  fontSize: "16px",
+  fontSize: "15px",
 
   fontWeight: "700",
 
@@ -224,7 +425,7 @@ const subStyle = {
 
   color: "#9ca3af",
 
-  fontSize: "13px",
+  fontSize: "12px",
 };
 
 const buttonStyle = {
@@ -242,7 +443,7 @@ const buttonStyle = {
 
   color: "white",
 
-  fontSize: "13px",
+  fontSize: "12px",
 
   fontWeight: "600",
 

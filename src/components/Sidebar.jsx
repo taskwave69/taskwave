@@ -1,32 +1,67 @@
-// src/components/Sidebar.jsx
+import {
+  useState,
+  useEffect
+} from "react";
 
 import {
   Link,
-  useLocation,
-  useNavigate
+  useLocation
 } from "react-router-dom";
 
 import {
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "firebase/auth";
 
 import {
-  useState
-} from "react";
-
-import { auth } from "../firebase";
+  auth
+} from "../firebase";
 
 function Sidebar() {
 
   const location =
     useLocation();
 
-  const navigate =
-    useNavigate();
-
   const [open, setOpen] =
     useState(false);
 
+  const [isAdmin, setIsAdmin] =
+    useState(false);
+
+  const allowedAdmins = [
+
+    "jinoyfelix956@gmail.com",
+
+    "alanjaison159@gmail.com",
+
+    "nixondavidnd13@gmail.com",
+
+  ];
+
+  useEffect(() => {
+
+    const unsubscribe =
+      onAuthStateChanged(
+        auth,
+        (user) => {
+
+          if (user) {
+
+            setIsAdmin(
+              allowedAdmins.includes(
+                user.email
+              )
+            );
+          }
+        }
+      );
+
+    return () =>
+      unsubscribe();
+
+  }, []);
+
+  // LOGOUT
   const handleLogout =
     async () => {
 
@@ -34,7 +69,8 @@ function Sidebar() {
 
         await signOut(auth);
 
-        navigate("/login");
+        window.location.href =
+          "/login";
 
       } catch (error) {
 
@@ -48,31 +84,16 @@ function Sidebar() {
     {
       name: "Dashboard",
       path: "/dashboard",
-      icon: "⌂",
     },
 
     {
       name: "Tasks",
       path: "/tasks",
-      icon: "◉",
     },
 
     {
       name: "Wallet",
       path: "/wallet",
-      icon: "◈",
-    },
-
-    {
-      name: "History",
-      path: "/history",
-      icon: "◎",
-    },
-
-    {
-      name: "Admin",
-      path: "/admin",
-      icon: "◌",
     },
 
   ];
@@ -81,89 +102,87 @@ function Sidebar() {
 
     <>
 
-      {/* PREMIUM MENU BUTTON */}
-      <button
-        onClick={() =>
-          setOpen(true)
-        }
+      {/* TOPBAR */}
+      <div
         style={{
           position: "fixed",
-          top: "20px",
-          left: "20px",
-          zIndex: 2000,
 
-          width: "46px",
-          height: "46px",
+          top: 0,
 
-          borderRadius: "14px",
+          left: 0,
 
-          border:
-            "1px solid rgba(255,255,255,0.06)",
+          right: 0,
+
+          height: "72px",
 
           background:
-            "rgba(15,23,42,0.82)",
+            "rgba(5,8,22,0.72)",
 
           backdropFilter:
-            "blur(14px)",
+            "blur(18px)",
 
-          boxShadow:
-            "0 0 30px rgba(139,92,246,0.12)",
+          borderBottom:
+            "1px solid rgba(255,255,255,0.05)",
 
-          cursor: "pointer",
-
-          display: open
-            ? "none"
-            : "flex",
+          display: "flex",
 
           alignItems: "center",
-          justifyContent: "center",
 
-          padding: 0,
+          justifyContent:
+            "space-between",
+
+          padding:
+            "0 20px",
+
+          zIndex: 2000,
         }}
       >
 
-        {/* LINES */}
-        <div
+        {/* LOGO */}
+        <h1
           style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "5px",
+            color: "white",
+
+            fontSize: "20px",
+
+            fontWeight: "800",
+
+            letterSpacing: "-1px",
           }}
         >
+          TaskWave
+        </h1>
 
-          <div
-            style={{
-              width: "18px",
-              height: "2px",
-              borderRadius: "20px",
-              background:
-                "linear-gradient(90deg,#ffffff,#8b5cf6)",
-            }}
-          />
+        {/* MENU BUTTON */}
+        <button
+          onClick={() =>
+            setOpen(true)
+          }
 
-          <div
-            style={{
-              width: "14px",
-              height: "2px",
-              borderRadius: "20px",
-              background:
-                "linear-gradient(90deg,#ffffff,#8b5cf6)",
-            }}
-          />
+          style={{
+            width: "42px",
 
-          <div
-            style={{
-              width: "18px",
-              height: "2px",
-              borderRadius: "20px",
-              background:
-                "linear-gradient(90deg,#ffffff,#8b5cf6)",
-            }}
-          />
+            height: "42px",
 
-        </div>
+            borderRadius: "14px",
 
-      </button>
+            border:
+              "1px solid rgba(255,255,255,0.06)",
+
+            background:
+              "rgba(255,255,255,0.03)",
+
+            color: "white",
+
+            fontSize: "16px",
+
+            cursor: "pointer",
+          }}
+        >
+          ☰
+        </button>
+
+      </div>
 
       {/* OVERLAY */}
       {open && (
@@ -172,14 +191,16 @@ function Sidebar() {
           onClick={() =>
             setOpen(false)
           }
+
           style={{
             position: "fixed",
+
             inset: 0,
+
             background:
-              "rgba(0,0,0,0.55)",
-            backdropFilter:
-              "blur(3px)",
-            zIndex: 1500,
+              "rgba(0,0,0,0.5)",
+
+            zIndex: 2500,
           }}
         />
 
@@ -188,341 +209,239 @@ function Sidebar() {
       {/* SIDEBAR */}
       <div
         style={{
-          width: "245px",
-          minHeight: "100vh",
+          position: "fixed",
+
+          top: 0,
+
+          right: open
+            ? "0"
+            : "-280px",
+
+          width: "260px",
+
+          height: "100vh",
+
           background:
-            "rgba(8,15,32,0.98)",
+            "#0b1120",
+
+          borderLeft:
+            "1px solid rgba(255,255,255,0.05)",
 
           backdropFilter:
             "blur(18px)",
 
-          borderRight:
-            "1px solid rgba(255,255,255,0.05)",
+          padding: "22px",
 
-          padding: "22px 16px",
+          transition:
+            "0.35s",
 
-          position: "fixed",
-
-          left: open
-            ? "0"
-            : "-270px",
-
-          top: 0,
-
-          zIndex: 1600,
+          zIndex: 3000,
 
           display: "flex",
 
-          flexDirection: "column",
-
-          justifyContent:
-            "space-between",
-
-          fontFamily:
-            "Inter, sans-serif",
-
-          transition:
-            "0.35s ease",
+          flexDirection:
+            "column",
         }}
       >
 
         {/* TOP */}
-        <div>
+        <div
+          style={{
+            display: "flex",
 
-          {/* HEADER */}
-          <div
+            justifyContent:
+              "space-between",
+
+            alignItems: "center",
+
+            marginBottom: "28px",
+          }}
+        >
+
+          <h2
             style={{
-              display: "flex",
+              color: "white",
 
-              justifyContent:
-                "space-between",
+              fontSize: "18px",
 
-              alignItems: "center",
-
-              marginBottom: "34px",
+              fontWeight: "700",
             }}
           >
+            Menu
+          </h2>
 
-            {/* LOGO */}
-            <div>
+          <button
+            onClick={() =>
+              setOpen(false)
+            }
 
-              <h1
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "800",
-                  letterSpacing:
-                    "-1px",
-                }}
-              >
-
-                <span
-                  style={{
-                    color: "white",
-                  }}
-                >
-                  Task
-                </span>
-
-                <span
-                  style={{
-                    color:
-                      "#8b5cf6",
-                  }}
-                >
-                  Wave
-                </span>
-
-              </h1>
-
-              <p
-                style={{
-                  color: "#6b7280",
-                  fontSize: "11px",
-                  marginTop: "-4px",
-                }}
-              >
-                Premium earning platform
-              </p>
-
-            </div>
-
-            {/* CLOSE */}
-            <button
-              onClick={() =>
-                setOpen(false)
-              }
-              style={{
-                width: "38px",
-                height: "38px",
-
-                borderRadius:
-                  "12px",
-
-                border:
-                  "1px solid rgba(255,255,255,0.08)",
-
-                background:
-                  "rgba(255,255,255,0.04)",
-
-                color: "white",
-
-                fontSize: "16px",
-
-                cursor: "pointer",
-              }}
-            >
-              ✕
-            </button>
-
-          </div>
-
-          {/* BALANCE */}
-          <div
             style={{
+              width: "38px",
+
+              height: "38px",
+
+              borderRadius: "12px",
+
+              border:
+                "1px solid rgba(255,255,255,0.06)",
+
               background:
-                "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+                "rgba(255,255,255,0.03)",
 
-              padding: "18px",
+              color: "white",
 
-              borderRadius: "20px",
+              fontSize: "15px",
 
-              marginBottom: "28px",
-
-              boxShadow:
-                "0 0 30px rgba(139,92,246,0.22)",
+              cursor: "pointer",
             }}
           >
-
-            <p
-              style={{
-                fontSize: "12px",
-                opacity: 0.8,
-                marginBottom: "8px",
-              }}
-            >
-              Balance
-            </p>
-
-            <h2
-              style={{
-                fontSize: "28px",
-                fontWeight: "800",
-              }}
-            >
-              $0.00
-            </h2>
-
-          </div>
-
-          {/* MENU */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection:
-                "column",
-              gap: "10px",
-            }}
-          >
-
-            {menuItems.map(
-              (item) => (
-
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  onClick={() =>
-                    setOpen(false)
-                  }
-                  style={{
-                    textDecoration:
-                      "none",
-                  }}
-                >
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems:
-                        "center",
-
-                      gap: "14px",
-
-                      padding:
-                        "14px 16px",
-
-                      borderRadius:
-                        "16px",
-
-                      background:
-                        location.pathname ===
-                        item.path
-
-                          ? "rgba(139,92,246,0.14)"
-
-                          : "transparent",
-
-                      border:
-                        location.pathname ===
-                        item.path
-
-                          ? "1px solid rgba(139,92,246,0.22)"
-
-                          : "1px solid transparent",
-
-                      color:
-                        location.pathname ===
-                        item.path
-
-                          ? "#ffffff"
-
-                          : "#9ca3af",
-                    }}
-                  >
-
-                    <span
-                      style={{
-                        fontSize:
-                          "15px",
-                      }}
-                    >
-                      {item.icon}
-                    </span>
-
-                    <span
-                      style={{
-                        fontSize:
-                          "14px",
-
-                        fontWeight:
-                          "500",
-                      }}
-                    >
-                      {item.name}
-                    </span>
-
-                  </div>
-
-                </Link>
-
-              )
-            )}
-
-            {/* LOGOUT */}
-            <button
-              onClick={
-                handleLogout
-              }
-              style={{
-                marginTop: "8px",
-
-                width: "100%",
-
-                padding: "14px",
-
-                borderRadius:
-                  "16px",
-
-                border:
-                  "1px solid rgba(239,68,68,0.18)",
-
-                background:
-                  "rgba(239,68,68,0.08)",
-
-                color: "#f87171",
-
-                fontSize: "14px",
-
-                fontWeight: "600",
-
-                cursor: "pointer",
-              }}
-            >
-              Logout
-            </button>
-
-          </div>
+            ✕
+          </button>
 
         </div>
 
-        {/* BOTTOM */}
-        <div>
+        {/* MENU */}
+        <div
+          style={{
+            display: "flex",
 
-          <a
-            href="https://discord.gg/CGtfreSMP"
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              textDecoration:
-                "none",
-            }}
-          >
+            flexDirection:
+              "column",
 
-            <div
+            gap: "12px",
+          }}
+        >
+
+          {menuItems.map(
+            (item) => (
+
+              <Link
+                key={item.path}
+
+                to={item.path}
+
+                onClick={() =>
+                  setOpen(false)
+                }
+
+                style={{
+                  padding:
+                    "15px 16px",
+
+                  borderRadius:
+                    "16px",
+
+                  textDecoration:
+                    "none",
+
+                  fontSize: "13px",
+
+                  fontWeight: "600",
+
+                  color:
+                    location.pathname ===
+                    item.path
+                      ? "white"
+                      : "#9ca3af",
+
+                  background:
+                    location.pathname ===
+                    item.path
+                      ? "linear-gradient(135deg,#8b5cf6,#7c3aed)"
+                      : "rgba(255,255,255,0.03)",
+
+                  border:
+                    "1px solid rgba(255,255,255,0.05)",
+                }}
+              >
+                {item.name}
+              </Link>
+
+            )
+          )}
+
+          {/* ADMIN */}
+          {isAdmin && (
+
+            <Link
+              to="/admin"
+
+              onClick={() =>
+                setOpen(false)
+              }
+
               style={{
-                padding: "14px",
+                padding:
+                  "15px 16px",
 
                 borderRadius:
                   "16px",
 
-                background:
-                  "rgba(139,92,246,0.08)",
-
-                border:
-                  "1px solid rgba(139,92,246,0.16)",
-
-                textAlign: "center",
-
-                color: "#c4b5fd",
+                textDecoration:
+                  "none",
 
                 fontSize: "13px",
 
                 fontWeight: "600",
+
+                color:
+                  location.pathname ===
+                  "/admin"
+                    ? "white"
+                    : "#9ca3af",
+
+                background:
+                  location.pathname ===
+                  "/admin"
+                    ? "linear-gradient(135deg,#8b5cf6,#7c3aed)"
+                    : "rgba(255,255,255,0.03)",
+
+                border:
+                  "1px solid rgba(255,255,255,0.05)",
               }}
             >
-              Join Discord
-            </div>
+              Admin
+            </Link>
 
-          </a>
+          )}
+
+        </div>
+
+        {/* BOTTOM */}
+        <div
+          style={{
+            marginTop: "auto",
+          }}
+        >
+
+          <button
+            onClick={
+              handleLogout
+            }
+
+            style={{
+              width: "100%",
+
+              padding: "15px",
+
+              border: "none",
+
+              borderRadius: "16px",
+
+              background:
+                "rgba(239,68,68,0.12)",
+
+              color: "#f87171",
+
+              fontSize: "13px",
+
+              fontWeight: "700",
+
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
 
         </div>
 
