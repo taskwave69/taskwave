@@ -46,7 +46,7 @@ function Admin() {
   ];
 
   const [section, setSection] =
-    useState("tasks");
+    useState("addtask");
 
   const [tasks, setTasks] =
     useState([]);
@@ -137,7 +137,16 @@ function Admin() {
             })
           );
 
-        setTasks(taskList);
+        // REMOVE CLAIMED TASKS
+        const availableTasks =
+          taskList.filter(
+            (task) =>
+              task.claimed !== true
+          );
+
+        setTasks(
+          availableTasks
+        );
 
       } catch (error) {
 
@@ -407,21 +416,49 @@ function Admin() {
         const userData =
           userSnap.data();
 
-        const currentBalance =
-          userData
-            ?.withdrawableBalance || 0;
+        // CURRENT BALANCES
+        const currentWithdrawable =
+          Number(
+            userData
+              ?.withdrawableBalance || 0
+          );
 
+        const currentPending =
+          Number(
+            userData
+              ?.pendingBalance || 0
+          );
+
+        const rewardAmount =
+          Number(
+            claim.amount
+          );
+
+        // MOVE BALANCE
+        const newPending =
+          Math.max(
+            currentPending -
+            rewardAmount,
+            0
+          );
+
+        const newWithdrawable =
+          currentWithdrawable +
+          rewardAmount;
+
+        // UPDATE USER
         await updateDoc(
           userRef,
           {
+            pendingBalance:
+              newPending,
+
             withdrawableBalance:
-              currentBalance +
-              Number(
-                claim.amount
-              ),
+              newWithdrawable,
           }
         );
 
+        // UPDATE CLAIM
         await updateDoc(
           doc(
             db,
@@ -431,6 +468,9 @@ function Admin() {
           {
             status:
               "approved",
+
+            approvedAt:
+              Date.now(),
           }
         );
 
@@ -448,6 +488,45 @@ function Admin() {
     async (claim) => {
 
       try {
+
+        const userRef =
+          doc(
+            db,
+            "users",
+            claim.userId
+          );
+
+        const userSnap =
+          await getDoc(
+            userRef
+          );
+
+        const userData =
+          userSnap.data();
+
+        const currentPending =
+          Number(
+            userData
+              ?.pendingBalance || 0
+          );
+
+        const rewardAmount =
+          Number(
+            claim.amount
+          );
+
+        // REMOVE FROM PENDING
+        await updateDoc(
+          userRef,
+          {
+            pendingBalance:
+              Math.max(
+                currentPending -
+                rewardAmount,
+                0
+              ),
+          }
+        );
 
         await updateDoc(
           doc(
@@ -471,634 +550,8 @@ function Admin() {
     };
 
   return (
-
-    <div
-      style={{
-        minHeight: "100vh",
-
-        background:
-          "radial-gradient(circle at top,#111827,#050816)",
-
-        color: "white",
-
-        fontFamily:
-          "Inter, sans-serif",
-
-        paddingTop: "95px",
-
-        paddingLeft: "22px",
-
-        paddingRight: "22px",
-
-        paddingBottom: "40px",
-      }}
-    >
-
-      <Sidebar />
-
-      {/* HEADER */}
-      <div
-        style={{
-          marginBottom: "24px",
-        }}
-      >
-
-        <h1
-          style={{
-            fontSize: "30px",
-            fontWeight: "800",
-            marginBottom: "8px",
-          }}
-        >
-          Admin Panel
-        </h1>
-
-      </div>
-
-      {/* MENU */}
-      <div
-        style={{
-          display: "grid",
-
-          gridTemplateColumns:
-            "1fr 1fr",
-
-          gap: "14px",
-
-          marginBottom: "24px",
-        }}
-      >
-
-        <div
-          onClick={() =>
-            setSection("tasks")
-          }
-          style={folderStyle}
-        >
-          Tasks
-        </div>
-
-        <div
-          onClick={() =>
-            setSection("reviews")
-          }
-          style={folderStyle}
-        >
-          Reviews
-        </div>
-
-        <div
-          onClick={() =>
-            setSection("verification")
-          }
-          style={folderStyle}
-        >
-          Verification
-        </div>
-
-        <div
-          onClick={() =>
-            setSection("wallet")
-          }
-          style={folderStyle}
-        >
-          Wallet
-        </div>
-
-      </div>
-
-      {/* ADD TASK */}
-      {section === "tasks" && (
-
-        <div style={cardStyle}>
-
-          <h2 style={titleStyle}>
-            Add Task
-          </h2>
-
-          <input
-            placeholder="Task Title"
-            value={title}
-            onChange={(e) =>
-              setTitle(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          />
-
-          <input
-            placeholder="Subreddit"
-            value={subreddit}
-            onChange={(e) =>
-              setSubreddit(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          />
-
-          <textarea
-            placeholder="Description"
-            value={description}
-            onChange={(e) =>
-              setDescription(
-                e.target.value
-              )
-            }
-            style={textareaStyle}
-          />
-
-          <input
-            placeholder="Image Link"
-            value={image}
-            onChange={(e) =>
-              setImage(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          />
-
-          <textarea
-            placeholder="Instructions"
-            value={instructions}
-            onChange={(e) =>
-              setInstructions(
-                e.target.value
-              )
-            }
-            style={textareaStyle}
-          />
-
-          <input
-            placeholder="Reward Amount"
-            value={amount}
-            onChange={(e) =>
-              setAmount(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          />
-
-          <button
-            onClick={
-              handleAddTask
-            }
-            style={buttonStyle}
-          >
-            Publish Task
-          </button>
-
-          {/* TASK LIST */}
-          {tasks.map((task) => (
-
-            <div
-              key={task.id}
-
-              style={taskCard}
-            >
-
-              <div>
-
-                <p
-                  style={{
-                    color: "#8b5cf6",
-                    fontSize: "11px",
-                    marginBottom: "6px",
-                  }}
-                >
-                  {task.subreddit}
-                </p>
-
-                <h3
-                  style={{
-                    fontSize: "14px",
-                  }}
-                >
-                  {task.title}
-                </h3>
-
-              </div>
-
-              <button
-                onClick={() =>
-                  handleDeleteTask(
-                    task.id
-                  )
-                }
-
-                style={rejectBtn}
-              >
-                Delete
-              </button>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      )}
-
-      {/* REVIEWS */}
-      {section === "reviews" && (
-
-        <div style={cardStyle}>
-
-          <h2 style={titleStyle}>
-            Task Reviews
-          </h2>
-
-          {claims
-            .filter(
-              (claim) =>
-                claim.status ===
-                "pending"
-            )
-            .map((claim) => (
-
-              <div
-                key={claim.id}
-
-                style={reviewCard}
-              >
-
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "#9ca3af",
-                    marginBottom: "8px",
-                  }}
-                >
-                  {claim.userId}
-                </p>
-
-                <p
-                  style={{
-                    fontSize: "13px",
-                    marginBottom: "16px",
-                    lineHeight: "24px",
-                  }}
-                >
-                  {claim.proof}
-                </p>
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                  }}
-                >
-
-                  <button
-                    onClick={() =>
-                      approveTask(
-                        claim
-                      )
-                    }
-                    style={
-                      approveBtn
-                    }
-                  >
-                    Approve
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      rejectTaskClaim(
-                        claim
-                      )
-                    }
-                    style={
-                      rejectBtn
-                    }
-                  >
-                    Reject
-                  </button>
-
-                </div>
-
-              </div>
-
-            ))}
-
-        </div>
-
-      )}
-
-      {/* VERIFICATION */}
-      {section === "verification" && (
-
-        <div style={cardStyle}>
-
-          <h2 style={titleStyle}>
-            Reddit Verifications
-          </h2>
-
-          {users.map((user) => (
-
-            <div
-              key={user.id}
-              style={reviewCard}
-            >
-
-              <div>
-
-                <p
-                  style={{
-                    color: "#9ca3af",
-                    fontSize: "12px",
-                  }}
-                >
-                  {user.email}
-                </p>
-
-                <h3
-                  style={{
-                    fontSize: "16px",
-                    marginTop: "8px",
-                  }}
-                >
-                  u/{user.redditUsername}
-                </h3>
-
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                }}
-              >
-
-                <button
-                  onClick={() =>
-                    approveUser(
-                      user.id
-                    )
-                  }
-                  style={
-                    approveBtn
-                  }
-                >
-                  Approve
-                </button>
-
-                <button
-                  onClick={() =>
-                    rejectUser(
-                      user.id
-                    )
-                  }
-                  style={
-                    rejectBtn
-                  }
-                >
-                  Reject
-                </button>
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      )}
-
-      {/* WALLET */}
-      {section === "wallet" && (
-
-        <div style={cardStyle}>
-
-          <h2 style={titleStyle}>
-            Edit Wallet
-          </h2>
-
-          <input
-            placeholder="User UID"
-            value={userId}
-            onChange={(e) =>
-              setUserId(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          />
-
-          <input
-            placeholder="Withdrawable Amount"
-            value={walletAmount}
-            onChange={(e) =>
-              setWalletAmount(
-                e.target.value
-              )
-            }
-            style={inputStyle}
-          />
-
-          <button
-            onClick={
-              handleWalletUpdate
-            }
-            style={buttonStyle}
-          >
-            Update Wallet
-          </button>
-
-        </div>
-
-      )}
-
-    </div>
+    <div>Admin Panel Updated</div>
   );
 }
-
-const folderStyle = {
-
-  background:
-    "rgba(255,255,255,0.03)",
-
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-
-  borderRadius: "18px",
-
-  padding: "16px",
-
-  fontSize: "13px",
-
-  fontWeight: "600",
-
-  cursor: "pointer",
-
-  textAlign: "center",
-};
-
-const cardStyle = {
-
-  background:
-    "rgba(255,255,255,0.03)",
-
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-
-  borderRadius: "24px",
-
-  padding: "22px",
-
-  display: "flex",
-
-  flexDirection: "column",
-
-  gap: "16px",
-};
-
-const titleStyle = {
-
-  fontSize: "18px",
-
-  fontWeight: "700",
-};
-
-const inputStyle = {
-
-  width: "100%",
-
-  padding: "16px",
-
-  borderRadius: "16px",
-
-  border:
-    "1px solid rgba(255,255,255,0.06)",
-
-  background:
-    "rgba(255,255,255,0.04)",
-
-  color: "white",
-
-  fontSize: "13px",
-
-  outline: "none",
-};
-
-const textareaStyle = {
-
-  width: "100%",
-
-  minHeight: "110px",
-
-  padding: "16px",
-
-  borderRadius: "16px",
-
-  border:
-    "1px solid rgba(255,255,255,0.06)",
-
-  background:
-    "rgba(255,255,255,0.04)",
-
-  color: "white",
-
-  fontSize: "13px",
-
-  outline: "none",
-
-  resize: "none",
-};
-
-const buttonStyle = {
-
-  width: "100%",
-
-  padding: "16px",
-
-  border: "none",
-
-  borderRadius: "18px",
-
-  background:
-    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-  color: "white",
-
-  fontSize: "14px",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
-};
-
-const reviewCard = {
-
-  background:
-    "rgba(255,255,255,0.03)",
-
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-
-  borderRadius: "18px",
-
-  padding: "18px",
-};
-
-const taskCard = {
-
-  background:
-    "rgba(255,255,255,0.03)",
-
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-
-  borderRadius: "18px",
-
-  padding: "16px",
-
-  display: "flex",
-
-  justifyContent:
-    "space-between",
-
-  alignItems: "center",
-};
-
-const approveBtn = {
-
-  padding: "12px 14px",
-
-  border: "none",
-
-  borderRadius: "14px",
-
-  background:
-    "linear-gradient(135deg,#22c55e,#16a34a)",
-
-  color: "white",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
-};
-
-const rejectBtn = {
-
-  padding: "12px 14px",
-
-  border: "none",
-
-  borderRadius: "14px",
-
-  background:
-    "linear-gradient(135deg,#ef4444,#dc2626)",
-
-  color: "white",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
-};
 
 export default Admin;
