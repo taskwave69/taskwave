@@ -1,7 +1,11 @@
 import {
-  useEffect,
-  useState
+  useState,
+  useEffect
 } from "react";
+
+import {
+  useNavigate
+} from "react-router-dom";
 
 import Sidebar from "../components/Sidebar";
 
@@ -11,27 +15,105 @@ import {
 } from "../firebase";
 
 import {
+  onAuthStateChanged
+} from "firebase/auth";
+
+import {
   collection,
   getDocs,
   addDoc,
-  doc,
+  deleteDoc,
   updateDoc,
+  doc,
+  query,
+  where,
   getDoc,
 } from "firebase/firestore";
 
-function Tasks() {
+function Admin() {
+
+  const navigate =
+    useNavigate();
+
+  const allowedAdmins = [
+
+    "jinoyfelix956@gmail.com",
+
+    "alanjaison159@gmail.com",
+
+    "nixondavidnd13@gmail.com",
+
+  ];
+
+  const [section, setSection] =
+    useState("addtask");
 
   const [tasks, setTasks] =
     useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [users, setUsers] =
+    useState([]);
 
-  const [selectedTask, setSelectedTask] =
-    useState(null);
+  const [claims, setClaims] =
+    useState([]);
 
-  const [proof, setProof] =
+  // TASK STATES
+  const [title, setTitle] =
     useState("");
+
+  const [description, setDescription] =
+    useState("");
+
+  const [image, setImage] =
+    useState("");
+
+  const [instructions, setInstructions] =
+    useState("");
+
+  const [amount, setAmount] =
+    useState("");
+
+  const [subreddit, setSubreddit] =
+    useState("");
+
+  // WALLET
+  const [userId, setUserId] =
+    useState("");
+
+  const [walletAmount, setWalletAmount] =
+    useState("");
+
+  // ADMIN PROTECTION
+  useEffect(() => {
+
+    const unsubscribe =
+      onAuthStateChanged(
+        auth,
+        (user) => {
+
+          if (!user) {
+
+            navigate("/login");
+
+            return;
+          }
+
+          const isAdmin =
+            allowedAdmins.includes(
+              user.email
+            );
+
+          if (!isAdmin) {
+
+            navigate("/dashboard");
+          }
+        }
+      );
+
+    return () =>
+      unsubscribe();
+
+  }, []);
 
   // FETCH TASKS
   const fetchTasks =
@@ -55,21 +137,91 @@ function Tasks() {
             })
           );
 
-        const filtered =
+        // REMOVE CLAIMED TASKS
+        const availableTasks =
           taskList.filter(
             (task) =>
               task.claimed !== true
           );
 
-        setTasks(filtered);
+        setTasks(
+          availableTasks
+        );
 
       } catch (error) {
 
         console.log(error);
 
-      } finally {
+      }
+    };
 
-        setLoading(false);
+  // FETCH USERS
+  const fetchUsers =
+    async () => {
+
+      try {
+
+        const q =
+          query(
+            collection(
+              db,
+              "users"
+            ),
+
+            where(
+              "approved",
+              "==",
+              false
+            )
+          );
+
+        const snapshot =
+          await getDocs(q);
+
+        const usersList =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        setUsers(usersList);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // FETCH CLAIMS
+  const fetchClaims =
+    async () => {
+
+      try {
+
+        const snapshot =
+          await getDocs(
+            collection(
+              db,
+              "taskClaims"
+            )
+          );
+
+        const claimList =
+          snapshot.docs.map(
+            (doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })
+          );
+
+        setClaims(claimList);
+
+      } catch (error) {
+
+        console.log(error);
 
       }
     };
@@ -78,142 +230,182 @@ function Tasks() {
 
     fetchTasks();
 
+    fetchUsers();
+
+    fetchClaims();
+
   }, []);
 
-  // OPEN TASK
-  const openTask =
-    (task) => {
-
-      setSelectedTask(task);
-
-    };
-
-  // COPY TITLE
-  const copyTitle =
+  // ADD TASK
+  const handleAddTask =
     async () => {
 
       try {
 
-        await navigator.clipboard.writeText(
-          selectedTask.title
-        );
-
-        alert("Title copied");
-
-      } catch (error) {
-
-        console.log(error);
-
-      }
-    };
-
-  // COPY DESCRIPTION
-  const copyDescription =
-    async () => {
-
-      try {
-
-        await navigator.clipboard.writeText(
-          selectedTask.description
-        );
-
-        alert(
-          "Description copied"
-        );
-
-      } catch (error) {
-
-        console.log(error);
-
-      }
-    };
-
-  // REJECT TASK
-  const rejectTask =
-    () => {
-
-      setSelectedTask(null);
-
-      setProof("");
-
-    };
-
-  // SUBMIT TASK
-  const submitTask =
-    async () => {
-
-      try {
-
-        if (!proof) {
-
-          alert(
-            "Submit proof first"
-          );
-
-          return;
-        }
-
-        const user =
-          auth.currentUser;
-
-        // SAVE CLAIM
         await addDoc(
           collection(
             db,
-            "taskClaims"
+            "tasks"
           ),
           {
-            taskId:
-              selectedTask.id,
+            title,
+            subreddit,
+            description,
+            image,
+            instructions,
+            amount,
 
-            userId:
-              user.uid,
+            claimed: false,
 
-            proof,
+            claimedBy: "",
 
-            amount:
-              selectedTask.amount,
+            pendingReview:
+              false,
 
-            title:
-              selectedTask.title,
-
-            subreddit:
-              selectedTask.subreddit,
+            proof: "",
 
             status:
-              "pending",
+              "available",
+
+            rejected: false,
 
             createdAt:
               Date.now(),
           }
         );
 
-        // UPDATE TASK
-        await updateDoc(
+        alert("Task Added");
+
+        setTitle("");
+        setSubreddit("");
+        setDescription("");
+        setImage("");
+        setInstructions("");
+        setAmount("");
+
+        fetchTasks();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // DELETE TASK
+  const handleDeleteTask =
+    async (id) => {
+
+      try {
+
+        await deleteDoc(
           doc(
             db,
             "tasks",
-            selectedTask.id
+            id
+          )
+        );
+
+        fetchTasks();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // APPROVE USER
+  const approveUser =
+    async (id) => {
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            id
           ),
           {
-            claimed: true,
-
-            claimedBy:
-              user.uid,
-
-            pendingReview:
-              true,
-
-            proof,
+            approved: true,
           }
         );
 
-        // UPDATE PENDING BALANCE
+        fetchUsers();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // REJECT USER
+  const rejectUser =
+    async (id) => {
+
+      try {
+
+        await deleteDoc(
+          doc(
+            db,
+            "users",
+            id
+          )
+        );
+
+        fetchUsers();
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // UPDATE WALLET
+  const handleWalletUpdate =
+    async () => {
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            userId
+          ),
+          {
+            withdrawableBalance:
+              Number(
+                walletAmount
+              ),
+          }
+        );
+
+        alert(
+          "Wallet Updated"
+        );
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // APPROVE TASK
+  const approveTask =
+    async (claim) => {
+
+      try {
+
         const userRef =
           doc(
             db,
             "users",
-            user.uid
+            claim.userId
           );
 
         const userSnap =
@@ -224,6 +416,10 @@ function Tasks() {
         const userData =
           userSnap.data();
 
+        const currentWithdrawable =
+          userData
+            ?.withdrawableBalance || 0;
+
         const currentPending =
           userData
             ?.pendingBalance || 0;
@@ -231,26 +427,60 @@ function Tasks() {
         await updateDoc(
           userRef,
           {
-            pendingBalance:
-              currentPending +
+            withdrawableBalance:
+              currentWithdrawable +
               Number(
-                selectedTask.amount
+                claim.amount
+              ),
+
+            pendingBalance:
+              currentPending -
+              Number(
+                claim.amount
               ),
           }
         );
 
-        // REMOVE TASK
-        setTasks(
-          tasks.filter(
-            (task) =>
-              task.id !==
-              selectedTask.id
-          )
+        await updateDoc(
+          doc(
+            db,
+            "taskClaims",
+            claim.id
+          ),
+          {
+            status:
+              "approved",
+          }
         );
 
-        setSelectedTask(null);
+        fetchClaims();
 
-        setProof("");
+      } catch (error) {
+
+        console.log(error);
+
+      }
+    };
+
+  // REJECT TASK
+  const rejectTaskClaim =
+    async (claim) => {
+
+      try {
+
+        await updateDoc(
+          doc(
+            db,
+            "taskClaims",
+            claim.id
+          ),
+          {
+            status:
+              "rejected",
+          }
+        );
+
+        fetchClaims();
 
       } catch (error) {
 
@@ -268,18 +498,18 @@ function Tasks() {
         background:
           "radial-gradient(circle at top,#111827,#050816)",
 
-        paddingTop: "95px",
-
-        paddingLeft: "20px",
-
-        paddingRight: "20px",
-
-        paddingBottom: "40px",
-
         color: "white",
 
         fontFamily:
           "Inter, sans-serif",
+
+        paddingTop: "92px",
+
+        paddingLeft: "18px",
+
+        paddingRight: "18px",
+
+        paddingBottom: "40px",
       }}
     >
 
@@ -288,527 +518,209 @@ function Tasks() {
       {/* HEADER */}
       <div
         style={{
-          marginBottom: "26px",
+          marginBottom: "22px",
         }}
       >
 
         <h1
           style={{
-            fontSize: "28px",
-
+            fontSize: "24px",
             fontWeight: "800",
-
             letterSpacing: "-1px",
-
-            marginBottom: "8px",
           }}
         >
-          Tasks
+          Admin Panel
         </h1>
-
-        <p
-          style={{
-            color: "#9ca3af",
-
-            fontSize: "12px",
-          }}
-        >
-          Available community tasks
-        </p>
 
       </div>
 
-      {/* LOADING */}
-      {loading && (
-
-        <p
-          style={{
-            color: "#9ca3af",
-
-            fontSize: "13px",
-          }}
-        >
-          Loading tasks...
-        </p>
-
-      )}
-
-      {/* EMPTY */}
-      {!loading &&
-        tasks.length === 0 && (
-
-          <div
-            style={{
-              background:
-                "rgba(255,255,255,0.03)",
-
-              border:
-                "1px solid rgba(255,255,255,0.05)",
-
-              borderRadius: "24px",
-
-              padding: "28px",
-
-              textAlign: "center",
-            }}
-          >
-
-            <p
-              style={{
-                color: "#9ca3af",
-
-                fontSize: "13px",
-              }}
-            >
-              No tasks available right now.
-            </p>
-
-          </div>
-
-        )}
-
-      {/* TASK LIST */}
+      {/* MENU */}
       <div
         style={{
           display: "grid",
 
-          gap: "14px",
+          gridTemplateColumns:
+            "1fr 1fr",
+
+          gap: "10px",
+
+          marginBottom: "18px",
         }}
       >
 
-        {tasks.map((task) => (
+        <div
+          onClick={() =>
+            setSection("addtask")
+          }
 
-          <div
-            key={task.id}
+          style={folderStyle}
+        >
+          Add Task
+        </div>
 
-            style={{
-              background:
-                "rgba(255,255,255,0.03)",
+        <div
+          onClick={() =>
+            setSection("reviews")
+          }
 
-              border:
-                "1px solid rgba(255,255,255,0.05)",
+          style={folderStyle}
+        >
+          Reviews
+        </div>
 
-              borderRadius: "22px",
+        <div
+          onClick={() =>
+            setSection("verification")
+          }
 
-              padding: "18px",
+          style={folderStyle}
+        >
+          Verification
+        </div>
 
-              display: "flex",
+        <div
+          onClick={() =>
+            setSection("wallet")
+          }
 
-              justifyContent:
-                "space-between",
-
-              alignItems: "center",
-
-              backdropFilter:
-                "blur(18px)",
-            }}
-          >
-
-            <div>
-
-              <p
-                style={{
-                  color: "#8b5cf6",
-
-                  fontSize: "11px",
-
-                  marginBottom: "6px",
-
-                  fontWeight: "600",
-                }}
-              >
-                {task.subreddit}
-              </p>
-
-              <h2
-                style={{
-                  fontSize: "15px",
-
-                  fontWeight: "700",
-
-                  marginBottom: "6px",
-                }}
-              >
-                {task.title}
-              </h2>
-
-              <p
-                style={{
-                  color: "#9ca3af",
-
-                  fontSize: "11px",
-                }}
-              >
-                Reward: $
-                {task.amount}
-              </p>
-
-            </div>
-
-            <button
-              onClick={() =>
-                openTask(task)
-              }
-
-              style={{
-                border: "none",
-
-                padding:
-                  "12px 18px",
-
-                borderRadius:
-                  "14px",
-
-                background:
-                  "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-                color: "white",
-
-                fontSize: "12px",
-
-                fontWeight: "700",
-
-                cursor: "pointer",
-              }}
-            >
-              Claim
-            </button>
-
-          </div>
-
-        ))}
+          style={folderStyle}
+        >
+          Wallet
+        </div>
 
       </div>
 
-      {/* TASK DETAIL */}
-      {selectedTask && (
+      {/* ADD TASK */}
+      {section === "addtask" && (
 
-        <div
-          style={{
-            position: "fixed",
+        <div style={cardStyle}>
 
-            inset: 0,
+          <h2 style={titleStyle}>
+            Publish Task
+          </h2>
 
-            background:
-              "rgba(0,0,0,0.75)",
+          <input
+            placeholder="Title"
+            value={title}
+            onChange={(e) =>
+              setTitle(
+                e.target.value
+              )
+            }
+            style={inputStyle}
+          />
 
-            backdropFilter:
-              "blur(8px)",
+          <input
+            placeholder="Subreddit"
+            value={subreddit}
+            onChange={(e) =>
+              setSubreddit(
+                e.target.value
+              )
+            }
+            style={inputStyle}
+          />
 
-            overflowY: "auto",
+          <textarea
+            placeholder="Description"
+            value={description}
+            onChange={(e) =>
+              setDescription(
+                e.target.value
+              )
+            }
+            style={textareaStyle}
+          />
 
-            padding: "24px",
+          <input
+            placeholder="Image Link"
+            value={image}
+            onChange={(e) =>
+              setImage(
+                e.target.value
+              )
+            }
+            style={inputStyle}
+          />
 
-            zIndex: 5000,
-          }}
-        >
+          <textarea
+            placeholder="Instructions"
+            value={instructions}
+            onChange={(e) =>
+              setInstructions(
+                e.target.value
+              )
+            }
+            style={textareaStyle}
+          />
 
-          <div
-            style={{
-              width: "100%",
+          <input
+            placeholder="Reward Amount"
+            value={amount}
+            onChange={(e) =>
+              setAmount(
+                e.target.value
+              )
+            }
+            style={inputStyle}
+          />
 
-              maxWidth: "720px",
-
-              margin: "0 auto",
-
-              background:
-                "#0f172a",
-
-              border:
-                "1px solid rgba(255,255,255,0.06)",
-
-              borderRadius: "32px",
-
-              padding: "26px",
-            }}
+          <button
+            onClick={
+              handleAddTask
+            }
+            style={buttonStyle}
           >
+            Publish Task
+          </button>
 
-            {/* SUBREDDIT */}
-            <p
-              style={{
-                color: "#8b5cf6",
+          {/* TASK LIST */}
+          {tasks.map((task) => (
 
-                fontSize: "11px",
-
-                marginBottom: "10px",
-
-                fontWeight: "700",
-
-                letterSpacing: "1px",
-              }}
-            >
-              {
-                selectedTask.subreddit
-              }
-            </p>
-
-            {/* TITLE */}
-            <h1
-              style={{
-                fontSize: "30px",
-
-                fontWeight: "800",
-
-                lineHeight: "42px",
-
-                letterSpacing: "-1px",
-
-                marginBottom: "18px",
-              }}
-            >
-              {
-                selectedTask.title
-              }
-            </h1>
-
-            {/* ACTION BUTTONS */}
             <div
-              style={{
-                display: "flex",
+              key={task.id}
 
-                gap: "12px",
-
-                marginBottom: "22px",
-
-                flexWrap: "wrap",
-              }}
+              style={taskCard}
             >
 
-              <button
-                onClick={copyTitle}
+              <div>
 
-                style={actionBtn}
-              >
-                Copy Title
-              </button>
-
-              <button
-                onClick={
-                  copyDescription
-                }
-
-                style={actionBtn}
-              >
-                Copy Description
-              </button>
-
-              {selectedTask.image && (
-
-                <a
-                  href={
-                    selectedTask.image
-                  }
-
-                  target="_blank"
-
-                  rel="noreferrer"
-
+                <p
                   style={{
-                    textDecoration:
-                      "none",
+                    color: "#8b5cf6",
+                    fontSize: "10px",
+                    marginBottom: "5px",
                   }}
                 >
+                  {task.subreddit}
+                </p>
 
-                  <button
-                    style={actionBtn}
-                  >
-                    Open Image Link
-                  </button>
+                <h3
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: "700",
+                  }}
+                >
+                  {task.title}
+                </h3>
 
-                </a>
-
-              )}
-
-            </div>
-
-            {/* DESCRIPTION */}
-            <div
-              style={detailCard}
-            >
-
-              <p style={detailTitle}>
-                DESCRIPTION
-              </p>
-
-              <p style={detailText}>
-                {
-                  selectedTask.description
-                }
-              </p>
-
-            </div>
-
-            {/* INSTRUCTIONS */}
-            <div
-              style={detailCard}
-            >
-
-              <p style={detailTitle}>
-                INSTRUCTIONS
-              </p>
-
-              <p style={detailText}>
-                {
-                  selectedTask.instructions
-                }
-              </p>
-
-            </div>
-
-            {/* REWARD */}
-            <div
-              style={{
-                background:
-                  "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-                borderRadius: "24px",
-
-                padding: "24px",
-
-                marginBottom: "22px",
-              }}
-            >
-
-              <p
-                style={{
-                  fontSize: "12px",
-
-                  opacity: 0.85,
-
-                  marginBottom: "10px",
-                }}
-              >
-                TASK REWARD
-              </p>
-
-              <h2
-                style={{
-                  fontSize: "40px",
-
-                  fontWeight: "800",
-
-                  letterSpacing: "-2px",
-                }}
-              >
-                $
-                {
-                  selectedTask.amount
-                }
-              </h2>
-
-            </div>
-
-            {/* PROOF */}
-            <textarea
-              placeholder="Submit proof link here..."
-
-              value={proof}
-
-              onChange={(e) =>
-                setProof(
-                  e.target.value
-                )
-              }
-
-              style={{
-                width: "100%",
-
-                minHeight: "140px",
-
-                padding: "18px",
-
-                borderRadius: "22px",
-
-                border:
-                  "1px solid rgba(255,255,255,0.06)",
-
-                background:
-                  "rgba(255,255,255,0.04)",
-
-                color: "white",
-
-                fontSize: "13px",
-
-                outline: "none",
-
-                resize: "none",
-
-                marginBottom: "22px",
-
-                lineHeight: "24px",
-              }}
-            />
-
-            {/* ACTIONS */}
-            <div
-              style={{
-                display: "flex",
-
-                gap: "14px",
-              }}
-            >
+              </div>
 
               <button
-                onClick={rejectTask}
-
-                style={{
-                  flex: 1,
-
-                  padding: "18px",
-
-                  border: "none",
-
-                  borderRadius:
-                    "18px",
-
-                  background:
-                    "rgba(239,68,68,0.10)",
-
-                  color: "#f87171",
-
-                  fontWeight: "700",
-
-                  fontSize: "13px",
-
-                  cursor: "pointer",
-                }}
-              >
-                Reject Task
-              </button>
-
-              <button
-                onClick={
-                  submitTask
+                onClick={() =>
+                  handleDeleteTask(
+                    task.id
+                  )
                 }
 
-                style={{
-                  flex: 1,
-
-                  padding: "18px",
-
-                  border: "none",
-
-                  borderRadius:
-                    "18px",
-
-                  background:
-                    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
-
-                  color: "white",
-
-                  fontWeight: "700",
-
-                  fontSize: "13px",
-
-                  cursor: "pointer",
-                }}
+                style={rejectBtn}
               >
-                Submit Task
+                Delete
               </button>
 
             </div>
 
-          </div>
+          ))}
 
         </div>
 
@@ -818,29 +730,7 @@ function Tasks() {
   );
 }
 
-const actionBtn = {
-
-  border: "none",
-
-  padding:
-    "12px 16px",
-
-  borderRadius:
-    "14px",
-
-  background:
-    "rgba(139,92,246,0.12)",
-
-  color: "#c4b5fd",
-
-  fontSize: "12px",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
-};
-
-const detailCard = {
+const folderStyle = {
 
   background:
     "rgba(255,255,255,0.03)",
@@ -848,33 +738,151 @@ const detailCard = {
   border:
     "1px solid rgba(255,255,255,0.05)",
 
-  borderRadius: "22px",
+  borderRadius: "16px",
+
+  padding: "14px",
+
+  fontSize: "12px",
+
+  fontWeight: "600",
+
+  cursor: "pointer",
+
+  textAlign: "center",
+};
+
+const cardStyle = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "24px",
 
   padding: "20px",
 
-  marginBottom: "18px",
+  display: "flex",
+
+  flexDirection: "column",
+
+  gap: "14px",
 };
 
-const detailTitle = {
+const titleStyle = {
 
-  color: "#c4b5fd",
-
-  fontSize: "11px",
-
-  marginBottom: "12px",
-
-  letterSpacing: "1px",
+  fontSize: "16px",
 
   fontWeight: "700",
 };
 
-const detailText = {
+const inputStyle = {
 
-  color: "#d1d5db",
+  width: "100%",
+
+  padding: "14px",
+
+  borderRadius: "14px",
+
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+
+  background:
+    "rgba(255,255,255,0.04)",
+
+  color: "white",
+
+  fontSize: "12px",
+
+  outline: "none",
+};
+
+const textareaStyle = {
+
+  width: "100%",
+
+  minHeight: "90px",
+
+  padding: "14px",
+
+  borderRadius: "14px",
+
+  border:
+    "1px solid rgba(255,255,255,0.06)",
+
+  background:
+    "rgba(255,255,255,0.04)",
+
+  color: "white",
+
+  fontSize: "12px",
+
+  outline: "none",
+
+  resize: "none",
+};
+
+const buttonStyle = {
+
+  width: "100%",
+
+  padding: "15px",
+
+  border: "none",
+
+  borderRadius: "16px",
+
+  background:
+    "linear-gradient(135deg,#8b5cf6,#7c3aed)",
+
+  color: "white",
 
   fontSize: "13px",
 
-  lineHeight: "28px",
+  fontWeight: "700",
+
+  cursor: "pointer",
 };
 
-export default Tasks;
+const taskCard = {
+
+  background:
+    "rgba(255,255,255,0.03)",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+
+  borderRadius: "16px",
+
+  padding: "14px",
+
+  display: "flex",
+
+  justifyContent:
+    "space-between",
+
+  alignItems: "center",
+};
+
+const rejectBtn = {
+
+  padding: "10px 12px",
+
+  border: "none",
+
+  borderRadius: "12px",
+
+  background:
+    "rgba(239,68,68,0.12)",
+
+  color: "#f87171",
+
+  fontSize: "11px",
+
+  fontWeight: "700",
+
+  cursor: "pointer",
+};
+
+export default Admin;
